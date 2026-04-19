@@ -1,9 +1,9 @@
 export type Tree = {
-  id?: number;
+  id: number;
   name: string;
   description: string;
+  image?: string | null;
   latitude: number;
   longitude: number;
-  image?: string;
   created_at?: string;
 };

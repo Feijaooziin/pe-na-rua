@@ -8,9 +8,9 @@ export function initDB() {
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT,
     description TEXT,
+    image TEXT,
     latitude REAL,
     longitude REAL,
-    image TEXT,
     created_at TEXT
   );
 `);
