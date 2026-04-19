@@ -3,9 +3,11 @@ import { router } from "expo-router";
 import { useCallback, useState } from "react";
 import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 
+import Header from "@/src/components/Header";
 import { getTrees } from "@/src/database/trees";
 import { colors } from "@/src/theme/colors";
 import { Tree } from "@/src/types/tree";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function List() {
   const [trees, setTrees] = useState<Tree[]>([]);
@@ -20,11 +22,16 @@ export default function List() {
   function renderItem({ item }: { item: Tree }) {
     return (
       <TouchableOpacity
+        activeOpacity={0.8}
         onPress={() => router.push(`/home/details/${item.id}` as any)}
         style={{
           backgroundColor: "#fff",
-          borderRadius: 12,
-          marginBottom: 15,
+          borderRadius: 16,
+          shadowColor: "#000",
+          shadowOpacity: 0.05,
+          shadowRadius: 8,
+          elevation: 3,
+          marginBottom: 16,
           overflow: "hidden",
         }}
       >
@@ -32,7 +39,12 @@ export default function List() {
         {item.image ? (
           <Image
             source={{ uri: item.image }}
-            style={{ width: "100%", height: 150 }}
+            style={{
+              width: "100%",
+              height: 150,
+              borderTopLeftRadius: 16,
+              borderTopRightRadius: 16,
+            }}
           />
         ) : (
           <View
@@ -72,20 +84,10 @@ export default function List() {
       style={{
         flex: 1,
         backgroundColor: colors.background,
-        padding: 15,
       }}
     >
       {/* HEADER */}
-      <Text
-        style={{
-          fontSize: 26,
-          fontWeight: "bold",
-          color: colors.text,
-          marginBottom: 10,
-        }}
-      >
-        🌳 Pé na Rua
-      </Text>
+      <Header />
 
       {/* LISTA */}
       <FlatList
@@ -93,9 +95,21 @@ export default function List() {
         keyExtractor={(item) => String(item.id)}
         renderItem={renderItem}
         showsVerticalScrollIndicator={false}
+        // ListEmptyComponent={
+        //   <Text style={{ marginTop: 20 }}>Nenhuma árvore cadastrada 🌱</Text>
+        // }
         ListEmptyComponent={
-          <Text style={{ marginTop: 20 }}>Nenhuma árvore cadastrada 🌱</Text>
+          <View style={{ marginTop: 40, alignItems: "center" }}>
+            <Text style={{ fontSize: 16, color: "#777" }}>
+              Nenhuma árvore cadastrada 🌱
+            </Text>
+
+            <Text style={{ fontSize: 13, color: "#aaa", marginTop: 5 }}>
+              Toque no botão + para começar
+            </Text>
+          </View>
         }
+        contentContainerStyle={{ padding: 15, paddingBottom: 100 }}
       />
 
       {/* FAB */}
@@ -103,18 +117,21 @@ export default function List() {
         onPress={() => router.push("/home/create" as any)}
         style={{
           position: "absolute",
-          bottom: 20,
-          right: 20,
+          bottom: 18,
+          right: 18,
           backgroundColor: colors.primary,
+          shadowColor: "#000",
+          shadowOpacity: 0.2,
+          shadowRadius: 6,
+          elevation: 6,
           width: 60,
           height: 60,
           borderRadius: 30,
           justifyContent: "center",
           alignItems: "center",
-          elevation: 5,
         }}
       >
-        <Text style={{ color: "#fff", fontSize: 30 }}>+</Text>
+        <Ionicons name="add" size={32} color="#fff" />
       </TouchableOpacity>
     </View>
   );
