@@ -33,7 +33,7 @@ export default function Header() {
         </TouchableOpacity>
 
         <Image
-          source={require("../../assets/images/icon.png")}
+          source={require("../../assets/images/logo.jpeg")}
           style={{
             width: 35,
             height: 35,
