@@ -95,9 +95,6 @@ export default function List() {
         keyExtractor={(item) => String(item.id)}
         renderItem={renderItem}
         showsVerticalScrollIndicator={false}
-        // ListEmptyComponent={
-        //   <Text style={{ marginTop: 20 }}>Nenhuma árvore cadastrada 🌱</Text>
-        // }
         ListEmptyComponent={
           <View style={{ marginTop: 40, alignItems: "center" }}>
             <Text style={{ fontSize: 16, color: "#777" }}>

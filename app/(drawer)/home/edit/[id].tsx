@@ -173,9 +173,10 @@ export default function Edit() {
             alignItems: "center",
             borderWidth: 1,
             borderColor: "#ccc",
+            backgroundColor: colors.danger,
           }}
         >
-          <Text>Cancelar</Text>
+          <Text style={{ color: "#fff", fontWeight: "bold" }}>Cancelar</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
