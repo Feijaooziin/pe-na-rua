@@ -118,6 +118,7 @@ export default function Edit() {
           value={name}
           onChangeText={setName}
           placeholder="Ex: Mangueira"
+          placeholderTextColor={"#000"}
           style={{
             marginTop: 5,
             borderWidth: 1,
@@ -125,7 +126,6 @@ export default function Edit() {
             borderRadius: 10,
             padding: 12,
             backgroundColor: "#fff",
-            color: "#000",
           }}
         />
 
@@ -135,6 +135,7 @@ export default function Edit() {
           value={description}
           onChangeText={setDescription}
           placeholder="Detalhes sobre a árvore..."
+          placeholderTextColor={"#000"}
           multiline
           style={{
             marginTop: 5,
@@ -145,7 +146,6 @@ export default function Edit() {
             backgroundColor: "#fff",
             minHeight: 100,
             textAlignVertical: "top",
-            color: "#000",
           }}
         />
 

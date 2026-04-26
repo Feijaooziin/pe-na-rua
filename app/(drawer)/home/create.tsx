@@ -105,9 +105,9 @@ export default function Create() {
           value={name}
           onChangeText={setName}
           placeholder="Ex: Ipê amarelo"
+          placeholderTextColor={"#000"}
           style={{
             backgroundColor: "#fff",
-            color: "#000",
             borderRadius: 10,
             padding: 12,
             marginBottom: 15,
@@ -120,10 +120,10 @@ export default function Create() {
           value={description}
           onChangeText={setDescription}
           placeholder="Detalhes da árvore..."
+          placeholderTextColor={"#000"}
           multiline
           style={{
             backgroundColor: "#fff",
-            color: "#000",
             borderRadius: 10,
             padding: 12,
             height: 100,
