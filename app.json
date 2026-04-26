@@ -18,7 +18,7 @@
     "android": {
       "config": {
         "googleMaps": {
-          "apiKey": "SUA_API_KEY_AQUI"
+          "apiKey": "AIzaSyBbpwUmTXN0cIaZGrqoQB9Y1HGtTVV-vXY"
         }
       },
       "permissions": ["CAMERA", "ACCESS_FINE_LOCATION"],
