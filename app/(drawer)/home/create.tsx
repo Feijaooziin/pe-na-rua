@@ -1,4 +1,5 @@
 import * as ImagePicker from "expo-image-picker";
+import * as Location from "expo-location";
 import { router } from "expo-router";
 import { useState } from "react";
 import {
@@ -18,6 +19,8 @@ import { colors } from "@/src/theme/colors";
 export default function Create() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [latitude, setLatitude] = useState<number | null>(null);
+  const [longitude, setLongitude] = useState<number | null>(null);
   const [image, setImage] = useState<string | null>(null);
 
   async function takePhoto() {
@@ -62,6 +65,20 @@ export default function Create() {
     ]);
   }
 
+  async function getLocation() {
+    const { granted } = await Location.requestForegroundPermissionsAsync();
+
+    if (!granted) {
+      alert("Permissão negada");
+      return;
+    }
+
+    const loc = await Location.getCurrentPositionAsync({});
+
+    setLatitude(loc.coords.latitude);
+    setLongitude(loc.coords.longitude);
+  }
+
   function handleCreate() {
     if (!name.trim()) {
       alert("Digite um nome");
@@ -72,8 +89,8 @@ export default function Create() {
       name,
       description,
       image: image ?? undefined,
-      latitude: undefined,
-      longitude: undefined,
+      latitude: latitude ?? undefined,
+      longitude: longitude ?? undefined,
       created_at: new Date().toISOString(),
     });
 
@@ -157,6 +174,19 @@ export default function Create() {
             }}
           />
         )}
+
+        <TouchableOpacity
+          onPress={getLocation}
+          style={{
+            backgroundColor: "#fff",
+            borderRadius: 10,
+            padding: 15,
+            alignItems: "center",
+            marginBottom: 15,
+          }}
+        >
+          <Text style={{ color: colors.primary }}>Usar minha localização</Text>
+        </TouchableOpacity>
 
         {/* Botão */}
         <TouchableOpacity

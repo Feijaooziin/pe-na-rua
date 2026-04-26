@@ -1,7 +1,7 @@
 import { useFocusEffect } from "@react-navigation/native";
 import * as Location from "expo-location";
 import { useCallback, useEffect, useState } from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 
 import Header from "@/src/components/Header";
@@ -14,22 +14,24 @@ export default function Map() {
   );
   const [trees, setTrees] = useState<Tree[]>([]);
 
-  // 📍 pegar localização
+  // 📍 localização atual
   useEffect(() => {
     (async () => {
       const { granted } = await Location.requestForegroundPermissionsAsync();
 
       if (!granted) {
-        alert("Permissão de localização negada");
+        alert("Permissão negada");
         return;
       }
 
-      const currentLocation = await Location.getCurrentPositionAsync({});
-      setLocation(currentLocation);
+      const loc = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.High,
+      });
+      setLocation(loc);
     })();
   }, []);
 
-  // 🌳 pegar árvores do banco
+  // 🌳 carregar árvores
   useFocusEffect(
     useCallback(() => {
       const data = getTrees();
@@ -38,7 +40,20 @@ export default function Map() {
   );
 
   if (!location) {
-    return <Text>Carregando mapa...</Text>;
+    return (
+      <View style={{ flex: 1 }}>
+        <Header />
+        <MapView
+          style={{ flex: 1 }}
+          initialRegion={{
+            latitude: -25.429,
+            longitude: -49.271,
+            latitudeDelta: 0.05,
+            longitudeDelta: 0.05,
+          }}
+        />
+      </View>
+    );
   }
 
   return (
@@ -54,7 +69,7 @@ export default function Map() {
           longitudeDelta: 0.01,
         }}
       >
-        {/* 📍 Local atual */}
+        {/* 📍 Você */}
         <Marker
           coordinate={{
             latitude: location.coords.latitude,
