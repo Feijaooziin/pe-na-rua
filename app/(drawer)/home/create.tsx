@@ -1,9 +1,18 @@
-import { insertTree } from "@/src/database/trees";
 import * as ImagePicker from "expo-image-picker";
-import * as Location from "expo-location";
 import { router } from "expo-router";
 import { useState } from "react";
-import { Button, Image, Text, TextInput, View } from "react-native";
+import {
+  Image,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+
+import Header from "@/src/components/Header";
+import { insertTree } from "@/src/database/trees";
+import { colors } from "@/src/theme/colors";
 
 export default function Create() {
   const [name, setName] = useState("");
@@ -20,7 +29,6 @@ export default function Create() {
 
     const result = await ImagePicker.launchImageLibraryAsync({
       quality: 0.7,
-      allowsEditing: true,
     });
 
     if (!result.canceled) {
@@ -28,50 +36,113 @@ export default function Create() {
     }
   }
 
-  async function handleCreate() {
-    const { status } = await Location.requestForegroundPermissionsAsync();
-
-    if (status !== "granted") {
-      alert("Permissão negada");
+  function handleCreate() {
+    if (!name.trim()) {
+      alert("Digite um nome");
       return;
     }
-
-    const location = await Location.getCurrentPositionAsync({});
 
     insertTree({
       name,
       description,
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude,
       image: image ?? undefined,
+      latitude: undefined,
+      longitude: undefined,
+      created_at: new Date().toISOString(),
     });
 
-    alert("Salvo 🌳");
+    alert("Árvore cadastrada 🌳");
 
     router.back();
   }
 
   return (
-    <View style={{ padding: 20 }}>
-      <Text>Nova árvore</Text>
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
+      <Header />
 
-      <TextInput placeholder="Nome" value={name} onChangeText={setName} />
-      <TextInput
-        placeholder="Descrição"
-        value={description}
-        onChangeText={setDescription}
-      />
+      <ScrollView contentContainerStyle={{ padding: 20 }}>
+        {/* Título */}
+        <Text
+          style={{
+            fontSize: 22,
+            fontWeight: "bold",
+            color: colors.text,
+            marginBottom: 20,
+          }}
+        >
+          Nova árvore 🌱
+        </Text>
 
-      <Button title="Escolher imagem" onPress={pickImage} />
-
-      {image && (
-        <Image
-          source={{ uri: image }}
-          style={{ width: 200, height: 200, marginTop: 10 }}
+        {/* Nome */}
+        <Text style={{ marginBottom: 5, color: colors.text }}>Nome</Text>
+        <TextInput
+          value={name}
+          onChangeText={setName}
+          placeholder="Ex: Ipê amarelo"
+          style={{
+            backgroundColor: "#fff",
+            borderRadius: 10,
+            padding: 12,
+            marginBottom: 15,
+          }}
         />
-      )}
 
-      <Button title="Salvar" onPress={handleCreate} />
+        {/* Descrição */}
+        <Text style={{ marginBottom: 5, color: colors.text }}>Descrição</Text>
+        <TextInput
+          value={description}
+          onChangeText={setDescription}
+          placeholder="Detalhes da árvore..."
+          multiline
+          style={{
+            backgroundColor: "#fff",
+            borderRadius: 10,
+            padding: 12,
+            height: 100,
+            textAlignVertical: "top",
+            marginBottom: 15,
+          }}
+        />
+
+        {/* Imagem */}
+        <TouchableOpacity
+          onPress={pickImage}
+          style={{
+            backgroundColor: "#fff",
+            borderRadius: 10,
+            padding: 15,
+            alignItems: "center",
+            marginBottom: 15,
+          }}
+        >
+          <Text style={{ color: colors.primary }}>Selecionar imagem 📸</Text>
+        </TouchableOpacity>
+
+        {image && (
+          <Image
+            source={{ uri: image }}
+            style={{
+              width: "100%",
+              height: 200,
+              borderRadius: 12,
+              marginBottom: 20,
+            }}
+          />
+        )}
+
+        {/* Botão */}
+        <TouchableOpacity
+          onPress={handleCreate}
+          style={{
+            backgroundColor: colors.primary,
+            padding: 15,
+            borderRadius: 12,
+            alignItems: "center",
+          }}
+        >
+          <Text style={{ color: "#fff", fontWeight: "bold" }}>Salvar 🌳</Text>
+        </TouchableOpacity>
+      </ScrollView>
     </View>
   );
 }

@@ -1,4 +1,4 @@
-import { Tree } from "@/src/types/tree";
+import { CreateTreeDTO, Tree } from "@/src/types/tree";
 import { db } from "./db";
 
 export function getTrees(): Tree[] {
@@ -13,17 +13,17 @@ export function getTreeById(id: number): Tree | null {
   return result ?? null;
 }
 
-export function insertTree(tree: Tree) {
+export function insertTree(data: CreateTreeDTO) {
   db.runSync(
-    `INSERT INTO trees (name, description, latitude, longitude, image, created_at)
+    `INSERT INTO trees (name, description, image, latitude, longitude, created_at)
      VALUES (?, ?, ?, ?, ?, ?)`,
     [
-      tree.name,
-      tree.description,
-      tree.latitude,
-      tree.longitude,
-      tree.image ?? null,
-      new Date().toISOString(),
+      data.name,
+      data.description,
+      data.image ?? null,
+      data.latitude ?? null,
+      data.longitude ?? null,
+      data.created_at,
     ],
   );
 }
