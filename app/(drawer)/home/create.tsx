@@ -107,6 +107,7 @@ export default function Create() {
           placeholder="Ex: Ipê amarelo"
           style={{
             backgroundColor: "#fff",
+            color: "#000",
             borderRadius: 10,
             padding: 12,
             marginBottom: 15,
@@ -122,6 +123,7 @@ export default function Create() {
           multiline
           style={{
             backgroundColor: "#fff",
+            color: "#000",
             borderRadius: 10,
             padding: 12,
             height: 100,

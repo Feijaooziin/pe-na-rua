@@ -125,6 +125,7 @@ export default function Edit() {
             borderRadius: 10,
             padding: 12,
             backgroundColor: "#fff",
+            color: "#000",
           }}
         />
 
@@ -144,6 +145,7 @@ export default function Edit() {
             backgroundColor: "#fff",
             minHeight: 100,
             textAlignVertical: "top",
+            color: "#000",
           }}
         />
 
