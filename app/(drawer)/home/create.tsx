@@ -2,6 +2,7 @@ import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
 import { useState } from "react";
 import {
+  Alert,
   Image,
   ScrollView,
   Text,
@@ -19,6 +20,23 @@ export default function Create() {
   const [description, setDescription] = useState("");
   const [image, setImage] = useState<string | null>(null);
 
+  async function takePhoto() {
+    const permission = await ImagePicker.requestCameraPermissionsAsync();
+
+    if (!permission.granted) {
+      alert("Permissão da câmera negada");
+      return;
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
+      quality: 0.7,
+    });
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  }
+
   async function pickImage() {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
@@ -34,6 +52,14 @@ export default function Create() {
     if (!result.canceled) {
       setImage(result.assets[0].uri);
     }
+  }
+
+  function chooseImage() {
+    Alert.alert("Selecionar imagem", "Escolha uma opção", [
+      { text: "Cancelar", style: "cancel" },
+      { text: "Câmera", onPress: takePhoto },
+      { text: "Galeria", onPress: pickImage },
+    ]);
   }
 
   function handleCreate() {
@@ -106,7 +132,7 @@ export default function Create() {
 
         {/* Imagem */}
         <TouchableOpacity
-          onPress={pickImage}
+          onPress={chooseImage}
           style={{
             backgroundColor: "#fff",
             borderRadius: 10,
@@ -115,7 +141,7 @@ export default function Create() {
             marginBottom: 15,
           }}
         >
-          <Text style={{ color: colors.primary }}>Selecionar imagem 📸</Text>
+          <Text style={{ color: colors.primary }}>Adicionar imagem 📸</Text>
         </TouchableOpacity>
 
         {image && (
