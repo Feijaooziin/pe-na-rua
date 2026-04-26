@@ -16,7 +16,7 @@
       }
     },
     "android": {
-      "permissions": ["CAMERA"],
+      "permissions": ["CAMERA", "ACCESS_FINE_LOCATION"],
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/logo.jpeg",
