@@ -87,28 +87,21 @@ export default function Map() {
           return (
             <Marker
               key={tree.id}
-              onPress={() => setSelectedTree(tree)}
               coordinate={{
-                latitude: tree.latitude!,
-                longitude: tree.longitude!,
+                latitude: tree.latitude,
+                longitude: tree.longitude,
               }}
+              onPress={() => setSelectedTree(tree)}
+              tracksViewChanges={false}
             >
-              {/* 🌳 Ícone customizado */}
-              <View
+              <Image
+                source={require("@/assets/images/marker.png")}
                 style={{
-                  alignItems: "center",
-                  justifyContent: "center",
+                  width: 50,
+                  height: 50,
                 }}
-              >
-                <Image
-                  source={require("@/assets/images/marker.png")}
-                  style={{
-                    width: 40,
-                    height: 40,
-                  }}
-                  resizeMode="cover"
-                />
-              </View>
+                resizeMode="cover"
+              />
             </Marker>
           );
         })}
