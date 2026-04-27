@@ -4,7 +4,6 @@ export const db = SQLite.openDatabaseSync("trees.db");
 
 export function initDB() {
   db.execSync(`
-  DROP TABLE IF EXISTS trees;
   CREATE TABLE IF NOT EXISTS trees (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT,
