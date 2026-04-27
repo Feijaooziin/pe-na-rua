@@ -9,7 +9,6 @@ import {
   ScrollView,
   Text,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   View,
 } from "react-native";
 import ImageViewer from "react-native-image-zoom-viewer";
@@ -17,6 +16,7 @@ import ImageViewer from "react-native-image-zoom-viewer";
 import { deleteTree, getTreeById } from "@/src/database/trees";
 import { colors } from "@/src/theme/colors";
 import { Tree } from "@/src/types/tree";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function Details() {
   const { id } = useLocalSearchParams();
@@ -209,28 +209,90 @@ export default function Details() {
 
       {/* MODAL IMAGEM FULLSCREEN */}
       <Modal visible={isViewerOpen} transparent>
-        <ImageViewer
-          imageUrls={images.map((img) => ({ url: img }))}
-          index={selectedIndex}
-          onChange={(index) => setSelectedIndex(index ?? 0)}
-          onSwipeDown={() => setIsViewerOpen(false)}
-          enableSwipeDown
-          saveToLocalByLongPress={false}
-          backgroundColor="#000"
-        />
+        <View style={{ flex: 1, backgroundColor: "#000" }}>
+          <ImageViewer
+            imageUrls={images.map((img) => ({ url: img }))}
+            index={selectedIndex}
+            onChange={(index) => setSelectedIndex(index ?? 0)}
+            renderIndicator={() => (
+              <Text
+                style={{
+                  position: "absolute",
+                  bottom: 30,
+                  alignSelf: "center",
+                  color: "#fff",
+                  fontSize: 16,
+                }}
+              >
+                {selectedIndex + 1} / {images.length}
+              </Text>
+            )}
+            renderImage={(props) => (
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Image
+                  {...props}
+                  style={{
+                    width: "90%",
+                    height: "80%",
+                    borderRadius: 12,
+                  }}
+                  resizeMode="contain"
+                />
+              </View>
+            )}
+            enableImageZoom={false}
+            saveToLocalByLongPress={false}
+          />
 
-        {/* indicador */}
-        <Text
-          style={{
-            position: "absolute",
-            bottom: 30,
-            alignSelf: "center",
-            color: "#fff",
-            fontSize: 16,
-          }}
-        >
-          {selectedIndex + 1} / {images.length}
-        </Text>
+          {/* ❌ BOTÃO FECHAR */}
+          <TouchableOpacity
+            onPress={() => setIsViewerOpen(false)}
+            style={{
+              position: "absolute",
+              top: 50,
+              right: 20,
+              zIndex: 10,
+            }}
+          >
+            <Text style={{ color: "#fff", fontSize: 20 }}>FECHAR ✕</Text>
+          </TouchableOpacity>
+
+          {/* ⬅️ SETA ESQUERDA */}
+          {selectedIndex > 0 && (
+            <TouchableOpacity
+              onPress={() => setSelectedIndex(selectedIndex - 1)}
+              style={{
+                position: "absolute",
+                left: 30,
+                top: "90%",
+                zIndex: 10,
+              }}
+            >
+              <Ionicons name="arrow-back-circle" size={38} color={"#fff"} />
+            </TouchableOpacity>
+          )}
+
+          {/* ➡️ SETA DIREITA */}
+          {selectedIndex < images.length - 1 && (
+            <TouchableOpacity
+              onPress={() => setSelectedIndex(selectedIndex + 1)}
+              style={{
+                position: "absolute",
+                right: 30,
+                top: "90%",
+                zIndex: 10,
+              }}
+            >
+              <Ionicons name="arrow-forward-circle" size={38} color={"#fff"} />
+            </TouchableOpacity>
+          )}
+        </View>
       </Modal>
     </ScrollView>
   );
