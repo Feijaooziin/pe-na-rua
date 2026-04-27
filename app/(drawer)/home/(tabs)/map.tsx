@@ -1,7 +1,7 @@
 import { useFocusEffect } from "@react-navigation/native";
 import * as Location from "expo-location";
 import { useCallback, useEffect, useState } from "react";
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import { Image, Share, Text, TouchableOpacity, View } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 
 import Header from "@/src/components/Header";
@@ -69,6 +69,33 @@ export default function Map() {
         />
       </View>
     );
+  }
+
+  async function handleShare(tree: Tree) {
+    const latitude = tree.latitude;
+    const longitude = tree.longitude;
+
+    const mapsLink =
+      latitude && longitude
+        ? `https://www.google.com/maps?q=${latitude},${longitude}`
+        : "Localização não disponível";
+
+    const message = `🌳 *${tree.name}*
+
+${tree.description || "Sem descrição"}
+
+📍 Localização:
+${mapsLink}
+
+📱 Registrado no app Pé na Rua`;
+
+    try {
+      await Share.share({
+        message,
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
@@ -179,7 +206,7 @@ export default function Map() {
                 router.push(`/home/details/${selectedTree.id}` as any)
               }
               style={{
-                flex: 1,
+                flex: 5,
                 backgroundColor: "#2e7d32",
                 padding: 12,
                 borderRadius: 10,
@@ -188,6 +215,21 @@ export default function Map() {
             >
               <Text style={{ color: "#fff", fontWeight: "bold" }}>
                 Ver detalhes
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => handleShare(selectedTree)}
+              style={{
+                flex: 1,
+                backgroundColor: "#1976d2",
+                padding: 12,
+                borderRadius: 10,
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ color: "#fff", fontWeight: "bold" }}>
+                Compartilhar
               </Text>
             </TouchableOpacity>
 

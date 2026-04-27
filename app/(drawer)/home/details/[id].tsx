@@ -7,6 +7,7 @@ import {
   Image,
   Modal,
   ScrollView,
+  Share,
   Text,
   TouchableOpacity,
   View,
@@ -64,6 +65,33 @@ export default function Details() {
         },
       },
     ]);
+  }
+
+  async function handleShare(tree: Tree) {
+    const latitude = tree.latitude;
+    const longitude = tree.longitude;
+
+    const mapsLink =
+      latitude && longitude
+        ? `https://www.google.com/maps?q=${latitude},${longitude}`
+        : "Localização não disponível";
+
+    const message = `🌳 *${tree.name}*
+
+${tree.description || "Sem descrição"}
+
+📍 Localização:
+${mapsLink}
+
+📱 Registrado no app Pé na Rua`;
+
+    try {
+      await Share.share({
+        message,
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
@@ -139,7 +167,7 @@ export default function Details() {
         {/* DESCRIÇÃO */}
         <Text
           style={{
-            marginTop: 10,
+            marginTop: 12,
             fontSize: 16,
             color: "#444",
           }}
@@ -150,7 +178,7 @@ export default function Details() {
         {/* COORDENADAS */}
         <View
           style={{
-            marginTop: 15,
+            marginTop: 12,
             padding: 10,
             backgroundColor: "#fff",
             borderRadius: 10,
@@ -166,45 +194,87 @@ export default function Details() {
         <TouchableOpacity
           onPress={openMaps}
           style={{
-            marginTop: 15,
-            backgroundColor: colors.primary,
-            padding: 15,
+            marginTop: 12,
+            backgroundColor: "#1976d2",
+            padding: 14,
             borderRadius: 10,
             alignItems: "center",
+            justifyContent: "center",
+            flexDirection: "row",
+            gap: 10,
           }}
         >
+          <Ionicons name="map-outline" size={18} color={"#fff"} />
           <Text style={{ color: "#fff", fontWeight: "bold" }}>
             Abrir no Google Maps
           </Text>
         </TouchableOpacity>
 
-        {/* BOTÃO EDITAR */}
+        {/* BOTÃO SHARE */}
         <TouchableOpacity
-          onPress={() => router.push(`/home/edit/${tree.id}` as any)}
+          onPress={() => handleShare(tree)}
           style={{
-            marginTop: 10,
-            backgroundColor: colors.secondary,
-            padding: 15,
+            marginTop: 12,
+            backgroundColor: colors.primary,
+            padding: 14,
             borderRadius: 10,
             alignItems: "center",
+            justifyContent: "center",
+            flexDirection: "row",
+            gap: 10,
           }}
         >
-          <Text style={{ color: "#fff", fontWeight: "bold" }}>Editar</Text>
+          <Ionicons name="logo-whatsapp" size={18} color={"#fff"} />
+          <Text style={{ color: "#fff", fontWeight: "bold" }}>
+            Compartilhar
+          </Text>
         </TouchableOpacity>
 
-        {/* BOTÃO DELETAR */}
-        <TouchableOpacity
-          onPress={handleDelete}
-          style={{
-            marginTop: 10,
-            backgroundColor: colors.danger,
-            padding: 15,
-            borderRadius: 10,
-            alignItems: "center",
-          }}
-        >
-          <Text style={{ color: "#fff", fontWeight: "bold" }}>Deletar</Text>
-        </TouchableOpacity>
+        <View style={{ flexDirection: "row", gap: 10, marginTop: 12 }}>
+          {/* BOTÃO EDITAR */}
+          <TouchableOpacity
+            onPress={() => router.push(`/home/edit/${tree.id}` as any)}
+            style={{
+              flex: 1,
+              backgroundColor: colors.background,
+              borderWidth: 1,
+              borderColor: colors.secondary,
+              borderRadius: 10,
+              paddingVertical: 12,
+              alignItems: "center",
+              justifyContent: "center",
+              flexDirection: "row",
+              gap: 10,
+            }}
+          >
+            <Ionicons name="create" size={18} color={colors.secondary} />
+            <Text style={{ color: colors.secondary, fontWeight: "bold" }}>
+              Editar
+            </Text>
+          </TouchableOpacity>
+
+          {/* BOTÃO DELETAR */}
+          <TouchableOpacity
+            onPress={handleDelete}
+            style={{
+              flex: 1,
+              backgroundColor: colors.background,
+              borderWidth: 1,
+              borderColor: colors.danger,
+              borderRadius: 10,
+              paddingVertical: 12,
+              alignItems: "center",
+              justifyContent: "center",
+              flexDirection: "row",
+              gap: 10,
+            }}
+          >
+            <Ionicons name="trash" size={18} color={colors.danger} />
+            <Text style={{ color: colors.danger, fontWeight: "bold" }}>
+              Deletar
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* MODAL IMAGEM FULLSCREEN */}
