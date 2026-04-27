@@ -3,7 +3,7 @@ export type Tree = {
   id: number;
   name: string;
   description: string;
-  image?: string;
+  images?: string[];
   latitude?: number;
   longitude?: number;
   created_at: string;
@@ -13,7 +13,7 @@ export type Tree = {
 export type CreateTreeDTO = {
   name: string;
   description: string;
-  image?: string;
+  images?: string[];
   latitude?: number;
   longitude?: number;
   created_at: string;

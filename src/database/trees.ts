@@ -2,25 +2,47 @@ import { CreateTreeDTO, Tree } from "@/src/types/tree";
 import { db } from "./db";
 
 export function getTrees(): Tree[] {
-  return db.getAllSync(`SELECT * FROM trees ORDER BY id DESC`) as Tree[];
+  const rows = db.getAllSync<any>(`SELECT * FROM trees ORDER BY id DESC`);
+
+  return rows.map((row) => ({
+    ...row,
+    images: (() => {
+      try {
+        const parsed = row.images ? JSON.parse(row.images) : [];
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    })(),
+  }));
 }
 
 export function getTreeById(id: number): Tree | null {
-  const result = db.getFirstSync<Tree>("SELECT * FROM trees WHERE id = ?", [
-    id,
-  ]);
+  const row = db.getFirstSync<any>("SELECT * FROM trees WHERE id = ?", [id]);
 
-  return result ?? null;
+  if (!row) return null;
+
+  return {
+    ...row,
+    images: (() => {
+      try {
+        const parsed = row.images ? JSON.parse(row.images) : [];
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    })(),
+  };
 }
 
 export function insertTree(data: CreateTreeDTO) {
   db.runSync(
-    `INSERT INTO trees (name, description, image, latitude, longitude, created_at)
+    `INSERT INTO trees (name, description, images, latitude, longitude, created_at)
      VALUES (?, ?, ?, ?, ?, ?)`,
     [
       data.name,
       data.description,
-      data.image ?? null,
+      JSON.stringify(data.images ?? []),
       data.latitude ?? null,
       data.longitude ?? null,
       data.created_at,
@@ -31,9 +53,16 @@ export function insertTree(data: CreateTreeDTO) {
 export function updateTree(tree: Tree) {
   db.runSync(
     `UPDATE trees
-     SET name = ?, description = ?, image = ?
+     SET name = ?, description = ?, images = ?, latitude = ?, longitude = ?
      WHERE id = ?`,
-    [tree.name, tree.description, tree.image ?? null, tree.id],
+    [
+      tree.name,
+      tree.description,
+      JSON.stringify(tree.images ?? []),
+      tree.latitude ?? null,
+      tree.longitude ?? null,
+      tree.id,
+    ],
   );
 }
 

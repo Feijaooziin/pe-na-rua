@@ -21,7 +21,7 @@ export default function Create() {
   const [description, setDescription] = useState("");
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
-  const [image, setImage] = useState<string | null>(null);
+  const [images, setImages] = useState<string[]>([]);
 
   useEffect(() => {
     (async () => {
@@ -45,6 +45,23 @@ export default function Create() {
     })();
   }, []);
 
+  function addImage(uri: string) {
+    setImages((prev) => [...prev, uri]);
+  }
+
+  function removeImage(index: number) {
+    Alert.alert("Remover imagem?", "Deseja excluir essa foto?", [
+      { text: "Cancelar", style: "cancel" },
+      {
+        text: "Remover",
+        style: "destructive",
+        onPress: () => {
+          setImages((prev) => prev.filter((_, i) => i !== index));
+        },
+      },
+    ]);
+  }
+
   async function takePhoto() {
     const permission = await ImagePicker.requestCameraPermissionsAsync();
 
@@ -58,7 +75,7 @@ export default function Create() {
     });
 
     if (!result.canceled) {
-      setImage(result.assets[0].uri);
+      addImage(result.assets[0].uri);
     }
   }
 
@@ -75,7 +92,7 @@ export default function Create() {
     });
 
     if (!result.canceled) {
-      setImage(result.assets[0].uri);
+      addImage(result.assets[0].uri);
     }
   }
 
@@ -115,7 +132,7 @@ export default function Create() {
     insertTree({
       name,
       description,
-      image: image ?? undefined,
+      images,
       latitude,
       longitude,
       created_at: new Date().toISOString(),
@@ -191,16 +208,26 @@ export default function Create() {
           <Text style={{ color: colors.primary }}>Adicionar imagem 📸</Text>
         </TouchableOpacity>
 
-        {image && (
-          <Image
-            source={{ uri: image }}
-            style={{
-              width: "100%",
-              height: 200,
-              borderRadius: 12,
-              marginBottom: 20,
-            }}
-          />
+        {images.length > 0 && (
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={{ marginBottom: 20 }}
+          >
+            {images.map((img, index) => (
+              <TouchableOpacity key={index} onPress={() => removeImage(index)}>
+                <Image
+                  source={{ uri: img }}
+                  style={{
+                    width: 80,
+                    height: 80,
+                    borderRadius: 10,
+                    marginRight: 10,
+                  }}
+                />
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
         )}
 
         <Text style={{ color: "#555", marginBottom: 16, fontSize: 24 }}>

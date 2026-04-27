@@ -36,9 +36,9 @@ export default function List() {
         }}
       >
         {/* IMAGEM */}
-        {item.image ? (
+        {Array.isArray(item.images) && item.images.length > 0 ? (
           <Image
-            source={{ uri: item.image }}
+            source={{ uri: item.images[0] }}
             style={{
               width: "100%",
               height: 150,

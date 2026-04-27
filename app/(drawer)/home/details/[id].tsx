@@ -17,6 +17,7 @@ import { Tree } from "@/src/types/tree";
 export default function Details() {
   const { id } = useLocalSearchParams();
   const [tree, setTree] = useState<Tree | null>(null);
+  const images = Array.isArray(tree?.images) ? tree?.images : [];
 
   useEffect(() => {
     if (id) {
@@ -60,14 +61,29 @@ export default function Details() {
       }}
     >
       {/* IMAGEM */}
-      {tree.image ? (
-        <Image
-          source={{ uri: tree.image }}
-          style={{
-            width: "100%",
-            height: 250,
-          }}
-        />
+
+      {images.length > 0 ? (
+        <>
+          <Image
+            source={{ uri: images[0] }}
+            style={{ width: "100%", height: 200 }}
+          />
+
+          <ScrollView horizontal>
+            {images.map((img, index) => (
+              <Image
+                key={index}
+                source={{ uri: img }}
+                style={{
+                  width: 70,
+                  height: 70,
+                  borderRadius: 8,
+                  marginRight: 10,
+                }}
+              />
+            ))}
+          </ScrollView>
+        </>
       ) : (
         <View
           style={{
@@ -81,7 +97,6 @@ export default function Details() {
           <Text>Sem imagem</Text>
         </View>
       )}
-
       {/* CONTEÚDO */}
       <View style={{ padding: 20 }}>
         {/* NOME */}
