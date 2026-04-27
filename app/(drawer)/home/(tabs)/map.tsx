@@ -15,7 +15,18 @@ export default function Map() {
   );
   const [trees, setTrees] = useState<Tree[]>([]);
   const [selectedTree, setSelectedTree] = useState<Tree | null>(null);
-  const images = Array.isArray(selectedTree?.images) ? selectedTree.images : [];
+  const images = (() => {
+    if (!selectedTree?.images) return [];
+
+    if (Array.isArray(selectedTree.images)) return selectedTree.images;
+
+    try {
+      const parsed = JSON.parse(selectedTree.images as any);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  })();
   const firstImage = images.length > 0 ? images[0] : null;
 
   // 📍 localização atual
@@ -127,9 +138,10 @@ export default function Map() {
           {firstImage ? (
             <Image
               source={{ uri: firstImage }}
+              resizeMode="cover"
               style={{
                 width: "100%",
-                height: 150,
+                height: 175,
                 borderRadius: 12,
                 marginBottom: 10,
               }}
@@ -184,10 +196,10 @@ export default function Map() {
               style={{
                 padding: 12,
                 borderRadius: 10,
-                backgroundColor: "#eee",
+                backgroundColor: "#c51515",
               }}
             >
-              <Text>Fechar</Text>
+              <Text style={{ color: "#fff", fontWeight: "bold" }}>Fechar</Text>
             </TouchableOpacity>
           </View>
         </View>
