@@ -15,6 +15,8 @@ export default function Map() {
   );
   const [trees, setTrees] = useState<Tree[]>([]);
   const [selectedTree, setSelectedTree] = useState<Tree | null>(null);
+  const images = Array.isArray(selectedTree?.images) ? selectedTree.images : [];
+  const firstImage = images.length > 0 ? images[0] : null;
 
   // 📍 localização atual
   useEffect(() => {
@@ -122,9 +124,9 @@ export default function Map() {
           }}
         >
           {/* 📸 IMAGEM */}
-          {selectedTree.image ? (
+          {firstImage ? (
             <Image
-              source={{ uri: selectedTree.image }}
+              source={{ uri: firstImage }}
               style={{
                 width: "100%",
                 height: 150,
