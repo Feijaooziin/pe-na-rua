@@ -1,7 +1,7 @@
 import * as ImagePicker from "expo-image-picker";
 import * as Location from "expo-location";
 import { router } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Alert,
   Image,
@@ -22,6 +22,28 @@ export default function Create() {
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
   const [image, setImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    (async () => {
+      const { granted } = await Location.requestForegroundPermissionsAsync();
+
+      if (!granted) {
+        alert("Permita acesso à localização 📍");
+        return;
+      }
+
+      try {
+        const loc = await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.High,
+        });
+
+        setLatitude(loc.coords.latitude);
+        setLongitude(loc.coords.longitude);
+      } catch (err) {
+        console.log("Erro ao pegar localização", err);
+      }
+    })();
+  }, []);
 
   async function takePhoto() {
     const permission = await ImagePicker.requestCameraPermissionsAsync();
@@ -85,18 +107,24 @@ export default function Create() {
       return;
     }
 
+    if (latitude === null || longitude === null) {
+      alert("Aguarde a localização 📍");
+      return;
+    }
+
     insertTree({
       name,
       description,
       image: image ?? undefined,
-      latitude: latitude ?? undefined,
-      longitude: longitude ?? undefined,
+      latitude,
+      longitude,
       created_at: new Date().toISOString(),
     });
 
     alert("Árvore cadastrada 🌳");
-
     router.back();
+    console.log("LAT:", latitude);
+    console.log("LNG:", longitude);
   }
 
   return (
@@ -175,6 +203,12 @@ export default function Create() {
           />
         )}
 
+        <Text style={{ color: "#555", marginBottom: 16, fontSize: 24 }}>
+          {latitude && longitude
+            ? `📍 ${latitude.toFixed(5)}, ${longitude.toFixed(5)}`
+            : "Pegando localização..."}
+        </Text>
+
         <TouchableOpacity
           onPress={getLocation}
           style={{
@@ -185,7 +219,9 @@ export default function Create() {
             marginBottom: 15,
           }}
         >
-          <Text style={{ color: colors.primary }}>Usar minha localização</Text>
+          <Text style={{ color: colors.primary }}>
+            Atualizar localização 🔄
+          </Text>
         </TouchableOpacity>
 
         {/* Botão */}
