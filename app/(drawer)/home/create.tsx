@@ -89,10 +89,13 @@ export default function Create() {
 
     const result = await ImagePicker.launchImageLibraryAsync({
       quality: 0.7,
+      allowsMultipleSelection: true,
+      selectionLimit: 10,
     });
 
     if (!result.canceled) {
-      addImage(result.assets[0].uri);
+      const uris = result.assets.map((asset) => asset.uri);
+      setImages((prev) => [...prev, ...uris]);
     }
   }
 
@@ -102,6 +105,14 @@ export default function Create() {
       { text: "Câmera", onPress: takePhoto },
       { text: "Galeria", onPress: pickImage },
     ]);
+  }
+
+  function setAsMain(index: number) {
+    setImages((prev) => {
+      const selected = prev[index];
+      const rest = prev.filter((_, i) => i !== index);
+      return [selected, ...rest];
+    });
   }
 
   async function getLocation() {
@@ -205,7 +216,7 @@ export default function Create() {
             marginBottom: 15,
           }}
         >
-          <Text style={{ color: colors.primary }}>Adicionar imagem 📸</Text>
+          <Text style={{ color: colors.primary }}>Adicionar imagens 📸</Text>
         </TouchableOpacity>
 
         {images.length > 0 && (
@@ -215,7 +226,7 @@ export default function Create() {
             style={{ marginBottom: 20 }}
           >
             {images.map((img, index) => (
-              <TouchableOpacity key={index} onPress={() => removeImage(index)}>
+              <View key={index} style={{ marginLeft: 5 }}>
                 <Image
                   source={{ uri: img }}
                   style={{
@@ -225,7 +236,47 @@ export default function Create() {
                     marginRight: 10,
                   }}
                 />
-              </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => setAsMain(index)}
+                  style={{
+                    position: "absolute",
+                    right: 0,
+                    backgroundColor: colors.primary,
+                    borderRadius: 100,
+                    paddingHorizontal: 6,
+                    paddingVertical: 2,
+                    alignItems: "center",
+                  }}
+                >
+                  <Text
+                    style={{ color: "#fff", fontSize: 8, fontWeight: "bold" }}
+                  >
+                    TORNAR
+                  </Text>
+                  <Text
+                    style={{ color: "#fff", fontSize: 8, fontWeight: "bold" }}
+                  >
+                    PRINCIPAL
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => removeImage(index)}
+                  style={{
+                    position: "absolute",
+                    left: -5,
+                    backgroundColor: colors.danger,
+                    borderRadius: 100,
+                    paddingHorizontal: 6,
+                    paddingVertical: 2,
+                  }}
+                >
+                  <Text
+                    style={{ color: "#fff", fontSize: 18, fontWeight: "bold" }}
+                  >
+                    ✕
+                  </Text>
+                </TouchableOpacity>
+              </View>
             ))}
           </ScrollView>
         )}
