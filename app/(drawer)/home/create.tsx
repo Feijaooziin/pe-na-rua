@@ -216,7 +216,7 @@ export default function Create() {
             marginBottom: 15,
           }}
         >
-          <Text style={{ color: colors.primary }}>Adicionar imagens 📸</Text>
+          <Text style={{ color: colors.primary }}>Adicionar imagens - 📸</Text>
         </TouchableOpacity>
 
         {images.length > 0 && (
@@ -297,9 +297,7 @@ export default function Create() {
             marginBottom: 15,
           }}
         >
-          <Text style={{ color: colors.primary }}>
-            Atualizar localização 🔄
-          </Text>
+          <Text style={{ color: colors.primary }}>Atualizar localização</Text>
         </TouchableOpacity>
 
         {/* Botão */}
@@ -312,7 +310,7 @@ export default function Create() {
             alignItems: "center",
           }}
         >
-          <Text style={{ color: "#fff", fontWeight: "bold" }}>Salvar 🌳</Text>
+          <Text style={{ color: "#fff", fontWeight: "bold" }}>Salvar</Text>
         </TouchableOpacity>
       </ScrollView>
     </View>
