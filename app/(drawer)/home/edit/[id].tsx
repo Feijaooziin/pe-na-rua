@@ -21,7 +21,7 @@ export default function Edit() {
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [image, setImage] = useState<string | null>(null);
+  const [images, setImages] = useState<string[]>([]);
 
   useEffect(() => {
     if (id) {
@@ -31,10 +31,11 @@ export default function Edit() {
         setTree(data);
         setName(data.name);
         setDescription(data.description);
-        setImage(data.image ?? null);
+        setImages(data.images ?? []);
       }
     }
   }, [id]);
+  
 
   async function pickImage() {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -46,11 +47,30 @@ export default function Edit() {
 
     const result = await ImagePicker.launchImageLibraryAsync({
       quality: 0.7,
+      allowsMultipleSelection: true,
+      selectionLimit: 10,
     });
 
     if (!result.canceled) {
-      setImage(result.assets[0].uri);
+      const uris = result.assets.map((asset) => asset.uri);
+      setImages((prev) => [...prev, ...uris]);
     }
+  }
+
+  function addImage(uri: string) {
+    setImages((prev) => [...prev, uri]);
+  }
+
+  function removeImage(index: number) {
+    setImages((prev) => prev.filter((_, i) => i !== index));
+  }
+
+  function setAsMain(index: number) {
+    setImages((prev) => {
+      const selected = prev[index];
+      const rest = prev.filter((_, i) => i !== index);
+      return [selected, ...rest];
+    });
   }
 
   function handleUpdate() {
@@ -60,7 +80,7 @@ export default function Edit() {
       ...tree,
       name,
       description,
-      image: image ?? undefined,
+      images,
     });
 
     alert("Atualizado 🌳");
@@ -77,28 +97,92 @@ export default function Edit() {
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: colors.background }}>
-      {/* IMAGEM */}
-      <TouchableOpacity onPress={pickImage}>
-        {image ? (
-          <Image
-            source={{ uri: image }}
-            style={{
-              width: "100%",
-              height: 220,
-            }}
-          />
-        ) : (
-          <View
-            style={{
-              height: 220,
-              backgroundColor: "#ccc",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Text>Adicionar imagem</Text>
-          </View>
-        )}
+      {/* IMAGEM PRINCIPAL */}
+      {images.length > 0 ? (
+        <Image
+          source={{ uri: images[0] }}
+          style={{
+            width: "100%",
+            height: 220,
+            borderRadius: 12,
+            marginBottom: 10,
+          }}
+        />
+      ) : (
+        <View
+          style={{
+            height: 220,
+            backgroundColor: "#ccc",
+            justifyContent: "center",
+            alignItems: "center",
+            borderRadius: 12,
+            marginBottom: 10,
+          }}
+        >
+          <Text>Sem imagem</Text>
+        </View>
+      )}
+
+      {/* LISTA DE IMAGENS */}
+      {images.length > 0 && (
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {images.map((img, index) => (
+            <View key={index} style={{ marginLeft: 5 }}>
+              <Image
+                source={{ uri: img }}
+                style={{
+                  width: 80,
+                  height: 80,
+                  borderRadius: 10,
+                  marginRight: 10,
+                }}
+              />
+
+              {/* PRINCIPAL */}
+              <TouchableOpacity
+                onPress={() => setAsMain(index)}
+                style={{
+                  position: "absolute",
+                  right: 0,
+                  backgroundColor: colors.primary,
+                  borderRadius: 100,
+                  paddingHorizontal: 6,
+                  paddingVertical: 2,
+                }}
+              >
+                <Text style={{ color: "#fff", fontSize: 8 }}>PRINCIPAL</Text>
+              </TouchableOpacity>
+
+              {/* REMOVER */}
+              <TouchableOpacity
+                onPress={() => removeImage(index)}
+                style={{
+                  position: "absolute",
+                  left: -5,
+                  backgroundColor: colors.danger,
+                  borderRadius: 100,
+                  paddingHorizontal: 6,
+                  paddingVertical: 2,
+                }}
+              >
+                <Text style={{ color: "#fff", fontSize: 16 }}>✕</Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </ScrollView>
+      )}
+
+      <TouchableOpacity
+        onPress={pickImage}
+        style={{
+          backgroundColor: "#fff",
+          borderRadius: 10,
+          padding: 15,
+          alignItems: "center",
+          marginTop: 15,
+        }}
+      >
+        <Text style={{ color: colors.primary }}>Adicionar imagens 📸</Text>
       </TouchableOpacity>
 
       <View style={{ padding: 20 }}>

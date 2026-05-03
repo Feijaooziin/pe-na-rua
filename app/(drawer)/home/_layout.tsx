@@ -18,7 +18,13 @@ export default function HomeLayout() {
         }}
       />
 
-      <Stack.Screen name="edit/[id]" />
+      <Stack.Screen
+        name="edit/[id]"
+        options={{
+          headerShown: true,
+          title: "Editar",
+        }}
+      />
       <Stack.Screen name="create" />
     </Stack>
   );
