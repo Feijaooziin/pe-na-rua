@@ -5,12 +5,14 @@ const KEY = "@settings";
 export type Settings = {
   autoCenter: boolean;
   showTrees: boolean;
+  autoLocation: boolean;
   includeMaps: boolean;
 };
 
 const DEFAULT_SETTINGS: Settings = {
   autoCenter: true,
   showTrees: true,
+  autoLocation: true,
   includeMaps: true,
 };
 

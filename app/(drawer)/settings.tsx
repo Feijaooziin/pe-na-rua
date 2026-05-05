@@ -1,45 +1,19 @@
-import { useEffect, useState } from "react";
+import { ReactNode } from "react";
 import { ScrollView, Switch, Text, TouchableOpacity, View } from "react-native";
 
 import Header from "@/src/components/Header";
-import { getSettings, saveSettings } from "@/src/storage/settings";
+import { useSettings } from "@/src/hooks/useSettings";
 import { colors } from "@/src/theme/colors";
 
-type SwitchItemProps = {
-  label: string;
-  value: boolean;
-  onValueChange: (value: boolean) => void;
-};
-
 export default function Settings() {
-  const [autoCenter, setAutoCenter] = useState(true);
-  const [showTrees, setShowTrees] = useState(true);
-  const [includeMaps, setIncludeMaps] = useState(true);
+  const { settings, loading, updateSetting } = useSettings();
 
-  useEffect(() => {
-    async function load() {
-      const data = await getSettings();
+  type SectionProps = {
+    title: string;
+    children: ReactNode;
+  };
 
-      setAutoCenter(data.autoCenter);
-      setShowTrees(data.showTrees);
-      setIncludeMaps(data.includeMaps);
-    }
-
-    load();
-  }, []);
-
-  async function updateSettings(newValues: Partial<any>) {
-    const updated = {
-      autoCenter,
-      showTrees,
-      includeMaps,
-      ...newValues,
-    };
-
-    await saveSettings(updated);
-  }
-
-  function Section({ title, children }: any) {
+  function Section({ title, children }: SectionProps) {
     return (
       <View style={{ marginBottom: 25 }}>
         <Text
@@ -66,7 +40,12 @@ export default function Settings() {
     );
   }
 
-  function Item({ label, onPress }: any) {
+  type ItemProps = {
+    label: string;
+    onPress: () => void;
+  };
+
+  function Item({ label, onPress }: ItemProps) {
     return (
       <TouchableOpacity
         onPress={onPress}
@@ -81,25 +60,7 @@ export default function Settings() {
     );
   }
 
-  function SwitchItem({ label, value, onValueChange }: SwitchItemProps) {
-    return (
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: 15,
-          borderBottomWidth: 1,
-          borderColor: "#eee",
-        }}
-      >
-        <Text>{label}</Text>
-        <Switch value={value} onValueChange={onValueChange} />
-      </View>
-    );
-  }
-
-  function DangerItem({ label, onPress }: any) {
+  function DangerItem({ label, onPress }: ItemProps) {
     return (
       <TouchableOpacity
         onPress={onPress}
@@ -114,6 +75,43 @@ export default function Settings() {
     );
   }
 
+  type SwitchItemProps = {
+    label: string;
+    value: boolean;
+    onValueChange: (value: boolean) => void;
+  };
+
+  function SwitchItem({ label, value, onValueChange }: SwitchItemProps) {
+    return (
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: 15,
+          borderBottomWidth: 1,
+          borderColor: "#eee",
+        }}
+      >
+        <Text style={{ color: colors.text }}>{label}</Text>
+        <Switch value={value} onValueChange={onValueChange} />
+      </View>
+    );
+  }
+
+  if (loading || !settings) {
+    return (
+      <View style={{ flex: 1, backgroundColor: colors.background }}>
+        <Header title="Configurações ⚙️" />
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <Text>Carregando...</Text>
+        </View>
+      </View>
+    );
+  }
+
   return (
     <View style={{ flex: 1, backgroundColor: colors.background }}>
       <Header title="Configurações ⚙️" />
@@ -123,20 +121,14 @@ export default function Settings() {
         <Section title="Mapa">
           <SwitchItem
             label="Centralizar ao abrir"
-            value={autoCenter}
-            onValueChange={(value) => {
-              setAutoCenter(value);
-              updateSettings({ autoCenter: value });
-            }}
+            value={settings.autoCenter}
+            onValueChange={(value) => updateSetting({ autoCenter: value })}
           />
 
           <SwitchItem
             label="Mostrar árvores automaticamente"
-            value={showTrees}
-            onValueChange={(value) => {
-              setShowTrees(value);
-              updateSettings({ showTrees: value });
-            }}
+            value={settings.showTrees}
+            onValueChange={(value) => updateSetting({ showTrees: value })}
           />
 
           <Item label="Tipo de mapa" onPress={() => {}} />
@@ -148,8 +140,8 @@ export default function Settings() {
 
           <SwitchItem
             label="Atualizar localização automática"
-            value={true}
-            onValueChange={() => {}}
+            value={settings.autoLocation}
+            onValueChange={(value) => updateSetting({ autoLocation: value })}
           />
         </Section>
 
@@ -159,11 +151,8 @@ export default function Settings() {
 
           <SwitchItem
             label="Incluir Google Maps"
-            value={includeMaps}
-            onValueChange={(value) => {
-              setIncludeMaps(value);
-              updateSettings({ includeMaps: value });
-            }}
+            value={settings.includeMaps}
+            onValueChange={(value) => updateSetting({ includeMaps: value })}
           />
         </Section>
 
