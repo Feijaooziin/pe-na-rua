@@ -9,7 +9,7 @@ export type Settings = {
 };
 
 const DEFAULT_SETTINGS: Settings = {
-  autoCenter: false,
+  autoCenter: true,
   showTrees: true,
   includeMaps: true,
 };
