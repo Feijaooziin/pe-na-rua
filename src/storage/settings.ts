@@ -5,14 +5,20 @@ const KEY = "@settings";
 export type Settings = {
   autoCenter: boolean;
   showTrees: boolean;
+  mapType: "standard" | "satellite";
+  maxImages: number;
   autoLocation: boolean;
+  shareText: string;
   includeMaps: boolean;
 };
 
 const DEFAULT_SETTINGS: Settings = {
   autoCenter: true,
   showTrees: true,
+  mapType: "standard",
+  maxImages: 10,
   autoLocation: true,
+  shareText: "📱 Registrado no app Pé na Rua",
   includeMaps: true,
 };
 

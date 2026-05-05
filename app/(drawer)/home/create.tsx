@@ -14,14 +14,18 @@ import {
 
 import Header from "@/src/components/Header";
 import { insertTree } from "@/src/database/trees";
+import { useSettings } from "@/src/hooks/useSettings";
 import { colors } from "@/src/theme/colors";
 
 export default function Create() {
+  const { settings, loading } = useSettings();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
   const [images, setImages] = useState<string[]>([]);
+  const maxImages = settings?.maxImages ?? 10;
+  const isLimitReached = images.length >= maxImages;
 
   useEffect(() => {
     (async () => {
@@ -46,6 +50,11 @@ export default function Create() {
   }, []);
 
   function addImage(uri: string) {
+    if (images.length >= (settings?.maxImages ?? 10)) {
+      alert("Limite de imagens atingido 📸");
+      return;
+    }
+
     setImages((prev) => [...prev, uri]);
   }
 
@@ -70,6 +79,11 @@ export default function Create() {
       return;
     }
 
+    if (settings && images.length >= settings.maxImages) {
+      alert(`Limite de ${settings.maxImages} imagens atingido`);
+      return;
+    }
+
     const result = await ImagePicker.launchCameraAsync({
       quality: 0.7,
     });
@@ -87,14 +101,27 @@ export default function Create() {
       return;
     }
 
+    if (settings && images.length >= settings.maxImages) {
+      alert(`Limite de ${settings.maxImages} imagens atingido`);
+      return;
+    }
+
     const result = await ImagePicker.launchImageLibraryAsync({
       quality: 0.7,
       allowsMultipleSelection: true,
-      selectionLimit: 10,
+      selectionLimit: settings?.maxImages,
     });
 
-    if (!result.canceled) {
+    if (!result.canceled && settings) {
       const uris = result.assets.map((asset) => asset.uri);
+
+      const total = images.length + uris.length;
+
+      if (total > settings.maxImages) {
+        alert(`Você pode adicionar no máximo ${settings.maxImages} imagens`);
+        return;
+      }
+
       setImages((prev) => [...prev, ...uris]);
     }
   }
@@ -213,11 +240,22 @@ export default function Create() {
             borderRadius: 10,
             padding: 15,
             alignItems: "center",
-            marginBottom: 15,
+            marginBottom: 8,
           }}
         >
           <Text style={{ color: colors.primary }}>Adicionar imagens - 📸</Text>
         </TouchableOpacity>
+        <Text
+          style={{
+            marginBottom: 15,
+            fontSize: 16,
+            textAlign: "center",
+            color: isLimitReached ? colors.danger : "#666",
+            fontWeight: isLimitReached ? "bold" : "normal",
+          }}
+        >
+          {images.length} / {maxImages} imagens usadas
+        </Text>
 
         {images.length > 0 && (
           <ScrollView

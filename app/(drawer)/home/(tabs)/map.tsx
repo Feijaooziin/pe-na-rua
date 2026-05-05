@@ -131,6 +131,7 @@ ${settings?.includeMaps ? `📍 Localização:\n${mapsLink}\n` : ""}
 
       <MapView
         ref={mapRef}
+        mapType={settings.mapType}
         style={{ flex: 1 }}
         initialRegion={
           settings.autoCenter && location

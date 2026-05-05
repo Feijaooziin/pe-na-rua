@@ -1,12 +1,48 @@
 import { ReactNode } from "react";
-import { ScrollView, Switch, Text, TouchableOpacity, View } from "react-native";
+import {
+  Alert,
+  ScrollView,
+  Switch,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 import Header from "@/src/components/Header";
+import { db } from "@/src/database/db";
 import { useSettings } from "@/src/hooks/useSettings";
+import { resetSettings } from "@/src/storage/settings";
 import { colors } from "@/src/theme/colors";
 
 export default function Settings() {
   const { settings, loading, updateSetting } = useSettings();
+
+  function handleClearData() {
+    Alert.alert(
+      "Limpar dados",
+      "Isso vai apagar todas as árvores e configurações. Deseja continuar?",
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Limpar",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              // apagar banco
+              db.runSync("DELETE FROM trees");
+
+              // resetar settings
+              await resetSettings();
+
+              Alert.alert("Sucesso", "Dados apagados com sucesso!");
+            } catch (error) {
+              console.log(error);
+            }
+          },
+        },
+      ],
+    );
+  }
 
   type SectionProps = {
     title: string;
@@ -131,12 +167,29 @@ export default function Settings() {
             onValueChange={(value) => updateSetting({ showTrees: value })}
           />
 
-          <Item label="Tipo de mapa" onPress={() => {}} />
+          <Item
+            label={`Tipo de mapa: ${
+              settings.mapType === "standard" ? "Padrão" : "Satélite"
+            }`}
+            onPress={() =>
+              updateSetting({
+                mapType:
+                  settings.mapType === "standard" ? "satellite" : "standard",
+              })
+            }
+          />
         </Section>
 
         {/* 🌳 ÁRVORES */}
         <Section title="Árvores">
-          <Item label="Limite de imagens" onPress={() => {}} />
+          <Item
+            label={`Limite de imagens: ${settings.maxImages}`}
+            onPress={() =>
+              updateSetting({
+                maxImages: settings.maxImages === 10 ? 5 : 10,
+              })
+            }
+          />
 
           <SwitchItem
             label="Atualizar localização automática"
@@ -147,7 +200,10 @@ export default function Settings() {
 
         {/* 📤 COMPARTILHAMENTO */}
         <Section title="Compartilhamento">
-          <Item label="Editar texto padrão" onPress={() => {}} />
+          <Item
+            label="Editar texto padrão"
+            onPress={() => alert("Em breve ✨")}
+          />
 
           <SwitchItem
             label="Incluir Google Maps"
@@ -158,11 +214,19 @@ export default function Settings() {
 
         {/* 🎨 SISTEMA */}
         <Section title="Sistema">
-          <Item label="Tema" onPress={() => {}} />
+          <Item label="Tema" onPress={() => alert("Em breve ✨")} />
 
-          <DangerItem label="Limpar dados" onPress={() => {}} />
+          <DangerItem label="Limpar dados" onPress={handleClearData} />
 
-          <Item label="Sobre o app" onPress={() => {}} />
+          <Item
+            label="Sobre o app"
+            onPress={() =>
+              Alert.alert(
+                "Pé na Rua 🌳",
+                "App para registrar árvores e locais.\nVersão 1.0",
+              )
+            }
+          />
         </Section>
       </ScrollView>
     </View>
