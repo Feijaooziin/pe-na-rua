@@ -102,6 +102,8 @@ export default function Settings() {
         onPress={onPress}
         style={{
           padding: 15,
+          borderBottomWidth: 1,
+          borderColor: "#eee",
         }}
       >
         <Text style={{ color: colors.danger, fontWeight: "bold" }}>
