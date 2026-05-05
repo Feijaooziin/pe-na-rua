@@ -1,15 +1,19 @@
 import { useFocusEffect } from "@react-navigation/native";
 import * as Location from "expo-location";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Image, Share, Text, TouchableOpacity, View } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 
 import Header from "@/src/components/Header";
 import { getTrees } from "@/src/database/trees";
+import { useSettings } from "@/src/hooks/useSettings";
+import { colors } from "@/src/theme/colors";
 import { Tree } from "@/src/types/tree";
 import { router } from "expo-router";
 
 export default function Map() {
+  const { settings, loading } = useSettings();
+  const mapRef = useRef<MapView>(null);
   const [location, setLocation] = useState<Location.LocationObject | null>(
     null,
   );
@@ -28,6 +32,17 @@ export default function Map() {
     }
   })();
   const firstImage = images.length > 0 ? images[0] : null;
+
+  useEffect(() => {
+    if (settings?.autoCenter && location && mapRef.current) {
+      mapRef.current.animateToRegion({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01,
+      });
+    }
+  }, [settings?.autoCenter, location]);
 
   // 📍 localização atual
   useEffect(() => {
@@ -74,6 +89,7 @@ export default function Map() {
   async function handleShare(tree: Tree) {
     const latitude = tree.latitude;
     const longitude = tree.longitude;
+    if (!latitude || !longitude) return;
 
     const mapsLink =
       latitude && longitude
@@ -84,8 +100,7 @@ export default function Map() {
 
 ${tree.description || "Sem descrição"}
 
-📍 Localização:
-${mapsLink}
+${settings?.includeMaps ? `📍 Localização:\n${mapsLink}\n` : ""}
 
 📱 Registrado no app Pé na Rua`;
 
@@ -98,18 +113,40 @@ ${mapsLink}
     }
   }
 
+  if (loading || !settings)
+    return (
+      <View style={{ flex: 1, backgroundColor: colors.background }}>
+        <Header />
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <Text>Carregando...</Text>
+        </View>
+      </View>
+    );
+
   return (
     <View style={{ flex: 1 }}>
       <Header />
 
       <MapView
+        ref={mapRef}
         style={{ flex: 1 }}
-        initialRegion={{
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
-        }}
+        initialRegion={
+          settings.autoCenter && location
+            ? {
+                latitude: location.coords.latitude,
+                longitude: location.coords.longitude,
+                latitudeDelta: 0.01,
+                longitudeDelta: 0.01,
+              }
+            : {
+                latitude: -25.5,
+                longitude: -49.2,
+                latitudeDelta: 0.5,
+                longitudeDelta: 0.5,
+              }
+        }
       >
         {/* 📍 Você */}
         <Marker
@@ -121,31 +158,47 @@ ${mapsLink}
         />
 
         {/* 🌳 Árvores */}
-        {trees.map((tree) => {
-          if (!tree.latitude || !tree.longitude) return null;
+        {settings.showTrees &&
+          trees.map((tree) => {
+            if (!tree.latitude || !tree.longitude) return null;
 
-          return (
-            <Marker
-              key={tree.id}
-              coordinate={{
-                latitude: tree.latitude,
-                longitude: tree.longitude,
-              }}
-              onPress={() => setSelectedTree(tree)}
-              tracksViewChanges={false}
-            >
-              <Image
-                source={require("@/assets/images/marker.png")}
-                style={{
-                  width: 50,
-                  height: 50,
+            return (
+              <Marker
+                key={tree.id}
+                coordinate={{
+                  latitude: tree.latitude,
+                  longitude: tree.longitude,
                 }}
-                resizeMode="cover"
-              />
-            </Marker>
-          );
-        })}
+                onPress={() => setSelectedTree(tree)}
+                tracksViewChanges={false}
+              >
+                <Image
+                  source={require("@/assets/images/marker.png")}
+                  style={{
+                    width: 50,
+                    height: 50,
+                  }}
+                  resizeMode="cover"
+                />
+              </Marker>
+            );
+          })}
       </MapView>
+
+      {!settings.showTrees && (
+        <View
+          style={{
+            position: "absolute",
+            top: 20,
+            alignSelf: "center",
+            backgroundColor: "#000",
+            padding: 8,
+            borderRadius: 8,
+          }}
+        >
+          <Text style={{ color: "#fff" }}>Árvores ocultas 🌳</Text>
+        </View>
+      )}
 
       {selectedTree && (
         <View
@@ -221,7 +274,7 @@ ${mapsLink}
             <TouchableOpacity
               onPress={() => handleShare(selectedTree)}
               style={{
-                flex: 1,
+                flex: 3,
                 backgroundColor: "#1976d2",
                 padding: 12,
                 borderRadius: 10,
