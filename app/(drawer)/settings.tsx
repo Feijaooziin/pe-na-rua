@@ -1,13 +1,43 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ScrollView, Switch, Text, TouchableOpacity, View } from "react-native";
 
 import Header from "@/src/components/Header";
+import { getSettings, saveSettings } from "@/src/storage/settings";
 import { colors } from "@/src/theme/colors";
+
+type SwitchItemProps = {
+  label: string;
+  value: boolean;
+  onValueChange: (value: boolean) => void;
+};
 
 export default function Settings() {
   const [autoCenter, setAutoCenter] = useState(true);
   const [showTrees, setShowTrees] = useState(true);
   const [includeMaps, setIncludeMaps] = useState(true);
+
+  useEffect(() => {
+    async function load() {
+      const data = await getSettings();
+
+      setAutoCenter(data.autoCenter);
+      setShowTrees(data.showTrees);
+      setIncludeMaps(data.includeMaps);
+    }
+
+    load();
+  }, []);
+
+  async function updateSettings(newValues: Partial<any>) {
+    const updated = {
+      autoCenter,
+      showTrees,
+      includeMaps,
+      ...newValues,
+    };
+
+    await saveSettings(updated);
+  }
 
   function Section({ title, children }: any) {
     return (
@@ -51,7 +81,7 @@ export default function Settings() {
     );
   }
 
-  function SwitchItem({ label, value, onValueChange }: any) {
+  function SwitchItem({ label, value, onValueChange }: SwitchItemProps) {
     return (
       <View
         style={{
@@ -63,7 +93,7 @@ export default function Settings() {
           borderColor: "#eee",
         }}
       >
-        <Text style={{ color: colors.text }}>{label}</Text>
+        <Text>{label}</Text>
         <Switch value={value} onValueChange={onValueChange} />
       </View>
     );
@@ -94,13 +124,19 @@ export default function Settings() {
           <SwitchItem
             label="Centralizar ao abrir"
             value={autoCenter}
-            onValueChange={setAutoCenter}
+            onValueChange={(value) => {
+              setAutoCenter(value);
+              updateSettings({ autoCenter: value });
+            }}
           />
 
           <SwitchItem
             label="Mostrar árvores automaticamente"
             value={showTrees}
-            onValueChange={setShowTrees}
+            onValueChange={(value) => {
+              setShowTrees(value);
+              updateSettings({ showTrees: value });
+            }}
           />
 
           <Item label="Tipo de mapa" onPress={() => {}} />
@@ -124,7 +160,10 @@ export default function Settings() {
           <SwitchItem
             label="Incluir Google Maps"
             value={includeMaps}
-            onValueChange={setIncludeMaps}
+            onValueChange={(value) => {
+              setIncludeMaps(value);
+              updateSettings({ includeMaps: value });
+            }}
           />
         </Section>
 
