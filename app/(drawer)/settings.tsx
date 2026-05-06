@@ -13,6 +13,7 @@ import { db } from "@/src/database/db";
 import { useSettings } from "@/src/hooks/useSettings";
 import { resetSettings } from "@/src/storage/settings";
 import { colors } from "@/src/theme/colors";
+import { router } from "expo-router";
 
 export default function Settings() {
   const { settings, loading, updateSetting } = useSettings();
@@ -203,8 +204,8 @@ export default function Settings() {
         {/* 📤 COMPARTILHAMENTO */}
         <Section title="Compartilhamento">
           <Item
-            label="Editar texto padrão"
-            onPress={() => alert("Em breve ✨")}
+            label="Editar texto do compartilhamento"
+            onPress={() => router.push("/(stack)/settings/share-text")}
           />
 
           <SwitchItem

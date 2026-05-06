@@ -1,3 +1,4 @@
+import { useSettings } from "@/src/hooks/useSettings";
 import * as Linking from "expo-linking";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
@@ -21,6 +22,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 export default function Details() {
   const { id } = useLocalSearchParams();
+  const { settings, updateSetting } = useSettings();
   const { width } = Dimensions.get("window");
   const [tree, setTree] = useState<Tree | null>(null);
   const images = Array.isArray(tree?.images) ? tree?.images : [];
@@ -80,10 +82,9 @@ export default function Details() {
 
 ${tree.description || "Sem descrição"}
 
-📍 Localização:
-${mapsLink}
+${settings?.includeMaps ? `📍 Localização:\n${mapsLink}\n` : ""}
 
-📱 Registrado no app Pé na Rua`;
+${settings?.shareText}`;
 
     try {
       await Share.share({
