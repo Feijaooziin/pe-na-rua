@@ -2,7 +2,6 @@ import { router } from "expo-router";
 import { useState } from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 
-import Header from "@/src/components/Header";
 import { useSettings } from "@/src/hooks/useSettings";
 import { colors } from "@/src/theme/colors";
 
@@ -17,8 +16,6 @@ export default function ShareText() {
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.background }}>
-      <Header title="Texto de compartilhamento ✏️" />
-
       <View style={{ padding: 20 }}>
         <Text style={{ marginBottom: 10 }}>
           Esse texto será enviado ao compartilhar:
