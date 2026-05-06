@@ -1,17 +1,38 @@
 import { router } from "expo-router";
-import { useState } from "react";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { useEffect, useState } from "react";
+import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 import { useSettings } from "@/src/hooks/useSettings";
 import { colors } from "@/src/theme/colors";
 
 export default function ShareText() {
   const { settings, updateSetting } = useSettings();
-  const [text, setText] = useState(settings?.shareText ?? "");
+  const [text, setText] = useState("");
+
+  useEffect(() => {
+    if (settings?.shareText && text === "") {
+      setText(settings.shareText);
+    }
+  }, [settings]);
 
   function handleSave() {
-    updateSetting({ shareText: text });
-    router.back();
+    Alert.alert(
+      "Salvar alterações",
+      "Deseja salvar o texto de compartilhamento?",
+      [
+        {
+          text: "Cancelar",
+          style: "cancel",
+        },
+        {
+          text: "Salvar",
+          onPress: () => {
+            updateSetting({ shareText: text });
+            router.back();
+          },
+        },
+      ],
+    );
   }
 
   return (
