@@ -1,22 +1,26 @@
 import { getSettings, saveSettings, Settings } from "@/src/storage/settings";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export function useSettings() {
   const [settings, setSettings] = useState<Settings | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // 🔄 carregar ao iniciar
-  useEffect(() => {
-    async function load() {
-      const data = await getSettings();
-      setSettings(data);
-      setLoading(false);
-    }
+  // 🔄 carregar configs
+  const loadSettings = useCallback(async () => {
+    setLoading(true);
 
-    load();
+    const data = await getSettings();
+
+    setSettings(data);
+    setLoading(false);
   }, []);
 
-  // 💾 atualizar 1 ou mais campos
+  // 🚀 carregar ao iniciar
+  useEffect(() => {
+    loadSettings();
+  }, []);
+
+  // 💾 atualizar configs
   async function updateSetting(newValues: Partial<Settings>) {
     if (!settings) return;
 
@@ -30,5 +34,6 @@ export function useSettings() {
     settings,
     loading,
     updateSetting,
+    loadSettings,
   };
 }

@@ -12,7 +12,7 @@ import { Tree } from "@/src/types/tree";
 import { router } from "expo-router";
 
 export default function Map() {
-  const { settings, loading } = useSettings();
+  const { settings, loading, loadSettings } = useSettings();
   const mapRef = useRef<MapView>(null);
   const [location, setLocation] = useState<Location.LocationObject | null>(
     null,
@@ -32,6 +32,12 @@ export default function Map() {
     }
   })();
   const firstImage = images.length > 0 ? images[0] : null;
+
+  useFocusEffect(
+    useCallback(() => {
+      loadSettings();
+    }, []),
+  );
 
   useEffect(() => {
     if (settings?.autoCenter && location && mapRef.current) {
@@ -142,6 +148,7 @@ ${settings?.includeMaps ? `📍 Localização:\n${mapsLink}\n` : ""}
       <Header />
 
       <MapView
+        key={settings.mapType}
         ref={mapRef}
         mapType={settings.mapType}
         style={{ flex: 1 }}
