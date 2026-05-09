@@ -26,6 +26,7 @@ export default function Create() {
   const [images, setImages] = useState<string[]>([]);
   const maxImages = settings?.maxImages ?? 10;
   const isLimitReached = images.length >= maxImages;
+  const remainingImages = maxImages - images.length;
 
   useEffect(() => {
     (async () => {
@@ -109,7 +110,7 @@ export default function Create() {
     const result = await ImagePicker.launchImageLibraryAsync({
       quality: 0.7,
       allowsMultipleSelection: true,
-      selectionLimit: settings?.maxImages,
+      selectionLimit: remainingImages,
     });
 
     if (!result.canceled && settings) {

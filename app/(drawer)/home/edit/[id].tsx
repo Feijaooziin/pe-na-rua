@@ -26,6 +26,7 @@ export default function Edit() {
   const [images, setImages] = useState<string[]>([]);
   const maxImages = settings?.maxImages ?? 10;
   const isLimitReached = images.length >= maxImages;
+  const remainingImages = maxImages - images.length;
 
   useEffect(() => {
     if (id) {
@@ -56,7 +57,7 @@ export default function Edit() {
     const result = await ImagePicker.launchImageLibraryAsync({
       quality: 0.7,
       allowsMultipleSelection: true,
-      selectionLimit: settings?.maxImages,
+      selectionLimit: remainingImages,
     });
 
     if (!result.canceled && settings) {
