@@ -1,7 +1,8 @@
 import { useSettings } from "@/src/hooks/useSettings";
+import { useFocusEffect } from "@react-navigation/native";
 import * as Linking from "expo-linking";
 import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Alert,
   Dimensions,
@@ -29,12 +30,14 @@ export default function Details() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isViewerOpen, setIsViewerOpen] = useState(false);
 
-  useEffect(() => {
-    if (id) {
-      const data = getTreeById(Number(id));
-      setTree(data);
-    }
-  }, [id]);
+  useFocusEffect(
+    useCallback(() => {
+      if (id) {
+        const data = getTreeById(Number(id));
+        setTree(data);
+      }
+    }, [id]),
+  );
 
   useEffect(() => {
     if (images.length > 0) {

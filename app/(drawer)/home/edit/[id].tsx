@@ -35,7 +35,6 @@ export default function Edit() {
       }
     }
   }, [id]);
-  
 
   async function pickImage() {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();

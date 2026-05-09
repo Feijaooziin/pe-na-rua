@@ -69,6 +69,18 @@ export default function Map() {
     }, []),
   );
 
+  useEffect(() => {
+    if (!selectedTree) return;
+
+    const updatedTree = trees.find((t) => t.id === selectedTree.id);
+
+    if (updatedTree) {
+      setSelectedTree(updatedTree);
+    } else {
+      setSelectedTree(null);
+    }
+  }, [trees]);
+
   if (!location) {
     return (
       <View style={{ flex: 1 }}>
