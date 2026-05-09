@@ -11,17 +11,21 @@ import {
 } from "react-native";
 
 import { getTreeById, updateTree } from "@/src/database/trees";
+import { useSettings } from "@/src/hooks/useSettings";
 import { colors } from "@/src/theme/colors";
 import { Tree } from "@/src/types/tree";
 
 export default function Edit() {
   const { id } = useLocalSearchParams();
+  const { settings } = useSettings();
 
   const [tree, setTree] = useState<Tree | null>(null);
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [images, setImages] = useState<string[]>([]);
+  const maxImages = settings?.maxImages ?? 10;
+  const isLimitReached = images.length >= maxImages;
 
   useEffect(() => {
     if (id) {
@@ -44,19 +48,37 @@ export default function Edit() {
       return;
     }
 
+    if (settings && images.length >= settings.maxImages) {
+      alert(`Limite de ${settings.maxImages} imagens atingido`);
+      return;
+    }
+
     const result = await ImagePicker.launchImageLibraryAsync({
       quality: 0.7,
       allowsMultipleSelection: true,
-      selectionLimit: 10,
+      selectionLimit: settings?.maxImages,
     });
 
-    if (!result.canceled) {
+    if (!result.canceled && settings) {
       const uris = result.assets.map((asset) => asset.uri);
+
+      const total = images.length + uris.length;
+
+      if (total > settings.maxImages) {
+        alert(`Você pode adicionar no máximo ${settings.maxImages} imagens`);
+        return;
+      }
+
       setImages((prev) => [...prev, ...uris]);
     }
   }
 
   function addImage(uri: string) {
+    if (images.length >= maxImages) {
+      alert("Limite de imagens atingido 📸");
+      return;
+    }
+
     setImages((prev) => [...prev, uri]);
   }
 
@@ -103,8 +125,9 @@ export default function Edit() {
           style={{
             width: "100%",
             height: 220,
-            borderRadius: 12,
-            marginBottom: 10,
+            borderRadius: 32,
+            marginBottom: 12,
+            marginTop: 6,
           }}
         />
       ) : (
@@ -184,7 +207,20 @@ export default function Edit() {
         <Text style={{ color: colors.primary }}>Adicionar imagens 📸</Text>
       </TouchableOpacity>
 
-      <View style={{ padding: 20 }}>
+      <Text
+        style={{
+          marginTop: 6,
+          marginBottom: 6,
+          fontSize: 16,
+          textAlign: "center",
+          color: isLimitReached ? colors.danger : "#666",
+          fontWeight: isLimitReached ? "bold" : "normal",
+        }}
+      >
+        {images.length} / {maxImages} imagens usadas
+      </Text>
+
+      <View style={{ paddingHorizontal: 20 }}>
         <Text
           style={{
             fontSize: 24,
