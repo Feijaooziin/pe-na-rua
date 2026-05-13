@@ -198,7 +198,7 @@ export default function Settings() {
             >
               <Picker
                 style={{ color: colors.text }}
-                dropdownIconColor={colors.primary}
+                dropdownIconColor={colors.text}
                 selectedValue={settings.mapType}
                 onValueChange={(value) =>
                   updateSetting({
@@ -217,15 +217,6 @@ export default function Settings() {
 
         {/* 🌳 ÁRVORES */}
         <Section title="Árvores">
-          <Item
-            label={`Limite de imagens: ${settings.maxImages}`}
-            onPress={() =>
-              updateSetting({
-                maxImages: settings.maxImages === 10 ? 5 : 10,
-              })
-            }
-          />
-
           <View
             style={{
               padding: 15,
@@ -241,6 +232,16 @@ export default function Settings() {
             >
               Limite de imagens
             </Text>
+            <Text
+              style={{
+                marginBottom: 8,
+                color: colors.text,
+                fontSize: 11,
+              }}
+            >
+              Árvores salvas não mudarão a quantidade de imagens, somente após
+              editá-las.
+            </Text>
 
             <View
               style={{
@@ -253,7 +254,7 @@ export default function Settings() {
               <Picker
                 style={{ color: colors.text }}
                 selectedValue={settings.maxImages}
-                dropdownIconColor={colors.primary}
+                dropdownIconColor={colors.text}
                 onValueChange={(value) =>
                   updateSetting({
                     maxImages: value,
