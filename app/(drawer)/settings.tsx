@@ -9,7 +9,6 @@ import {
 } from "react-native";
 
 import { Picker } from "@react-native-picker/picker";
-import * as Updates from "expo-updates";
 
 import Header from "@/src/components/Header";
 import { db } from "@/src/database/db";
@@ -20,33 +19,6 @@ import { router } from "expo-router";
 
 export default function Settings() {
   const { settings, loading, updateSetting } = useSettings();
-
-  // function handleClearData() {
-  //   Alert.alert(
-  //     "Limpar dados",
-  //     "Isso vai apagar todas as árvores e configurações. Deseja continuar?",
-  //     [
-  //       { text: "Cancelar", style: "cancel" },
-  //       {
-  //         text: "Limpar",
-  //         style: "destructive",
-  //         onPress: async () => {
-  //           try {
-  //             // apagar banco
-  //             db.runSync("DELETE FROM trees");
-
-  //             // resetar settings
-  //             await resetSettings();
-
-  //             Alert.alert("Sucesso", "Dados apagados com sucesso!");
-  //           } catch (error) {
-  //             console.log(error);
-  //           }
-  //         },
-  //       },
-  //     ],
-  //   );
-  // }
 
   function handleClearData() {
     Alert.alert(
@@ -66,10 +38,6 @@ export default function Settings() {
               await resetSettings();
 
               Alert.alert("Sucesso", "Dados apagados com sucesso!");
-
-              setTimeout(async () => {
-                await Updates.reloadAsync();
-              }, 1000);
             } catch (error) {
               console.log(error);
             }
