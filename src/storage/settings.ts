@@ -5,7 +5,8 @@ const KEY = "@settings";
 export type Settings = {
   autoCenter: boolean;
   showTrees: boolean;
-  mapType: "standard" | "satellite";
+  mapType: "standard" | "satellite" | "hybrid" | "terrain";
+
   maxImages: number;
   autoLocation: boolean;
   shareText: string;

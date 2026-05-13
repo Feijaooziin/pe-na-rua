@@ -8,6 +8,9 @@ import {
   View,
 } from "react-native";
 
+import { Picker } from "@react-native-picker/picker";
+import * as Updates from "expo-updates";
+
 import Header from "@/src/components/Header";
 import { db } from "@/src/database/db";
 import { useSettings } from "@/src/hooks/useSettings";
@@ -17,6 +20,33 @@ import { router } from "expo-router";
 
 export default function Settings() {
   const { settings, loading, updateSetting } = useSettings();
+
+  // function handleClearData() {
+  //   Alert.alert(
+  //     "Limpar dados",
+  //     "Isso vai apagar todas as árvores e configurações. Deseja continuar?",
+  //     [
+  //       { text: "Cancelar", style: "cancel" },
+  //       {
+  //         text: "Limpar",
+  //         style: "destructive",
+  //         onPress: async () => {
+  //           try {
+  //             // apagar banco
+  //             db.runSync("DELETE FROM trees");
+
+  //             // resetar settings
+  //             await resetSettings();
+
+  //             Alert.alert("Sucesso", "Dados apagados com sucesso!");
+  //           } catch (error) {
+  //             console.log(error);
+  //           }
+  //         },
+  //       },
+  //     ],
+  //   );
+  // }
 
   function handleClearData() {
     Alert.alert(
@@ -36,6 +66,10 @@ export default function Settings() {
               await resetSettings();
 
               Alert.alert("Sucesso", "Dados apagados com sucesso!");
+
+              setTimeout(async () => {
+                await Updates.reloadAsync();
+              }, 1000);
             } catch (error) {
               console.log(error);
             }
@@ -165,22 +199,52 @@ export default function Settings() {
           />
 
           <SwitchItem
-            label="Mostrar árvores automaticamente"
+            label="Mostrar árvores no mapa"
             value={settings.showTrees}
             onValueChange={(value) => updateSetting({ showTrees: value })}
           />
 
-          <Item
-            label={`Tipo de mapa: ${
-              settings.mapType === "standard" ? "Padrão" : "Satélite"
-            }`}
-            onPress={() =>
-              updateSetting({
-                mapType:
-                  settings.mapType === "standard" ? "satellite" : "standard",
-              })
-            }
-          />
+          <View
+            style={{
+              padding: 15,
+              borderBottomWidth: 1,
+              borderColor: "#eee",
+            }}
+          >
+            <Text
+              style={{
+                marginBottom: 8,
+                color: colors.text,
+              }}
+            >
+              Tipo de mapa
+            </Text>
+
+            <View
+              style={{
+                borderWidth: 1,
+                borderColor: "#ddd",
+                borderRadius: 10,
+                overflow: "hidden",
+              }}
+            >
+              <Picker
+                style={{ color: colors.text }}
+                dropdownIconColor={colors.primary}
+                selectedValue={settings.mapType}
+                onValueChange={(value) =>
+                  updateSetting({
+                    mapType: value,
+                  })
+                }
+              >
+                <Picker.Item label="Padrão" value="standard" />
+                <Picker.Item label="Satélite" value="satellite" />
+                <Picker.Item label="Híbrido" value="hybrid" />
+                <Picker.Item label="Terreno" value="terrain" />
+              </Picker>
+            </View>
+          </View>
         </Section>
 
         {/* 🌳 ÁRVORES */}
@@ -193,6 +257,48 @@ export default function Settings() {
               })
             }
           />
+
+          <View
+            style={{
+              padding: 15,
+              borderBottomWidth: 1,
+              borderColor: "#eee",
+            }}
+          >
+            <Text
+              style={{
+                marginBottom: 8,
+                color: colors.text,
+              }}
+            >
+              Limite de imagens
+            </Text>
+
+            <View
+              style={{
+                borderWidth: 1,
+                borderColor: "#ddd",
+                borderRadius: 10,
+                overflow: "hidden",
+              }}
+            >
+              <Picker
+                style={{ color: colors.text }}
+                selectedValue={settings.maxImages}
+                dropdownIconColor={colors.primary}
+                onValueChange={(value) =>
+                  updateSetting({
+                    maxImages: value,
+                  })
+                }
+              >
+                <Picker.Item label="1 imagem" value={1} />
+                <Picker.Item label="3 imagens" value={3} />
+                <Picker.Item label="5 imagens" value={5} />
+                <Picker.Item label="10 imagens" value={10} />
+              </Picker>
+            </View>
+          </View>
 
           <SwitchItem
             label="Atualizar localização automática"
