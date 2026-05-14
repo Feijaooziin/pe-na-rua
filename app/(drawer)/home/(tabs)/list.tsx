@@ -1,3 +1,4 @@
+import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
 import { router } from "expo-router";
 import { useCallback, useState } from "react";
@@ -7,7 +8,7 @@ import Header from "@/src/components/Header";
 import { getTrees } from "@/src/database/trees";
 import { colors } from "@/src/theme/colors";
 import { Tree } from "@/src/types/tree";
-import { Ionicons } from "@expo/vector-icons";
+import { getCategoryColor, getCategoryLabel } from "@/src/utils/category";
 
 export default function List() {
   const [trees, setTrees] = useState<Tree[]>([]);
@@ -70,6 +71,27 @@ export default function List() {
           >
             {item.name}
           </Text>
+
+          <View
+            style={{
+              alignSelf: "flex-start",
+              backgroundColor: getCategoryColor(item.category),
+              paddingHorizontal: 10,
+              paddingVertical: 4,
+              borderRadius: 100,
+              marginTop: 6,
+            }}
+          >
+            <Text
+              style={{
+                color: "#fff",
+                fontWeight: "bold",
+                fontSize: 11,
+              }}
+            >
+              {getCategoryLabel(item.category)}
+            </Text>
+          </View>
 
           <Text numberOfLines={2} style={{ marginTop: 5, color: "#555" }}>
             {item.description}
