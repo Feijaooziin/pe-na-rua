@@ -2,17 +2,10 @@ import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
 import { router } from "expo-router";
 import { useCallback, useState } from "react";
-import {
-  FlatList,
-  Image,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 
+import FilterBar from "@/src/components/FilterBar";
 import Header from "@/src/components/Header";
-import { categories } from "@/src/constants/categories";
 import { getTrees } from "@/src/database/trees";
 import { colors } from "@/src/theme/colors";
 import { Tree } from "@/src/types/tree";
@@ -20,11 +13,18 @@ import { getCategoryColor, getCategoryLabel } from "@/src/utils/category";
 
 export default function List() {
   const [trees, setTrees] = useState<Tree[]>([]);
+  const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const filteredTrees =
-    selectedCategory === "all"
-      ? trees
-      : trees.filter((tree) => tree.category === selectedCategory);
+  const filteredTrees = trees.filter((tree) => {
+    const matchesCategory =
+      selectedCategory === "all" || tree.category === selectedCategory;
+
+    const matchesSearch = tree.name
+      .toLowerCase()
+      .includes(search.toLowerCase());
+
+    return matchesCategory && matchesSearch;
+  });
 
   useFocusEffect(
     useCallback(() => {
@@ -123,90 +123,12 @@ export default function List() {
     >
       {/* HEADER */}
       <Header />
-
-      <View
-        style={{
-          height: 70,
-          justifyContent: "center",
-          backgroundColor: "#f7f9f4",
-          borderBottomWidth: 1,
-          borderBottomColor: "#dfe5d7",
-          shadowColor: "#000",
-          shadowOpacity: 0.04,
-          shadowRadius: 4,
-          elevation: 2,
-        }}
-      >
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{
-            paddingHorizontal: 15,
-            alignItems: "center",
-          }}
-        >
-          <TouchableOpacity
-            onPress={() => setSelectedCategory("all")}
-            style={{
-              backgroundColor:
-                selectedCategory === "all" ? colors.primary : "#fff",
-              paddingHorizontal: 16,
-              paddingVertical: 10,
-              borderRadius: 999,
-              marginRight: 10,
-              borderWidth: 1,
-              borderColor:
-                selectedCategory === "all" ? colors.primary : "#dce3d3",
-              shadowColor: "#000",
-              shadowOpacity: 0.03,
-              shadowRadius: 3,
-              elevation: 1,
-            }}
-          >
-            <Text
-              style={{
-                color: selectedCategory === "all" ? "#fff" : colors.text,
-                fontWeight: "bold",
-              }}
-            >
-              Todas
-            </Text>
-          </TouchableOpacity>
-
-          {categories.map((item) => {
-            const isSelected = selectedCategory === item.value;
-
-            return (
-              <TouchableOpacity
-                key={item.value}
-                onPress={() => setSelectedCategory(item.value)}
-                style={{
-                  backgroundColor: isSelected ? colors.primary : "#fff",
-                  paddingHorizontal: 16,
-                  paddingVertical: 10,
-                  borderRadius: 999,
-                  marginRight: 10,
-                  borderWidth: 1,
-                  borderColor: isSelected ? colors.primary : "#dce3d3",
-                  shadowColor: "#000",
-                  shadowOpacity: 0.03,
-                  shadowRadius: 3,
-                  elevation: 1,
-                }}
-              >
-                <Text
-                  style={{
-                    color: isSelected ? "#fff" : colors.text,
-                    fontWeight: "bold",
-                  }}
-                >
-                  {item.label}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
-      </View>
+      <FilterBar
+        search={search}
+        setSearch={setSearch}
+        selectedCategory={selectedCategory}
+        setSelectedCategory={setSelectedCategory}
+      />
 
       {/* LISTA */}
       <FlatList
