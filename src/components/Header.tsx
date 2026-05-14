@@ -20,7 +20,6 @@ export default function Header({ title = "Pé na Rua 🌳" }: HeaderProps) {
         borderBottomRightRadius: 18,
         borderBottomWidth: 2,
         borderColor: "#333",
-        marginBottom: 16,
       }}
     >
       <View
