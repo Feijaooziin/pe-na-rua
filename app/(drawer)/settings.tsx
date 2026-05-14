@@ -38,6 +38,8 @@ export default function Settings() {
               await resetSettings();
 
               Alert.alert("Sucesso", "Dados apagados com sucesso!");
+
+              router.replace("/(drawer)/home/(tabs)/list");
             } catch (error) {
               console.log(error);
             }
