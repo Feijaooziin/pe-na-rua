@@ -12,7 +12,10 @@ import {
   View,
 } from "react-native";
 
+import { Picker } from "@react-native-picker/picker";
+
 import Header from "@/src/components/Header";
+import { categories } from "@/src/constants/categories";
 import { insertTree } from "@/src/database/trees";
 import { useSettings } from "@/src/hooks/useSettings";
 import { colors } from "@/src/theme/colors";
@@ -23,6 +26,7 @@ export default function Create() {
   const [description, setDescription] = useState("");
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
+  const [category, setCategory] = useState("tree");
   const [images, setImages] = useState<string[]>([]);
   const maxImages = settings?.maxImages ?? 10;
   const isLimitReached = images.length >= maxImages;
@@ -174,13 +178,17 @@ export default function Create() {
       images,
       latitude,
       longitude,
+      category,
       created_at: new Date().toISOString(),
     });
 
     alert("Árvore cadastrada 🌳");
     router.back();
+    console.log("NOME:", name);
+    console.log("DESC:", description);
     console.log("LAT:", latitude);
     console.log("LNG:", longitude);
+    console.log("CAT:", category);
   }
 
   return (
@@ -232,6 +240,32 @@ export default function Create() {
             marginBottom: 15,
           }}
         />
+
+        {/* CATEGORIA */}
+        <Text style={{ marginBottom: 5, color: colors.text }}>Categoria</Text>
+
+        <View
+          style={{
+            backgroundColor: "#fff",
+            borderRadius: 10,
+            marginBottom: 15,
+            overflow: "hidden",
+          }}
+        >
+          <Picker
+            style={{ color: colors.text }}
+            selectedValue={category}
+            onValueChange={(value) => setCategory(value)}
+          >
+            {categories.map((item) => (
+              <Picker.Item
+                key={item.value}
+                label={item.label}
+                value={item.value}
+              />
+            ))}
+          </Picker>
+        </View>
 
         {/* Imagem */}
         <TouchableOpacity

@@ -5,7 +5,6 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import {
   Alert,
-  Dimensions,
   Image,
   Modal,
   ScrollView,
@@ -19,12 +18,12 @@ import ImageViewer from "react-native-image-zoom-viewer";
 import { deleteTree, getTreeById } from "@/src/database/trees";
 import { colors } from "@/src/theme/colors";
 import { Tree } from "@/src/types/tree";
+import { getCategoryColor, getCategoryLabel } from "@/src/utils/category";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function Details() {
   const { id } = useLocalSearchParams();
   const { settings, updateSetting } = useSettings();
-  const { width } = Dimensions.get("window");
   const [tree, setTree] = useState<Tree | null>(null);
   const images = Array.isArray(tree?.images) ? tree?.images : [];
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -167,6 +166,27 @@ ${settings?.shareText}`;
         >
           {tree.name}
         </Text>
+
+        <View
+          style={{
+            alignSelf: "flex-start",
+            backgroundColor: getCategoryColor(tree.category),
+            paddingHorizontal: 12,
+            paddingVertical: 6,
+            borderRadius: 100,
+            marginTop: 10,
+          }}
+        >
+          <Text
+            style={{
+              color: "#fff",
+              fontWeight: "bold",
+              fontSize: 13,
+            }}
+          >
+            {getCategoryLabel(tree.category)}
+          </Text>
+        </View>
 
         {/* DESCRIÇÃO */}
         <Text
