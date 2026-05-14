@@ -1,5 +1,6 @@
 import { useFocusEffect } from "@react-navigation/native";
 import * as Location from "expo-location";
+import { router } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Image, Share, Text, TouchableOpacity, View } from "react-native";
 import MapView, { Marker } from "react-native-maps";
@@ -9,7 +10,7 @@ import { getTrees } from "@/src/database/trees";
 import { useSettings } from "@/src/hooks/useSettings";
 import { colors } from "@/src/theme/colors";
 import { Tree } from "@/src/types/tree";
-import { router } from "expo-router";
+import { getCategoryColor, getCategoryLabel } from "@/src/utils/category";
 
 export default function Map() {
   const { settings, loading, loadSettings } = useSettings();
@@ -271,6 +272,27 @@ ${settings?.includeMaps ? `📍 Localização:\n${mapsLink}\n` : ""}
           >
             {selectedTree.name}
           </Text>
+
+          <View
+            style={{
+              alignSelf: "flex-start",
+              backgroundColor: getCategoryColor(selectedTree.category),
+              paddingHorizontal: 10,
+              paddingVertical: 5,
+              borderRadius: 100,
+              marginBottom: 10,
+            }}
+          >
+            <Text
+              style={{
+                color: "#fff",
+                fontWeight: "bold",
+                fontSize: 12,
+              }}
+            >
+              {getCategoryLabel(selectedTree.category)}
+            </Text>
+          </View>
 
           {/* 📍 BOTÕES */}
           <View style={{ flexDirection: "row", gap: 10 }}>
