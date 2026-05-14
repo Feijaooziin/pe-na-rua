@@ -6,6 +6,7 @@ export type Tree = {
   images?: string[];
   latitude?: number;
   longitude?: number;
+  category?: string;
   created_at: string;
 };
 
@@ -16,5 +17,6 @@ export type CreateTreeDTO = {
   images?: string[];
   latitude?: number;
   longitude?: number;
+  category?: string;
   created_at: string;
 };

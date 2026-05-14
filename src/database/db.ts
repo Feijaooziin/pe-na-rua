@@ -11,6 +11,7 @@ export function initDB() {
     images TEXT,
     latitude REAL,
     longitude REAL,
+    category TEXT,
     created_at TEXT
   );
 `);

@@ -37,14 +37,22 @@ export function getTreeById(id: number): Tree | null {
 
 export function insertTree(data: CreateTreeDTO) {
   db.runSync(
-    `INSERT INTO trees (name, description, images, latitude, longitude, created_at)
-     VALUES (?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO trees ( 
+      name,
+      description,
+      images,
+      latitude,
+      longitude,
+      category,
+      created_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
     [
       data.name,
       data.description,
       JSON.stringify(data.images ?? []),
       data.latitude ?? null,
       data.longitude ?? null,
+      data.category ?? "tree",
       data.created_at,
     ],
   );
@@ -52,15 +60,22 @@ export function insertTree(data: CreateTreeDTO) {
 
 export function updateTree(tree: Tree) {
   db.runSync(
-    `UPDATE trees
-     SET name = ?, description = ?, images = ?, latitude = ?, longitude = ?
-     WHERE id = ?`,
+    `UPDATE trees 
+    SET
+      name = ?,
+      description = ?,
+      images = ?,
+      latitude = ?,
+      longitude = ?,
+      category = ?
+    WHERE id = ?`,
     [
       tree.name,
       tree.description,
       JSON.stringify(tree.images ?? []),
       tree.latitude ?? null,
       tree.longitude ?? null,
+      tree.category ?? "tree",
       tree.id,
     ],
   );
