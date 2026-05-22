@@ -26,6 +26,16 @@ export default function DrawerLayout() {
           ),
         }}
       />
+
+      <Drawer.Screen
+        name="dev/playground"
+        options={{
+          title: "UI Playground",
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="flask-outline" size={size} color={color} />
+          ),
+        }}
+      />
     </Drawer>
   );
 }

@@ -13,13 +13,6 @@ export default function StackLayout() {
           title: "Editar texto",
         }}
       />
-
-      <Stack.Screen
-        name="settings/playground"
-        options={{
-          title: "Playground",
-        }}
-      />
     </Stack>
   );
 }
