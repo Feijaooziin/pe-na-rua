@@ -11,6 +11,7 @@ import { useState } from "react";
 
 export default function Playground() {
   const [teste, setTeste] = useState(false);
+  const [teste2, setTeste2] = useState(false);
   return (
     <View
       style={{
@@ -125,6 +126,16 @@ export default function Playground() {
               onValueChange={(value) => setTeste(value)}
             />
           </Section>
+
+          <Item
+            label="Itens fora da seção"
+            onPress={() => Alert.alert("Funcionou!")}
+          />
+          <SwitchItem
+            label={teste2 ? "Valor: ON" : "Valor: OFF"}
+            value={teste2}
+            onValueChange={(value) => setTeste2(value)}
+          />
         </View>
       </ScrollView>
     </View>
