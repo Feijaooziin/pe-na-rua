@@ -16,6 +16,9 @@ type Props = {
 
   selectedCategory: string;
   setSelectedCategory: (value: string) => void;
+
+  showFavoritesOnly: boolean;
+  setShowFavoritesOnly: (value: boolean) => void;
 };
 
 export default function FilterBar({
@@ -23,6 +26,8 @@ export default function FilterBar({
   setSearch,
   selectedCategory,
   setSelectedCategory,
+  showFavoritesOnly,
+  setShowFavoritesOnly,
 }: Props) {
   return (
     <View
@@ -34,6 +39,50 @@ export default function FilterBar({
         paddingBottom: 10,
       }}
     >
+      {/* FAVORITAS */}
+      <View
+        style={{
+          paddingHorizontal: 15,
+          marginBottom: 10,
+        }}
+      >
+        <TouchableOpacity
+          onPress={() => setShowFavoritesOnly(!showFavoritesOnly)}
+          activeOpacity={0.8}
+          style={{
+            alignSelf: "flex-end",
+            flexDirection: "row",
+            alignItems: "center",
+            backgroundColor: showFavoritesOnly ? "#e53935" : "#fff",
+            paddingHorizontal: 16,
+            paddingVertical: 10,
+            borderRadius: 999,
+            borderWidth: 1,
+            borderColor: showFavoritesOnly ? "#e53935" : "#dce3d3",
+            shadowColor: "#000",
+            shadowOpacity: 0.03,
+            shadowRadius: 4,
+            elevation: 1,
+          }}
+        >
+          <Ionicons
+            name={showFavoritesOnly ? "heart" : "heart-outline"}
+            size={16}
+            color={showFavoritesOnly ? "#fff" : "#e53935"}
+            style={{ marginRight: 6 }}
+          />
+
+          <Text
+            style={{
+              color: showFavoritesOnly ? "#fff" : colors.text,
+              fontWeight: "bold",
+            }}
+          >
+            Apenas Favoritos
+          </Text>
+        </TouchableOpacity>
+      </View>
+
       {/* BUSCA */}
       <View
         style={{
@@ -74,6 +123,7 @@ export default function FilterBar({
               fontSize: 15,
             }}
           />
+
           {search.length > 0 && (
             <TouchableOpacity onPress={() => setSearch("")}>
               <Ionicons name="close-circle" size={24} color={colors.danger} />

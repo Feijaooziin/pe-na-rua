@@ -15,6 +15,8 @@ export default function List() {
   const [trees, setTrees] = useState<Tree[]>([]);
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+
   const filteredTrees = trees.filter((tree) => {
     const matchesCategory =
       selectedCategory === "all" || tree.category === selectedCategory;
@@ -23,7 +25,9 @@ export default function List() {
       .toLowerCase()
       .includes(search.toLowerCase());
 
-    return matchesCategory && matchesSearch;
+    const matchesFavorite = !showFavoritesOnly || tree.favorite;
+
+    return matchesCategory && matchesSearch && matchesFavorite;
   });
 
   useFocusEffect(
@@ -128,7 +132,14 @@ export default function List() {
             </Text>
           </View>
 
-          <Text numberOfLines={2} style={{ marginTop: 5, color: "#555" }}>
+          <Text
+            numberOfLines={2}
+            style={{
+              marginTop: 5,
+              color: "#555",
+              paddingRight: 50,
+            }}
+          >
             {item.description}
           </Text>
 
@@ -174,6 +185,8 @@ export default function List() {
         setSearch={setSearch}
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
+        showFavoritesOnly={showFavoritesOnly}
+        setShowFavoritesOnly={setShowFavoritesOnly}
       />
 
       {/* LISTA */}
@@ -188,14 +201,31 @@ export default function List() {
               flex: 1,
               justifyContent: "center",
               alignItems: "center",
+              marginTop: 40,
             }}
           >
-            <Text style={{ fontSize: 16, color: "#777" }}>
-              Nenhuma árvore cadastrada 🌱
+            <Ionicons name="leaf-outline" size={48} color="#bbb" />
+
+            <Text
+              style={{
+                fontSize: 16,
+                color: "#777",
+                marginTop: 10,
+                fontWeight: "bold",
+              }}
+            >
+              Nenhum resultado encontrado
             </Text>
 
-            <Text style={{ fontSize: 13, color: "#aaa", marginTop: 5 }}>
-              Toque no botão + para começar
+            <Text
+              style={{
+                fontSize: 13,
+                color: "#aaa",
+                marginTop: 5,
+                textAlign: "center",
+              }}
+            >
+              Tente mudar os filtros{`\n`}ou adicionar novas plantas 🌱
             </Text>
           </View>
         }
