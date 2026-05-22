@@ -2,12 +2,13 @@ import { useFocusEffect } from "@react-navigation/native";
 import * as Location from "expo-location";
 import { router } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Image, Share, Text, TouchableOpacity, View } from "react-native";
+import { Image, Text, TouchableOpacity, View } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 
 import Header from "@/src/components/Header";
 import { getTrees } from "@/src/database/trees";
 import { useSettings } from "@/src/hooks/useSettings";
+import { shareTree } from "@/src/services/shareTree";
 import { colors } from "@/src/theme/colors";
 import { Tree } from "@/src/types/tree";
 import { getCategoryColor, getCategoryLabel } from "@/src/utils/category";
@@ -103,33 +104,6 @@ export default function Map() {
         />
       </View>
     );
-  }
-
-  async function handleShare(tree: Tree) {
-    const latitude = tree.latitude;
-    const longitude = tree.longitude;
-    if (!latitude || !longitude) return;
-
-    const mapsLink =
-      latitude && longitude
-        ? `https://www.google.com/maps?q=${latitude},${longitude}`
-        : "Localização não disponível";
-
-    const message = `🌳 *${tree.name}*
-
-${tree.description || "Sem descrição"}
-
-${settings?.includeMaps ? `📍 Localização:\n${mapsLink}\n` : ""}
-
-📱 Registrado no app Pé na Rua`;
-
-    try {
-      await Share.share({
-        message,
-      });
-    } catch (error) {
-      console.log(error);
-    }
   }
 
   if (loading || !settings)
@@ -314,7 +288,7 @@ ${settings?.includeMaps ? `📍 Localização:\n${mapsLink}\n` : ""}
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={() => handleShare(selectedTree)}
+              onPress={() => shareTree(selectedTree, settings)}
               style={{
                 flex: 3,
                 backgroundColor: "#1976d2",

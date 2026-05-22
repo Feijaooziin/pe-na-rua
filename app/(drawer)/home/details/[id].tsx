@@ -1,6 +1,6 @@
 import { useSettings } from "@/src/hooks/useSettings";
+import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
-import * as FileSystem from "expo-file-system/legacy";
 import * as Linking from "expo-linking";
 import { router, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
@@ -14,14 +14,13 @@ import {
   View,
 } from "react-native";
 import ImageViewer from "react-native-image-zoom-viewer";
-import Share from "react-native-share";
 
 import { deleteTree, getTreeById } from "@/src/database/trees";
+import { shareTree } from "@/src/services/shareTree";
 import { colors } from "@/src/theme/colors";
 import { Tree } from "@/src/types/tree";
 import { getCategoryColor, getCategoryLabel } from "@/src/utils/category";
 import { formatDate } from "@/src/utils/date";
-import { Ionicons } from "@expo/vector-icons";
 
 export default function Details() {
   const { id } = useLocalSearchParams();
@@ -71,67 +70,6 @@ export default function Details() {
         },
       },
     ]);
-  }
-
-  async function handleShare(tree: Tree) {
-    try {
-      let imageUrl: string | undefined;
-
-      const firstImage = tree.images?.[0];
-
-      // 📸 copiar imagem para cache compartilhável
-      if (firstImage) {
-        const newPath = FileSystem.cacheDirectory + `share-${Date.now()}.png`;
-
-        await FileSystem.copyAsync({
-          from: firstImage,
-          to: newPath,
-        });
-
-        imageUrl = newPath;
-      }
-
-      const mapsLink =
-        tree.latitude && tree.longitude
-          ? `https://www.google.com/maps?q=${tree.latitude},${tree.longitude}`
-          : "";
-
-      const mapSection =
-        settings?.includeMaps && mapsLink
-          ? `*Localização no mapa📍*
-${mapsLink}`
-          : "";
-
-      const message = `*${tree.name}*
-
-
-${tree.description || ""}
-
-
-${mapSection}
-
-
-${settings?.shareText}`;
-
-      // 📤 compartilhar
-      if (imageUrl) {
-        await Share.open({
-          title: tree.name,
-          message,
-          url: imageUrl,
-          type: "image/png",
-          failOnCancel: false,
-        });
-      } else {
-        await Share.open({
-          title: tree.name,
-          message,
-          failOnCancel: false,
-        });
-      }
-    } catch (error) {
-      console.log("Erro compartilhar:", error);
-    }
   }
 
   return (
@@ -283,7 +221,7 @@ ${settings?.shareText}`;
 
         {/* BOTÃO SHARE */}
         <TouchableOpacity
-          onPress={() => handleShare(tree)}
+          onPress={() => shareTree(tree, settings as any)}
           style={{
             marginTop: 12,
             backgroundColor: colors.primary,
