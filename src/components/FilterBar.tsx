@@ -47,7 +47,6 @@ export default function FilterBar({
         style={{
           flexDirection: "row",
           justifyContent: "flex-end",
-          alignItems: "center",
           paddingHorizontal: 15,
           marginBottom: 12,
           gap: 8,
@@ -67,10 +66,11 @@ export default function FilterBar({
               borderRadius: 999,
               borderWidth: 1,
               borderColor: showFavoritesOnly ? "#e53935" : "#dfe5d7",
+              marginTop: 12,
             }}
           >
             <Ionicons
-              name={showFavoritesOnly ? "heart" : "heart-outline"}
+              name={"heart"}
               size={16}
               color={showFavoritesOnly ? "#fff" : "#e53935"}
               style={{ marginRight: 6 }}
@@ -126,7 +126,7 @@ export default function FilterBar({
             </Text>
 
             <Ionicons
-              name={expanded ? "close" : "options-outline"}
+              name={expanded ? "close" : "menu"}
               size={18}
               color={colors.text}
             />
@@ -221,6 +221,7 @@ export default function FilterBar({
               marginTop: 12,
               paddingHorizontal: 15,
               alignItems: "center",
+              marginBottom: 12,
             }}
           >
             <TouchableOpacity
