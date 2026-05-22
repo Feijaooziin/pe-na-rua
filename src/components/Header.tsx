@@ -16,9 +16,6 @@ export default function Header({ title = "Pé na Rua 🌳" }: HeaderProps) {
     <SafeAreaView
       style={{
         backgroundColor: "#fff",
-        borderBottomLeftRadius: 18,
-        borderBottomRightRadius: 18,
-        elevation: 8,
       }}
     >
       <View
@@ -43,7 +40,7 @@ export default function Header({ title = "Pé na Rua 🌳" }: HeaderProps) {
               fontSize: 20,
               fontWeight: "bold",
               color: colors.text,
-              marginLeft: 24, // 👈 espaçamento do ícone
+              marginLeft: 16, // 👈 espaçamento do ícone
             }}
             numberOfLines={1}
           >
@@ -57,7 +54,6 @@ export default function Header({ title = "Pé na Rua 🌳" }: HeaderProps) {
           style={{
             width: 45,
             height: 45,
-            borderRadius: 8,
           }}
         />
       </View>
