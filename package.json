@@ -3,10 +3,10 @@
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
+    "apk": "eas build -p android --profile preview --clear-cache ",
     "start": "expo start",
     "android": "expo run:android",
-    "ios": "expo run:ios",
-    "apk": "eas build -p android --profile preview --clear-cache "
+    "ios": "expo run:ios"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.1.1",
