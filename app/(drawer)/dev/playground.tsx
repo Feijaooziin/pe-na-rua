@@ -1,8 +1,9 @@
-import { ScrollView, Text, View } from "react-native";
+import { Alert, ScrollView, Text, View } from "react-native";
 
 import { colors } from "@/src/theme/colors";
 
 import CategoryBadge from "@/Componentes Teste/badges/CategoryBadge";
+import { Item } from "@/Componentes Teste/itens/Item";
 import { Section } from "@/Componentes Teste/itens/Section";
 import Header from "@/src/components/Header";
 
@@ -110,7 +111,11 @@ export default function Playground() {
           </Text>
 
           <Section title="Teste">
-            <Text>Testando</Text>
+            <Item label="Teste 1" onPress={() => Alert.alert("Funcionou!")} />
+            <Item
+              label="Teste 2"
+              onPress={() => Alert.alert("Funcionou também!")}
+            />
           </Section>
         </View>
       </ScrollView>
