@@ -46,8 +46,9 @@ export function insertTree(data: CreateTreeDTO) {
       latitude,
       longitude,
       category,
+      favorite,
       created_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       data.name,
       data.description,
@@ -55,6 +56,7 @@ export function insertTree(data: CreateTreeDTO) {
       data.latitude ?? null,
       data.longitude ?? null,
       data.category ?? "tree",
+      data.favorite ? 1 : 0,
       data.created_at,
     ],
   );
@@ -69,7 +71,8 @@ export function updateTree(tree: Tree) {
       images = ?,
       latitude = ?,
       longitude = ?,
-      category = ?
+      category = ?,
+      favorite = ?
     WHERE id = ?`,
     [
       tree.name,
@@ -78,8 +81,18 @@ export function updateTree(tree: Tree) {
       tree.latitude ?? null,
       tree.longitude ?? null,
       tree.category ?? "tree",
+      tree.favorite ? 1 : 0,
       tree.id,
     ],
+  );
+}
+
+export function toggleFavorite(id: number, favorite: boolean) {
+  db.runSync(
+    `UPDATE trees
+     SET favorite = ?
+     WHERE id = ?`,
+    [favorite ? 1 : 0, id],
   );
 }
 
