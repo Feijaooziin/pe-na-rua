@@ -1,5 +1,6 @@
 import { useSettings } from "@/src/hooks/useSettings";
 import { useFocusEffect } from "@react-navigation/native";
+import * as FileSystem from "expo-file-system/legacy";
 import * as Linking from "expo-linking";
 import { router, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
@@ -8,12 +9,12 @@ import {
   Image,
   Modal,
   ScrollView,
-  Share,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
 import ImageViewer from "react-native-image-zoom-viewer";
+import Share from "react-native-share";
 
 import { deleteTree, getTreeById } from "@/src/database/trees";
 import { colors } from "@/src/theme/colors";
@@ -72,28 +73,63 @@ export default function Details() {
   }
 
   async function handleShare(tree: Tree) {
-    const latitude = tree.latitude;
-    const longitude = tree.longitude;
+    try {
+      let imageUrl: string | undefined;
 
-    const mapsLink =
-      latitude && longitude
-        ? `https://www.google.com/maps?q=${latitude},${longitude}`
-        : "Localização não disponível";
+      const firstImage = tree.images?.[0];
 
-    const message = `🌳 *${tree.name}*
+      // 📸 copiar imagem para cache compartilhável
+      if (firstImage) {
+        const newPath = FileSystem.cacheDirectory + `share-${Date.now()}.png`;
 
-${tree.description || "Sem descrição"}
+        await FileSystem.copyAsync({
+          from: firstImage,
+          to: newPath,
+        });
 
-${settings?.includeMaps ? `📍 Localização:\n${mapsLink}\n` : ""}
+        imageUrl = newPath;
+      }
+
+      const mapsLink =
+        tree.latitude && tree.longitude
+          ? `https://www.google.com/maps?q=${tree.latitude},${tree.longitude}`
+          : "";
+
+      const mapSection =
+        settings?.includeMaps && mapsLink
+          ? `*Localização no mapa📍*
+${mapsLink}`
+          : "";
+
+      const message = `*${tree.name}*
+
+
+${tree.description || ""}
+
+
+${mapSection}
+
 
 ${settings?.shareText}`;
 
-    try {
-      await Share.share({
-        message,
-      });
+      // 📤 compartilhar
+      if (imageUrl) {
+        await Share.open({
+          title: tree.name,
+          message,
+          url: imageUrl,
+          type: "image/png",
+          failOnCancel: false,
+        });
+      } else {
+        await Share.open({
+          title: tree.name,
+          message,
+          failOnCancel: false,
+        });
+      }
     } catch (error) {
-      console.log(error);
+      console.log("Erro compartilhar:", error);
     }
   }
 
