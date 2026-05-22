@@ -15,11 +15,10 @@ export default function Header({ title = "Pé na Rua 🌳" }: HeaderProps) {
   return (
     <SafeAreaView
       style={{
-        backgroundColor: "#FFF",
+        backgroundColor: "#fff",
         borderBottomLeftRadius: 18,
         borderBottomRightRadius: 18,
-        borderBottomWidth: 2,
-        borderColor: "#333",
+        elevation: 8,
       }}
     >
       <View
