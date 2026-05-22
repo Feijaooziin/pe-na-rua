@@ -1,16 +1,34 @@
-/*
-Exemplo de uso
+import { ReactNode } from "react";
+import { Text, View } from "react-native";
 
-<Section title="Backup">
-  <Item
-    label="Exportar backup"
-    onPress={handleExport}
-  />
+type SectionProps = {
+  title?: string;
+  children?: ReactNode;
+};
 
-  <Item
-    label="Importar backup"
-    onPress={handleImport}
-  />
-</Section>
+export function Section({ title, children }: SectionProps) {
+  return (
+    <View style={{ marginBottom: 25 }}>
+      <Text
+        style={{
+          fontSize: 14,
+          fontWeight: "600",
+          marginBottom: 8,
+          color: "#666",
+        }}
+      >
+        {title?.toUpperCase()}
+      </Text>
 
-*/
+      <View
+        style={{
+          backgroundColor: "#fff",
+          borderRadius: 12,
+          overflow: "hidden",
+        }}
+      >
+        {children}
+      </View>
+    </View>
+  );
+}

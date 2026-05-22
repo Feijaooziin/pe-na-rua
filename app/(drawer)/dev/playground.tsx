@@ -3,6 +3,7 @@ import { ScrollView, Text, View } from "react-native";
 import { colors } from "@/src/theme/colors";
 
 import CategoryBadge from "@/Componentes Teste/badges/CategoryBadge";
+import { Section } from "@/Componentes Teste/itens/Section";
 import Header from "@/src/components/Header";
 
 export default function Playground() {
@@ -107,6 +108,10 @@ export default function Playground() {
           >
             ⚙️ Settings Items
           </Text>
+
+          <Section title="Teste">
+            <Text>Testando</Text>
+          </Section>
         </View>
       </ScrollView>
     </View>

@@ -1,13 +1,5 @@
-/*
-Exemplo de uso
-
-<CategoryBadge category={tree.category} />
-
-*/
-
-import { Text, View } from "react-native";
-
 import { getCategoryColor, getCategoryLabel } from "@/src/utils/category";
+import { Text, View } from "react-native";
 
 type Props = {
   category: string;

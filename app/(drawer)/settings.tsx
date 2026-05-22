@@ -1,3 +1,5 @@
+import { Picker } from "@react-native-picker/picker";
+import { router } from "expo-router";
 import { ReactNode } from "react";
 import {
   Alert,
@@ -8,15 +10,12 @@ import {
   View,
 } from "react-native";
 
-import { Picker } from "@react-native-picker/picker";
-
 import Header from "@/src/components/Header";
 import { db } from "@/src/database/db";
 import { useSettings } from "@/src/hooks/useSettings";
 import { exportTrees, importTrees } from "@/src/services/backup";
 import { resetSettings } from "@/src/storage/settings";
 import { colors } from "@/src/theme/colors";
-import { router } from "expo-router";
 
 export default function Settings() {
   const { settings, loading, updateSetting } = useSettings();
