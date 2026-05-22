@@ -10,6 +10,7 @@ import { getTrees, toggleFavorite } from "@/src/database/trees";
 import { colors } from "@/src/theme/colors";
 import { Tree } from "@/src/types/tree";
 import { getCategoryColor, getCategoryLabel } from "@/src/utils/category";
+import { formatDate } from "@/src/utils/date";
 
 export default function List() {
   const [trees, setTrees] = useState<Tree[]>([]);
@@ -141,6 +142,16 @@ export default function List() {
             }}
           >
             {item.description}
+          </Text>
+
+          <Text
+            style={{
+              marginTop: 8,
+              fontSize: 12,
+              color: "#888",
+            }}
+          >
+            📅 {formatDate(item.created_at)}
           </Text>
 
           <TouchableOpacity

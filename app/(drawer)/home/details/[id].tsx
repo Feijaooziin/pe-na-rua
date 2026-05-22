@@ -20,6 +20,7 @@ import { deleteTree, getTreeById } from "@/src/database/trees";
 import { colors } from "@/src/theme/colors";
 import { Tree } from "@/src/types/tree";
 import { getCategoryColor, getCategoryLabel } from "@/src/utils/category";
+import { formatDate } from "@/src/utils/date";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function Details() {
@@ -223,6 +224,16 @@ ${settings?.shareText}`;
             {getCategoryLabel(tree.category)}
           </Text>
         </View>
+
+        <Text
+          style={{
+            marginTop: 10,
+            color: "#777",
+            fontSize: 13,
+          }}
+        >
+          📅 Cadastrada em {formatDate(tree.created_at)}
+        </Text>
 
         {/* DESCRIÇÃO */}
         <Text
