@@ -13,6 +13,7 @@ import { Picker } from "@react-native-picker/picker";
 import Header from "@/src/components/Header";
 import { db } from "@/src/database/db";
 import { useSettings } from "@/src/hooks/useSettings";
+import { exportTrees } from "@/src/services/backup";
 import { resetSettings } from "@/src/storage/settings";
 import { colors } from "@/src/theme/colors";
 import { router } from "expo-router";
@@ -295,6 +296,8 @@ export default function Settings() {
         {/* 🎨 SISTEMA */}
         <Section title="Sistema">
           <Item label="Tema" onPress={() => alert("Em breve ✨")} />
+
+          <Item label="Exportar árvores" onPress={exportTrees} />
 
           <DangerItem label="Limpar dados" onPress={handleClearData} />
 
