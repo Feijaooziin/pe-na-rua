@@ -5,9 +5,12 @@ import { colors } from "@/src/theme/colors";
 import CategoryBadge from "@/Componentes Teste/badges/CategoryBadge";
 import { Item } from "@/Componentes Teste/itens/Item";
 import { Section } from "@/Componentes Teste/itens/Section";
+import { SwitchItem } from "@/Componentes Teste/itens/SwitchItem";
 import Header from "@/src/components/Header";
+import { useState } from "react";
 
 export default function Playground() {
+  const [teste, setTeste] = useState(false);
   return (
     <View
       style={{
@@ -115,6 +118,11 @@ export default function Playground() {
             <Item
               label="Teste 2"
               onPress={() => Alert.alert("Funcionou também!")}
+            />
+            <SwitchItem
+              label={teste ? "Valor: ON" : "Valor: OFF"}
+              value={teste}
+              onValueChange={(value) => setTeste(value)}
             />
           </Section>
         </View>
