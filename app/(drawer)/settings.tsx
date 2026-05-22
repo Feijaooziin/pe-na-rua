@@ -313,13 +313,6 @@ export default function Settings() {
             }
           />
         </Section>
-
-        <Section title="Desenvolvedor">
-          <Item
-            label="UI Playground"
-            onPress={() => router.push("/settings/playground")}
-          />
-        </Section>
       </ScrollView>
     </View>
   );

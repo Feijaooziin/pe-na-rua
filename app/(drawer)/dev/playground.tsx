@@ -13,7 +13,8 @@ export default function Playground() {
         backgroundColor: colors.background,
       }}
     >
-      <Header title="Playground" />
+      <Header title="Playground 🧪" />
+
       <ScrollView
         contentContainerStyle={{
           padding: 15,
