@@ -6,7 +6,7 @@ import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 
 import FilterBar from "@/src/components/FilterBar";
 import Header from "@/src/components/Header";
-import { getTrees } from "@/src/database/trees";
+import { getTrees, toggleFavorite } from "@/src/database/trees";
 import { colors } from "@/src/theme/colors";
 import { Tree } from "@/src/types/tree";
 import { getCategoryColor, getCategoryLabel } from "@/src/utils/category";
@@ -32,6 +32,23 @@ export default function List() {
       setTrees(data);
     }, []),
   );
+
+  function handleFavorite(tree: Tree) {
+    if (!tree.id) return;
+
+    toggleFavorite(tree.id, !tree.favorite);
+
+    setTrees((prev) =>
+      prev.map((item) =>
+        item.id === tree.id
+          ? {
+              ...item,
+              favorite: !item.favorite,
+            }
+          : item,
+      ),
+    );
+  }
 
   function renderItem({ item }: { item: Tree }) {
     return (
@@ -74,7 +91,12 @@ export default function List() {
         )}
 
         {/* TEXTO */}
-        <View style={{ padding: 15 }}>
+        <View
+          style={{
+            padding: 15,
+            position: "relative",
+          }}
+        >
           <Text
             style={{
               fontSize: 18,
@@ -109,6 +131,30 @@ export default function List() {
           <Text numberOfLines={2} style={{ marginTop: 5, color: "#555" }}>
             {item.description}
           </Text>
+
+          <TouchableOpacity
+            onPress={() => handleFavorite(item)}
+            style={{
+              position: "absolute",
+              bottom: 12,
+              right: 12,
+              width: 38,
+              height: 38,
+              borderWidth: 1,
+              borderColor: "#bbb",
+              borderRadius: 999,
+              backgroundColor: "#eee",
+              justifyContent: "center",
+              alignItems: "center",
+              elevation: 3,
+            }}
+          >
+            <Ionicons
+              name={item.favorite ? "heart" : "heart-outline"}
+              size={22}
+              color={item.favorite ? "#e53935" : "#666"}
+            />
+          </TouchableOpacity>
         </View>
       </TouchableOpacity>
     );
