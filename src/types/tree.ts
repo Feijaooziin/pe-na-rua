@@ -7,6 +7,7 @@ export type Tree = {
   latitude?: number;
   longitude?: number;
   category?: string;
+  favorite?: boolean;
   created_at: string;
 };
 
@@ -18,5 +19,6 @@ export type CreateTreeDTO = {
   latitude?: number;
   longitude?: number;
   category?: string;
+  favorite?: boolean;
   created_at: string;
 };

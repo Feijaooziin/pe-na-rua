@@ -6,6 +6,7 @@ export function getTrees(): Tree[] {
 
   return rows.map((row) => ({
     ...row,
+    favorite: Boolean(row.favorite),
     images: (() => {
       try {
         const parsed = row.images ? JSON.parse(row.images) : [];
@@ -24,6 +25,7 @@ export function getTreeById(id: number): Tree | null {
 
   return {
     ...row,
+    favorite: Boolean(row.favorite),
     images: (() => {
       try {
         const parsed = row.images ? JSON.parse(row.images) : [];

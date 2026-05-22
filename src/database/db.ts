@@ -12,6 +12,7 @@ export function initDB() {
     latitude REAL,
     longitude REAL,
     category TEXT,
+    favorite INTEGER DEFAULT 0,
     created_at TEXT
   );
 `);
