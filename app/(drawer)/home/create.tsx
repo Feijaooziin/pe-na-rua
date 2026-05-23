@@ -1,10 +1,8 @@
-import * as ImagePicker from "expo-image-picker";
 import * as Location from "expo-location";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import {
   Alert,
-  Image,
   ScrollView,
   Text,
   TextInput,
@@ -15,10 +13,12 @@ import {
 import { Picker } from "@react-native-picker/picker";
 
 import Header from "@/src/components/Header";
+import ImagePickerPreview from "@/src/components/ImagePickerPreview";
 import { categories } from "@/src/constants/categories";
 import { insertTree } from "@/src/database/trees";
 import { useSettings } from "@/src/hooks/useSettings";
 import { colors } from "@/src/theme/colors";
+import { chooseImage } from "@/src/utils/imagePicker";
 
 export default function Create() {
   const { settings, loading } = useSettings();
@@ -54,15 +54,6 @@ export default function Create() {
     })();
   }, []);
 
-  function addImage(uri: string) {
-    if (images.length >= (settings?.maxImages ?? 10)) {
-      alert("Limite de imagens atingido 📸");
-      return;
-    }
-
-    setImages((prev) => [...prev, uri]);
-  }
-
   function removeImage(index: number) {
     Alert.alert("Remover imagem?", "Deseja excluir essa foto?", [
       { text: "Cancelar", style: "cancel" },
@@ -73,69 +64,6 @@ export default function Create() {
           setImages((prev) => prev.filter((_, i) => i !== index));
         },
       },
-    ]);
-  }
-
-  async function takePhoto() {
-    const permission = await ImagePicker.requestCameraPermissionsAsync();
-
-    if (!permission.granted) {
-      alert("Permissão da câmera negada");
-      return;
-    }
-
-    if (settings && images.length >= settings.maxImages) {
-      alert(`Limite de ${settings.maxImages} imagens atingido`);
-      return;
-    }
-
-    const result = await ImagePicker.launchCameraAsync({
-      quality: 0.7,
-    });
-
-    if (!result.canceled) {
-      addImage(result.assets[0].uri);
-    }
-  }
-
-  async function pickImage() {
-    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-    if (!permission.granted) {
-      alert("Permissão negada");
-      return;
-    }
-
-    if (settings && images.length >= settings.maxImages) {
-      alert(`Limite de ${settings.maxImages} imagens atingido`);
-      return;
-    }
-
-    const result = await ImagePicker.launchImageLibraryAsync({
-      quality: 0.7,
-      allowsMultipleSelection: true,
-      selectionLimit: remainingImages,
-    });
-
-    if (!result.canceled && settings) {
-      const uris = result.assets.map((asset) => asset.uri);
-
-      const total = images.length + uris.length;
-
-      if (total > settings.maxImages) {
-        alert(`Você pode adicionar no máximo ${settings.maxImages} imagens`);
-        return;
-      }
-
-      setImages((prev) => [...prev, ...uris]);
-    }
-  }
-
-  function chooseImage() {
-    Alert.alert("Selecionar imagem", "Escolha uma opção", [
-      { text: "Cancelar", style: "cancel" },
-      { text: "Câmera", onPress: takePhoto },
-      { text: "Galeria", onPress: pickImage },
     ]);
   }
 
@@ -269,7 +197,15 @@ export default function Create() {
 
         {/* Imagem */}
         <TouchableOpacity
-          onPress={chooseImage}
+          onPress={() =>
+            chooseImage({
+              currentImages: images,
+              maxImages,
+              allowCamera: true,
+              onImagesSelected: (newImages) =>
+                setImages((prev) => [...prev, ...newImages]),
+            })
+          }
           style={{
             backgroundColor: "#fff",
             borderRadius: 10,
@@ -292,67 +228,11 @@ export default function Create() {
           {images.length} / {maxImages} imagens usadas
         </Text>
 
-        {images.length > 0 && (
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={{ marginBottom: 20 }}
-          >
-            {images.map((img, index) => (
-              <View key={index} style={{ marginLeft: 5 }}>
-                <Image
-                  source={{ uri: img }}
-                  style={{
-                    width: 80,
-                    height: 80,
-                    borderRadius: 10,
-                    marginRight: 10,
-                  }}
-                />
-                <TouchableOpacity
-                  onPress={() => setAsMain(index)}
-                  style={{
-                    position: "absolute",
-                    right: 0,
-                    backgroundColor: colors.primary,
-                    borderRadius: 100,
-                    paddingHorizontal: 6,
-                    paddingVertical: 2,
-                    alignItems: "center",
-                  }}
-                >
-                  <Text
-                    style={{ color: "#fff", fontSize: 8, fontWeight: "bold" }}
-                  >
-                    TORNAR
-                  </Text>
-                  <Text
-                    style={{ color: "#fff", fontSize: 8, fontWeight: "bold" }}
-                  >
-                    PRINCIPAL
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => removeImage(index)}
-                  style={{
-                    position: "absolute",
-                    left: -5,
-                    backgroundColor: colors.danger,
-                    borderRadius: 100,
-                    paddingHorizontal: 6,
-                    paddingVertical: 2,
-                  }}
-                >
-                  <Text
-                    style={{ color: "#fff", fontSize: 18, fontWeight: "bold" }}
-                  >
-                    ✕
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            ))}
-          </ScrollView>
-        )}
+        <ImagePickerPreview
+          images={images}
+          onRemove={removeImage}
+          onSetMain={setAsMain}
+        />
 
         <Text style={{ color: "#555", marginBottom: 16, fontSize: 24 }}>
           {latitude && longitude
