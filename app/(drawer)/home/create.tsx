@@ -182,6 +182,7 @@ export default function Create() {
         >
           <Picker
             style={{ color: colors.text }}
+            dropdownIconColor={colors.text}
             selectedValue={category}
             onValueChange={(value) => setCategory(value)}
           >
@@ -253,7 +254,7 @@ export default function Create() {
           <Text style={{ color: colors.primary }}>Atualizar localização</Text>
         </TouchableOpacity>
 
-        {/* Botão */}
+        {/* Botão Salvar */}
         <TouchableOpacity
           onPress={handleCreate}
           style={{
@@ -264,6 +265,27 @@ export default function Create() {
           }}
         >
           <Text style={{ color: "#fff", fontWeight: "bold" }}>Salvar</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => router.back()}
+          style={{
+            marginTop: 10,
+            padding: 15,
+            borderRadius: 12,
+            alignItems: "center",
+            borderWidth: 1,
+            borderColor: colors.danger,
+          }}
+        >
+          <Text
+            style={{
+              color: colors.danger,
+              fontWeight: "bold",
+            }}
+          >
+            Cancelar
+          </Text>
         </TouchableOpacity>
       </ScrollView>
     </View>
