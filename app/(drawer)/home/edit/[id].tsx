@@ -10,21 +10,23 @@ import {
 } from "react-native";
 
 import ImagePickerPreview from "@/src/components/ImagePickerPreview";
+import { categories } from "@/src/constants/categories";
 import { getTreeById, updateTree } from "@/src/database/trees";
 import { useSettings } from "@/src/hooks/useSettings";
 import { colors } from "@/src/theme/colors";
 import { Tree } from "@/src/types/tree";
 import { chooseImage } from "@/src/utils/imagePicker";
+import { Picker } from "@react-native-picker/picker";
 
 export default function Edit() {
   const { id } = useLocalSearchParams();
   const { settings } = useSettings();
 
   const [tree, setTree] = useState<Tree | null>(null);
-
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [images, setImages] = useState<string[]>([]);
+  const [category, setCategory] = useState("tree");
   const maxImages = settings?.maxImages ?? 10;
   const isLimitReached = images.length >= maxImages;
   const remainingImages = maxImages - images.length;
@@ -38,6 +40,7 @@ export default function Edit() {
         setName(data.name);
         setDescription(data.description);
         setImages(data.images ?? []);
+        setCategory(data.category ?? "");
       }
     }
   }, [id]);
@@ -62,6 +65,7 @@ export default function Edit() {
       name,
       description,
       images,
+      category,
     });
 
     alert("Atualizado 🌳");
@@ -193,6 +197,32 @@ export default function Edit() {
             textAlignVertical: "top",
           }}
         />
+
+        <Text style={{ marginTop: 15, fontWeight: "bold" }}>Categoria</Text>
+
+        <View
+          style={{
+            backgroundColor: "#fff",
+            borderRadius: 10,
+            marginTop: 5,
+            overflow: "hidden",
+          }}
+        >
+          <Picker
+            style={{ color: colors.text }}
+            dropdownIconColor={colors.text}
+            selectedValue={category}
+            onValueChange={(value) => setCategory(value)}
+          >
+            {categories.map((item) => (
+              <Picker.Item
+                key={item.value}
+                label={item.label}
+                value={item.value}
+              />
+            ))}
+          </Picker>
+        </View>
 
         {/* BOTÃO SALVAR */}
         <TouchableOpacity
