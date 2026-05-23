@@ -21,6 +21,7 @@ import { colors } from "@/src/theme/colors";
 import { Tree } from "@/src/types/tree";
 import { getCategoryColor, getCategoryLabel } from "@/src/utils/category";
 import { formatDate } from "@/src/utils/date";
+import { downloadImage } from "@/src/utils/downloadImage";
 
 export default function Details() {
   const { id } = useLocalSearchParams();
@@ -337,9 +338,18 @@ export default function Details() {
               top: 50,
               right: 20,
               zIndex: 10,
+              backgroundColor: colors.danger,
+              paddingHorizontal: 12,
+              paddingVertical: 8,
+              borderRadius: 999,
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 8,
             }}
           >
-            <Text style={{ color: "#fff", fontSize: 20 }}>FECHAR ✕</Text>
+            <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 18 }}>
+              FECHAR ✕
+            </Text>
           </TouchableOpacity>
 
           {/* ⬅️ SETA ESQUERDA */}
@@ -371,6 +381,35 @@ export default function Details() {
               <Ionicons name="arrow-forward-circle" size={38} color={"#fff"} />
             </TouchableOpacity>
           )}
+
+          <TouchableOpacity
+            onPress={() => downloadImage(images[selectedIndex])}
+            style={{
+              position: "absolute",
+              top: 50,
+              left: 20,
+              zIndex: 10,
+              backgroundColor: colors.text,
+              paddingHorizontal: 12,
+              paddingVertical: 8,
+              borderRadius: 999,
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 8,
+            }}
+          >
+            <Ionicons name="download-outline" size={18} color="#fff" />
+
+            <Text
+              style={{
+                color: "#fff",
+                fontWeight: "bold",
+                fontSize: 18,
+              }}
+            >
+              BAIXAR
+            </Text>
+          </TouchableOpacity>
         </View>
       </Modal>
     </ScrollView>
