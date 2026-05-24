@@ -3,6 +3,7 @@ import * as FileSystem from "expo-file-system/legacy";
 import * as Sharing from "expo-sharing";
 
 import { getTrees, insertTree } from "@/src/database/trees";
+import { router } from "expo-router";
 import { Alert } from "react-native";
 
 export async function exportTrees() {
@@ -142,7 +143,8 @@ export async function importTrees() {
       "Backup importado ✅",
       `${trees.length} árvores foram restauradas com sucesso.`,
     );
-    console.log("Backup importado com sucesso");
+
+    router.replace("/(drawer)/home/(tabs)/list");
   } catch (error) {
     Alert.alert("Erro", "Não foi possível importar o backup.");
     console.log("Erro ao importar backup", error);
