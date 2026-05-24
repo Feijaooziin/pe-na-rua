@@ -6,6 +6,7 @@ import { colors } from "@/src/theme/colors";
 
 import CategoryBadge from "@/Componentes Teste/badges/CategoryBadge";
 import { DangerItem, Item } from "@/Componentes Teste/itens/Item";
+import PickerItem from "@/Componentes Teste/itens/PickerItem";
 import { DangerSection, Section } from "@/Componentes Teste/itens/Section";
 import {
   SwitchDangerItem,
@@ -16,6 +17,8 @@ export default function Playground() {
   const [teste, setTeste] = useState(true);
   const [teste2, setTeste2] = useState(false);
   const [testeDanger, setTesteDanger] = useState(false);
+  const [fruta, setFruta] = useState("Maçã");
+
   return (
     <View
       style={{
@@ -132,6 +135,18 @@ export default function Playground() {
               label={teste ? "Valor: ON" : "Valor: OFF"}
               value={teste}
               onValueChange={(value) => setTeste(value)}
+            />
+
+            <PickerItem
+              label="Selecione uma fruta"
+              value={fruta}
+              onChange={setFruta}
+              items={[
+                { label: "Maçã", value: "maçã" },
+                { label: "Banana", value: "banana" },
+                { label: "Laranja", value: "laranja" },
+                { label: "Uva", value: "uva" },
+              ]}
             />
           </Section>
 
