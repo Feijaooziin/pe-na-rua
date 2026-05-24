@@ -19,9 +19,8 @@ export default function List() {
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [sortField, setSortField] = useState<
     "created_at" | "name" | "category"
-  >("created_at");
-
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  >("name");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
   const filteredTrees = trees.filter((tree) => {
     const matchesCategory =

@@ -47,6 +47,12 @@ export default function FilterBar({
   const [expanded, setExpanded] = useState(false);
   const [sortModalVisible, setSortModalVisible] = useState(false);
 
+  const DEFAULT_SORT_FIELD: SortField = "name";
+  const DEFAULT_SORT_ORDER: SortOrder = "asc";
+
+  const isDefaultSort =
+    sortField === DEFAULT_SORT_FIELD && sortOrder === DEFAULT_SORT_ORDER;
+
   const hasFilters =
     search.length > 0 || selectedCategory !== "all" || showFavoritesOnly;
 
@@ -103,8 +109,8 @@ export default function FilterBar({
             }}
           >
             {sortField === "name" && "Nome"}
-            {sortField === "created_at" && "Data"}
             {sortField === "category" && "Categoria"}
+            {sortField === "created_at" && "Data"}
 
             {" • "}
 
@@ -487,11 +493,39 @@ export default function FilterBar({
               </TouchableOpacity>
             </View>
 
-            {/* FECHAR */}
+            {/* RESETAR ORDENAÇÃO */}
+            {!isDefaultSort && (
+              <TouchableOpacity
+                onPress={() => {
+                  setSortField(DEFAULT_SORT_FIELD);
+                  setSortOrder(DEFAULT_SORT_ORDER);
+                }}
+                style={{
+                  marginTop: 18,
+                  padding: 14,
+                  borderRadius: 12,
+                  alignItems: "center",
+                  backgroundColor: "#f3f3f3",
+                  borderWidth: 1,
+                  borderColor: "#ddd",
+                }}
+              >
+                <Text
+                  style={{
+                    color: colors.text,
+                    fontWeight: "bold",
+                  }}
+                >
+                  Voltar ao padrão
+                </Text>
+              </TouchableOpacity>
+            )}
+
+            {/* APLICAR */}
             <TouchableOpacity
               onPress={() => setSortModalVisible(false)}
               style={{
-                marginTop: 20,
+                marginTop: 12,
                 backgroundColor: colors.primary,
                 padding: 14,
                 borderRadius: 12,
