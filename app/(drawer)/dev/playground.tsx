@@ -1,17 +1,21 @@
+import { useState } from "react";
 import { Alert, ScrollView, Text, View } from "react-native";
 
+import Header from "@/src/components/Header";
 import { colors } from "@/src/theme/colors";
 
 import CategoryBadge from "@/Componentes Teste/badges/CategoryBadge";
-import { Item } from "@/Componentes Teste/itens/Item";
-import { Section } from "@/Componentes Teste/itens/Section";
-import { SwitchItem } from "@/Componentes Teste/itens/SwitchItem";
-import Header from "@/src/components/Header";
-import { useState } from "react";
+import { DangerItem, Item } from "@/Componentes Teste/itens/Item";
+import { DangerSection, Section } from "@/Componentes Teste/itens/Section";
+import {
+  SwitchDangerItem,
+  SwitchItem,
+} from "@/Componentes Teste/itens/SwitchItem";
 
 export default function Playground() {
-  const [teste, setTeste] = useState(false);
+  const [teste, setTeste] = useState(true);
   const [teste2, setTeste2] = useState(false);
+  const [testeDanger, setTesteDanger] = useState(false);
   return (
     <View
       style={{
@@ -115,7 +119,11 @@ export default function Playground() {
           </Text>
 
           <Section title="Teste">
-            <Item label="Teste 1" onPress={() => Alert.alert("Funcionou!")} />
+            <Item
+              label="Teste 1"
+              desc="Esse tem descrição."
+              onPress={() => Alert.alert("Funcionou!")}
+            />
             <Item
               label="Teste 2"
               onPress={() => Alert.alert("Funcionou também!")}
@@ -126,6 +134,19 @@ export default function Playground() {
               onValueChange={(value) => setTeste(value)}
             />
           </Section>
+
+          <DangerSection title="prerigo">
+            <DangerItem
+              label="Item perigoso"
+              desc="Esse é um exemplo de coisa que vai afetar o app."
+            />
+
+            <SwitchDangerItem
+              label={testeDanger ? "Valor: ON" : "Valor: OFF"}
+              value={testeDanger}
+              onValueChange={(value) => setTesteDanger(value)}
+            />
+          </DangerSection>
 
           <Item
             label="Itens fora da seção"
