@@ -21,10 +21,7 @@
           "apiKey": "AIzaSyBbpwUmTXN0cIaZGrqoQB9Y1HGtTVV-vXY"
         }
       },
-      "permissions": [
-        "CAMERA",
-        "ACCESS_FINE_LOCATION"
-      ],
+      "permissions": ["CAMERA", "ACCESS_FINE_LOCATION"],
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/logo.jpeg",
@@ -51,6 +48,12 @@
           "dark": {
             "backgroundColor": "#000000"
           }
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Permita que o app use sua câmera."
         }
       ],
       "expo-sqlite"

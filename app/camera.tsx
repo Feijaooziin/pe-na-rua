@@ -1,5 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
-import { CameraType, CameraView, FlashMode } from "expo-camera";
+import {
+  CameraType,
+  CameraView,
+  FlashMode,
+  useCameraPermissions,
+} from "expo-camera";
 import { router } from "expo-router";
 import { useRef, useState } from "react";
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
@@ -8,6 +13,7 @@ import { getCameraData } from "@/src/store/camera";
 
 export default function CameraScreen() {
   const cameraRef = useRef<CameraView>(null);
+  const [permission, requestPermission] = useCameraPermissions();
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [facing, setFacing] = useState<CameraType>("back");
@@ -57,6 +63,71 @@ export default function CameraScreen() {
 
   function toggleFlash() {
     setFlash((prev) => (prev === "off" ? "on" : "off"));
+  }
+
+  if (!permission) {
+    return <View style={{ flex: 1, backgroundColor: "#000" }} />;
+  }
+
+  if (!permission.granted) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: "#000",
+          justifyContent: "center",
+          alignItems: "center",
+          paddingHorizontal: 30,
+        }}
+      >
+        <Ionicons name="camera-outline" size={80} color="#fff" />
+
+        <Text
+          style={{
+            color: "#fff",
+            fontSize: 18,
+            fontWeight: "bold",
+            marginTop: 20,
+            textAlign: "center",
+          }}
+        >
+          Precisamos da câmera
+        </Text>
+
+        <Text
+          style={{
+            color: "#aaa",
+            fontSize: 14,
+            marginTop: 10,
+            textAlign: "center",
+            lineHeight: 22,
+          }}
+        >
+          Permita o acesso à câmera para tirar fotos das árvores.
+        </Text>
+
+        <TouchableOpacity
+          onPress={requestPermission}
+          style={{
+            marginTop: 30,
+            backgroundColor: "#4CAF50",
+            paddingHorizontal: 30,
+            paddingVertical: 14,
+            borderRadius: 999,
+          }}
+        >
+          <Text
+            style={{
+              color: "#fff",
+              fontWeight: "bold",
+              fontSize: 16,
+            }}
+          >
+            Permitir câmera
+          </Text>
+        </TouchableOpacity>
+      </View>
+    );
   }
 
   return (

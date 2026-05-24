@@ -20,10 +20,6 @@ export async function takePhoto({
     return;
   }
 
-  // setCameraCallback((photos) => {
-  //   onImagesSelected(photos);
-  // });
-
   setCameraData({
     currentImages,
     maxImages,
