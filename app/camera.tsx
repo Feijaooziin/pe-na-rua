@@ -5,6 +5,7 @@ import { useRef, useState } from "react";
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 export default function CameraScreen() {
+  const MAX_IMAGES = 5;
   const cameraRef = useRef<CameraView>(null);
   const [photos, setPhotos] = useState<string[]>([]);
   const [galleryOpen, setGalleryOpen] = useState(false);
@@ -15,8 +16,16 @@ export default function CameraScreen() {
 
   async function takePicture() {
     try {
-      const photo = await cameraRef.current?.takePictureAsync({ quality: 0.7 });
+      if (photos.length >= MAX_IMAGES) {
+        return;
+      }
+
+      const photo = await cameraRef.current?.takePictureAsync({
+        quality: 0.7,
+      });
+
       if (!photo) return;
+
       setPhotos((prev) => [...prev, photo.uri]);
     } catch (error) {
       console.log(error);
@@ -209,6 +218,7 @@ export default function CameraScreen() {
 
           {/* BOTÃO FOTO */}
           <TouchableOpacity
+            disabled={photos.length >= MAX_IMAGES}
             onPress={takePicture}
             style={{
               width: 86,
@@ -218,16 +228,33 @@ export default function CameraScreen() {
               borderColor: "#fff",
               justifyContent: "center",
               alignItems: "center",
+              backgroundColor: "rgba(255,255,255,0.08)",
             }}
           >
             <View
               style={{
+                justifyContent: "center",
+                alignItems: "center",
                 width: 72,
                 height: 72,
                 borderRadius: 999,
-                backgroundColor: "#fff",
+                backgroundColor:
+                  photos.length >= MAX_IMAGES
+                    ? "rgba(255,255,255,0.25)"
+                    : "#fff",
               }}
-            />
+            >
+              <Text
+                style={{
+                  color: photos.length >= MAX_IMAGES ? "#e5e5e5" : "#111",
+
+                  fontWeight: "800",
+                  fontSize: 15,
+                }}
+              >
+                {photos.length} / {MAX_IMAGES}
+              </Text>
+            </View>
           </TouchableOpacity>
 
           {/* CONFIRMAR */}
@@ -276,6 +303,7 @@ export default function CameraScreen() {
             }}
           />
         </View>
+
         <View
           pointerEvents="none"
           style={{
