@@ -1,4 +1,4 @@
-import { setCameraCallback } from "@/src/store/camera";
+import { setCameraData } from "@/src/store/camera";
 import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
 import { Alert } from "react-native";
@@ -20,8 +20,14 @@ export async function takePhoto({
     return;
   }
 
-  setCameraCallback((photos) => {
-    onImagesSelected(photos);
+  // setCameraCallback((photos) => {
+  //   onImagesSelected(photos);
+  // });
+
+  setCameraData({
+    currentImages,
+    maxImages,
+    callback: onImagesSelected,
   });
 
   router.push("/camera");

@@ -4,24 +4,27 @@ import { router } from "expo-router";
 import { useRef, useState } from "react";
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
-import { useSettings } from "@/src/hooks/useSettings";
-import { emitCameraPhotos } from "@/src/store/camera";
+import { getCameraData } from "@/src/store/camera";
 
 export default function CameraScreen() {
   const cameraRef = useRef<CameraView>(null);
-  const [photos, setPhotos] = useState<string[]>([]);
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [facing, setFacing] = useState<CameraType>("back");
   const [flash, setFlash] = useState<FlashMode>("off");
   const [zoom, setZoom] = useState(0);
 
-  const { settings } = useSettings();
-  const MAX_IMAGES = settings?.maxImages || 10;
+  const cameraData = getCameraData();
+  const existingImages = cameraData?.currentImages || [];
+  const isExistingImage = selectedIndex < existingImages.length;
+  const MAX_IMAGES = cameraData?.maxImages || 5;
+  const [photos, setPhotos] = useState<string[]>([]);
+  const totalPhotos = [...existingImages, ...photos];
+  const galleryPhotos = [...existingImages, ...photos];
 
   async function takePicture() {
     try {
-      if (photos.length >= MAX_IMAGES) {
+      if (totalPhotos.length >= MAX_IMAGES) {
         return;
       }
 
@@ -35,7 +38,7 @@ export default function CameraScreen() {
         const updated = [...prev, photo.uri];
 
         // abre preview automaticamente
-        if (updated.length >= MAX_IMAGES) {
+        if (existingImages.length + updated.length >= MAX_IMAGES) {
           setSelectedIndex(updated.length - 1);
           setGalleryOpen(true);
         }
@@ -176,7 +179,7 @@ export default function CameraScreen() {
           <TouchableOpacity
             activeOpacity={0.8}
             onPress={() => {
-              setSelectedIndex(photos.length - 1);
+              setSelectedIndex(totalPhotos.length - 1);
               setGalleryOpen(true);
             }}
             style={{
@@ -191,10 +194,10 @@ export default function CameraScreen() {
               alignItems: "center",
             }}
           >
-            {photos.length > 0 ? (
+            {totalPhotos.length > 0 ? (
               <>
                 <Image
-                  source={{ uri: photos[photos.length - 1] }}
+                  source={{ uri: totalPhotos[totalPhotos.length - 1] }}
                   style={{
                     width: "100%",
                     height: "100%",
@@ -222,7 +225,7 @@ export default function CameraScreen() {
                       fontWeight: "bold",
                     }}
                   >
-                    {photos.length}
+                    {totalPhotos.length}
                   </Text>
                 </View>
               </>
@@ -233,7 +236,7 @@ export default function CameraScreen() {
 
           {/* BOTÃO FOTO */}
           <TouchableOpacity
-            disabled={photos.length >= MAX_IMAGES}
+            disabled={totalPhotos.length >= MAX_IMAGES}
             onPress={takePicture}
             style={{
               width: 86,
@@ -254,29 +257,29 @@ export default function CameraScreen() {
                 height: 72,
                 borderRadius: 999,
                 backgroundColor:
-                  photos.length >= MAX_IMAGES
+                  totalPhotos.length >= MAX_IMAGES
                     ? "rgba(255,255,255,0.25)"
                     : "#fff",
               }}
             >
               <Text
                 style={{
-                  color: photos.length >= MAX_IMAGES ? "#e5e5e5" : "#111",
+                  color: totalPhotos.length >= MAX_IMAGES ? "#e5e5e5" : "#111",
 
                   fontWeight: "800",
                   fontSize: 15,
                 }}
               >
-                {photos.length} / {MAX_IMAGES}
+                {totalPhotos.length} / {MAX_IMAGES}
               </Text>
             </View>
           </TouchableOpacity>
 
           {/* CONFIRMAR */}
           <TouchableOpacity
-            disabled={photos.length === 0}
+            disabled={totalPhotos.length === 0}
             onPress={() => {
-              emitCameraPhotos(photos);
+              cameraData?.callback(photos);
               router.back();
             }}
             style={{
@@ -284,7 +287,7 @@ export default function CameraScreen() {
               height: 64,
               borderRadius: 999,
               backgroundColor:
-                photos.length > 0 ? "#4CAF50" : "rgba(255,255,255,0.2)",
+                totalPhotos.length > 0 ? "#4CAF50" : "rgba(255,255,255,0.2)",
 
               justifyContent: "center",
               alignItems: "center",
@@ -374,7 +377,7 @@ export default function CameraScreen() {
         >
           {/* FOTO */}
           <Image
-            source={{ uri: photos[selectedIndex] }}
+            source={{ uri: galleryPhotos[selectedIndex] }}
             style={{
               width: "100%",
               height: "75%",
@@ -392,7 +395,7 @@ export default function CameraScreen() {
               fontWeight: "bold",
             }}
           >
-            {selectedIndex + 1} / {photos.length}
+            {selectedIndex + 1} / {totalPhotos.length}
           </Text>
 
           {/* FECHAR */}
@@ -409,18 +412,23 @@ export default function CameraScreen() {
 
           {/* REMOVER */}
           <TouchableOpacity
+            disabled={isExistingImage}
             onPress={() => {
-              const updated = photos.filter((_, i) => i !== selectedIndex);
+              const newIndex = selectedIndex - existingImages.length;
+
+              const updated = photos.filter((_, i) => i !== newIndex);
 
               setPhotos(updated);
 
-              if (updated.length === 0) {
+              const updatedGallery = [...existingImages, ...updated];
+
+              if (updatedGallery.length === 0) {
                 setGalleryOpen(false);
                 return;
               }
 
-              if (selectedIndex >= updated.length) {
-                setSelectedIndex(updated.length - 1);
+              if (selectedIndex >= updatedGallery.length) {
+                setSelectedIndex(updatedGallery.length - 1);
               }
             }}
             style={{
@@ -429,7 +437,11 @@ export default function CameraScreen() {
               right: 20,
             }}
           >
-            <Ionicons name="trash" size={30} color="#ff5252" />
+            <Ionicons
+              name="trash"
+              size={30}
+              color={isExistingImage ? "#666" : "#ff5252"}
+            />
           </TouchableOpacity>
 
           {/* MINIATURAS */}
@@ -444,7 +456,7 @@ export default function CameraScreen() {
             }}
             contentContainerStyle={{ paddingHorizontal: 20, gap: 10 }}
           >
-            {photos.map((photo, index) => (
+            {galleryPhotos.map((photo, index) => (
               <TouchableOpacity
                 key={index}
                 onPress={() => setSelectedIndex(index)}
@@ -469,7 +481,7 @@ export default function CameraScreen() {
           {/* CONFIRMAR */}
           <TouchableOpacity
             onPress={() => {
-              emitCameraPhotos(photos);
+              cameraData?.callback(photos);
               router.back();
             }}
             style={{

@@ -1,12 +1,19 @@
-let cameraCallback: ((photos: string[]) => void) | null = null;
+type CameraData = {
+  currentImages: string[];
+  maxImages: number;
+  callback: (images: string[]) => void;
+};
 
-export function setCameraCallback(callback: (photos: string[]) => void) {
-  cameraCallback = callback;
+let cameraData: CameraData | null = null;
+
+export function setCameraData(data: CameraData) {
+  cameraData = data;
 }
 
-export function emitCameraPhotos(photos: string[]) {
-  if (cameraCallback) {
-    cameraCallback(photos);
-    cameraCallback = null;
-  }
+export function getCameraData() {
+  return cameraData;
+}
+
+export function clearCameraData() {
+  cameraData = null;
 }
