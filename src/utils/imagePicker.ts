@@ -20,8 +20,8 @@ export async function takePhoto({
     return;
   }
 
-  setCameraCallback((uri) => {
-    onImagesSelected([uri]);
+  setCameraCallback((photos) => {
+    onImagesSelected(photos);
   });
 
   router.push("/camera");

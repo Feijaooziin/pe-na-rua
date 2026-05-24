@@ -1,12 +1,12 @@
-let cameraCallback: ((uri: string) => void) | null = null;
+let cameraCallback: ((photos: string[]) => void) | null = null;
 
-export function setCameraCallback(callback: (uri: string) => void) {
+export function setCameraCallback(callback: (photos: string[]) => void) {
   cameraCallback = callback;
 }
 
-export function emitCameraPhoto(uri: string) {
+export function emitCameraPhotos(photos: string[]) {
   if (cameraCallback) {
-    cameraCallback(uri);
+    cameraCallback(photos);
     cameraCallback = null;
   }
 }

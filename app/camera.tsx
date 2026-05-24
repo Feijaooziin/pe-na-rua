@@ -4,8 +4,10 @@ import { router } from "expo-router";
 import { useRef, useState } from "react";
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
+import { useSettings } from "@/src/hooks/useSettings";
+import { emitCameraPhotos } from "@/src/store/camera";
+
 export default function CameraScreen() {
-  const MAX_IMAGES = 5;
   const cameraRef = useRef<CameraView>(null);
   const [photos, setPhotos] = useState<string[]>([]);
   const [galleryOpen, setGalleryOpen] = useState(false);
@@ -13,6 +15,9 @@ export default function CameraScreen() {
   const [facing, setFacing] = useState<CameraType>("back");
   const [flash, setFlash] = useState<FlashMode>("off");
   const [zoom, setZoom] = useState(0);
+
+  const { settings } = useSettings();
+  const MAX_IMAGES = settings?.maxImages || 10;
 
   async function takePicture() {
     try {
@@ -26,7 +31,17 @@ export default function CameraScreen() {
 
       if (!photo) return;
 
-      setPhotos((prev) => [...prev, photo.uri]);
+      setPhotos((prev) => {
+        const updated = [...prev, photo.uri];
+
+        // abre preview automaticamente
+        if (updated.length >= MAX_IMAGES) {
+          setSelectedIndex(updated.length - 1);
+          setGalleryOpen(true);
+        }
+
+        return updated;
+      });
     } catch (error) {
       console.log(error);
     }
@@ -261,7 +276,8 @@ export default function CameraScreen() {
           <TouchableOpacity
             disabled={photos.length === 0}
             onPress={() => {
-              // finalizar
+              emitCameraPhotos(photos);
+              router.back();
             }}
             style={{
               width: 64,
@@ -453,7 +469,8 @@ export default function CameraScreen() {
           {/* CONFIRMAR */}
           <TouchableOpacity
             onPress={() => {
-              // callback depois
+              emitCameraPhotos(photos);
+              router.back();
             }}
             style={{
               position: "absolute",
