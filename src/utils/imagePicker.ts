@@ -1,4 +1,6 @@
+import { setCameraCallback } from "@/src/store/camera";
 import * as ImagePicker from "expo-image-picker";
+import { router } from "expo-router";
 import { Alert } from "react-native";
 
 type PickImagesParams = {
@@ -8,30 +10,47 @@ type PickImagesParams = {
   allowCamera?: boolean;
 };
 
+// export async function takePhoto({
+//   currentImages,
+//   maxImages,
+//   onImagesSelected,
+// }: PickImagesParams) {
+//   const permission = await ImagePicker.requestCameraPermissionsAsync();
+
+//   if (!permission.granted) {
+//     alert("Permissão da câmera negada");
+//     return;
+//   }
+
+//   if (currentImages.length >= maxImages) {
+//     alert(`Limite de ${maxImages} imagens atingido`);
+//     return;
+//   }
+
+//   const result = await ImagePicker.launchCameraAsync({
+//     quality: 0.7,
+//   });
+
+//   if (!result.canceled) {
+//     onImagesSelected([result.assets[0].uri]);
+//   }
+// }
+
 export async function takePhoto({
   currentImages,
   maxImages,
   onImagesSelected,
 }: PickImagesParams) {
-  const permission = await ImagePicker.requestCameraPermissionsAsync();
-
-  if (!permission.granted) {
-    alert("Permissão da câmera negada");
-    return;
-  }
-
   if (currentImages.length >= maxImages) {
     alert(`Limite de ${maxImages} imagens atingido`);
     return;
   }
 
-  const result = await ImagePicker.launchCameraAsync({
-    quality: 0.7,
+  setCameraCallback((uri) => {
+    onImagesSelected([uri]);
   });
 
-  if (!result.canceled) {
-    onImagesSelected([result.assets[0].uri]);
-  }
+  router.push("/camera");
 }
 
 export async function pickImages({
