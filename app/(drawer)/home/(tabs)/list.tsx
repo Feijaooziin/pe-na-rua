@@ -40,7 +40,7 @@ export default function List() {
     let comparison = 0;
 
     if (sortField === "name") {
-      comparison = a.name.localeCompare(b.name);
+      comparison = (a.name ?? "").localeCompare(b.name ?? "");
     }
 
     if (sortField === "category") {
