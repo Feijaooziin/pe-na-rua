@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import {
+  Modal,
   ScrollView,
   Text,
   TextInput,
@@ -11,6 +12,9 @@ import { categories } from "@/src/constants/categories";
 import { colors } from "@/src/theme/colors";
 import { useState } from "react";
 
+type SortField = "name" | "category" | "created_at";
+type SortOrder = "asc" | "desc";
+
 type Props = {
   search: string;
   setSearch: (value: string) => void;
@@ -20,6 +24,12 @@ type Props = {
 
   showFavoritesOnly: boolean;
   setShowFavoritesOnly: (value: boolean) => void;
+
+  sortField: SortField;
+  setSortField: (value: SortField) => void;
+
+  sortOrder: SortOrder;
+  setSortOrder: (value: SortOrder) => void;
 };
 
 export default function FilterBar({
@@ -29,11 +39,21 @@ export default function FilterBar({
   setSelectedCategory,
   showFavoritesOnly,
   setShowFavoritesOnly,
+  sortField,
+  setSortField,
+  sortOrder,
+  setSortOrder,
 }: Props) {
   const [expanded, setExpanded] = useState(false);
+  const [sortModalVisible, setSortModalVisible] = useState(false);
 
   const hasFilters =
     search.length > 0 || selectedCategory !== "all" || showFavoritesOnly;
+
+  const activeFiltersCount =
+    (search ? 1 : 0) +
+    (selectedCategory !== "all" ? 1 : 0) +
+    (showFavoritesOnly ? 1 : 0);
 
   return (
     <View
@@ -46,12 +66,52 @@ export default function FilterBar({
       <View
         style={{
           flexDirection: "row",
-          justifyContent: "flex-end",
+          justifyContent: "space-between",
+          alignItems: "flex-start",
           paddingHorizontal: 15,
           marginBottom: 12,
-          gap: 8,
         }}
       >
+        <TouchableOpacity
+          onPress={() => setSortModalVisible(true)}
+          activeOpacity={0.8}
+          style={{
+            marginTop: 12,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 8,
+            backgroundColor: "#fff",
+            paddingHorizontal: 14,
+            height: 42,
+            borderRadius: 999,
+            borderWidth: 1,
+            borderColor: "#dfe5d7",
+          }}
+        >
+          <Ionicons
+            name="swap-vertical-outline"
+            size={18}
+            color={colors.text}
+          />
+
+          <Text
+            style={{
+              fontSize: 14,
+              fontWeight: "bold",
+              color: colors.text,
+            }}
+          >
+            {sortField === "name" && "Nome"}
+            {sortField === "created_at" && "Data"}
+            {sortField === "category" && "Categoria"}
+
+            {" • "}
+
+            {sortOrder === "asc" ? "↑" : "↓"}
+          </Text>
+        </TouchableOpacity>
+
         {/* FAVORITOS */}
         {expanded && (
           <TouchableOpacity
@@ -122,7 +182,11 @@ export default function FilterBar({
                 color: colors.text,
               }}
             >
-              {expanded ? "Ocultar" : "Filtros"}
+              {expanded
+                ? "Ocultar"
+                : activeFiltersCount > 0
+                  ? `Filtros (${activeFiltersCount})`
+                  : "Filtros"}
             </Text>
 
             <Ionicons
@@ -283,6 +347,169 @@ export default function FilterBar({
           </ScrollView>
         </>
       )}
+
+      <Modal visible={sortModalVisible} transparent animationType="fade">
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: "rgba(0,0,0,0.5)",
+            justifyContent: "center",
+            padding: 20,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "#fff",
+              borderRadius: 18,
+              padding: 20,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 22,
+                fontWeight: "bold",
+                marginBottom: 18,
+                color: colors.text,
+              }}
+            >
+              Ordenar
+            </Text>
+
+            {/* CAMPO */}
+            <Text
+              style={{
+                fontSize: 16,
+                fontWeight: "bold",
+                marginBottom: 10,
+                color: colors.text,
+              }}
+            >
+              Ordenar por
+            </Text>
+
+            {[
+              { label: "Nome", value: "name" },
+              { label: "Categoria", value: "category" },
+              { label: "Data de criação", value: "created_at" },
+            ].map((item) => {
+              const selected = sortField === item.value;
+
+              return (
+                <TouchableOpacity
+                  key={item.value}
+                  onPress={() => setSortField(item.value as any)}
+                  style={{
+                    paddingVertical: 12,
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: selected ? colors.primary : colors.text,
+                      fontWeight: selected ? "bold" : "normal",
+                    }}
+                  >
+                    {item.label}
+                  </Text>
+
+                  {selected && (
+                    <Ionicons
+                      name="checkmark-circle"
+                      size={20}
+                      color={colors.primary}
+                    />
+                  )}
+                </TouchableOpacity>
+              );
+            })}
+
+            {/* ORDEM */}
+            <Text
+              style={{
+                fontSize: 16,
+                fontWeight: "bold",
+                marginTop: 20,
+                marginBottom: 10,
+                color: colors.text,
+              }}
+            >
+              Ordem
+            </Text>
+
+            <View
+              style={{
+                flexDirection: "row",
+                gap: 10,
+              }}
+            >
+              <TouchableOpacity
+                onPress={() => setSortOrder("asc")}
+                style={{
+                  flex: 1,
+                  backgroundColor:
+                    sortOrder === "asc" ? colors.primary : "#f3f3f3",
+                  padding: 14,
+                  borderRadius: 12,
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    color: sortOrder === "asc" ? "#fff" : colors.text,
+                    fontWeight: "bold",
+                  }}
+                >
+                  Crescente
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => setSortOrder("desc")}
+                style={{
+                  flex: 1,
+                  backgroundColor:
+                    sortOrder === "desc" ? colors.primary : "#f3f3f3",
+                  padding: 14,
+                  borderRadius: 12,
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    color: sortOrder === "desc" ? "#fff" : colors.text,
+                    fontWeight: "bold",
+                  }}
+                >
+                  Decrescente
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* FECHAR */}
+            <TouchableOpacity
+              onPress={() => setSortModalVisible(false)}
+              style={{
+                marginTop: 20,
+                backgroundColor: colors.primary,
+                padding: 14,
+                borderRadius: 12,
+                alignItems: "center",
+              }}
+            >
+              <Text
+                style={{
+                  color: "#fff",
+                  fontWeight: "bold",
+                }}
+              >
+                Aplicar
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }

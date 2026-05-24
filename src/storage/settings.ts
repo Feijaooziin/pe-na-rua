@@ -6,7 +6,6 @@ export type Settings = {
   autoCenter: boolean;
   showTrees: boolean;
   mapType: "standard" | "satellite" | "hybrid" | "terrain";
-
   maxImages: number;
   autoLocation: boolean;
   shareText: string;

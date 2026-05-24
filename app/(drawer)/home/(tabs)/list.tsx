@@ -17,6 +17,11 @@ export default function List() {
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+  const [sortField, setSortField] = useState<
+    "created_at" | "name" | "category"
+  >("created_at");
+
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
   const filteredTrees = trees.filter((tree) => {
     const matchesCategory =
@@ -29,6 +34,25 @@ export default function List() {
     const matchesFavorite = !showFavoritesOnly || tree.favorite;
 
     return matchesCategory && matchesSearch && matchesFavorite;
+  });
+
+  const sortedTrees = [...filteredTrees].sort((a, b) => {
+    let comparison = 0;
+
+    if (sortField === "name") {
+      comparison = a.name.localeCompare(b.name);
+    }
+
+    if (sortField === "category") {
+      comparison = (a.category ?? "").localeCompare(b.category ?? "");
+    }
+
+    if (sortField === "created_at") {
+      comparison =
+        new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+    }
+
+    return sortOrder === "asc" ? comparison : -comparison;
   });
 
   useFocusEffect(
@@ -198,11 +222,15 @@ export default function List() {
         setSelectedCategory={setSelectedCategory}
         showFavoritesOnly={showFavoritesOnly}
         setShowFavoritesOnly={setShowFavoritesOnly}
+        sortField={sortField}
+        setSortField={setSortField}
+        sortOrder={sortOrder}
+        setSortOrder={setSortOrder}
       />
 
       {/* LISTA */}
       <FlatList
-        data={filteredTrees}
+        data={sortedTrees}
         keyExtractor={(item) => String(item.id)}
         renderItem={renderItem}
         showsVerticalScrollIndicator={false}
