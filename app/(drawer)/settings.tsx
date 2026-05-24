@@ -238,7 +238,15 @@ export default function Settings() {
         }}
       >
         <Text style={{ color: colors.text }}>{label}</Text>
-        <Switch value={value} onValueChange={onValueChange} />
+        <Switch
+          value={value}
+          onValueChange={onValueChange}
+          thumbColor={colors.primary}
+          trackColor={{
+            false: "#ccc",
+            true: "#4CAF5077",
+          }}
+        />
       </View>
     );
   }
