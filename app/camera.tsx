@@ -67,6 +67,13 @@ export default function CameraScreen() {
         facing={facing}
         flash={flash}
         zoom={zoom}
+      />
+      <View
+        style={{
+          position: "absolute",
+          width: "100%",
+          height: "100%",
+        }}
       >
         {/* OVERLAY CIMA */}
         <View
@@ -361,7 +368,7 @@ export default function CameraScreen() {
             zIndex: -100,
           }}
         />
-      </CameraView>
+      </View>
 
       {/* TELA PREVIEW */}
       {galleryOpen && (
