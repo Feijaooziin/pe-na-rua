@@ -269,6 +269,62 @@ export default function Settings() {
       <Header title="Configurações ⚙️" />
 
       <ScrollView contentContainerStyle={{ padding: 20 }}>
+        <Section title="Teste">
+          <Item
+            label={settings.theme === "light" ? "Tema Claro" : "Tema Escuro"}
+            onPress={() => Alert.alert("Tema atual: ", settings.theme)}
+          />
+
+          <View
+            style={{
+              padding: 15,
+              borderBottomWidth: 1,
+              borderColor: "#eee",
+            }}
+          >
+            <Text
+              style={{
+                marginBottom: 8,
+                color: colors.text,
+              }}
+            >
+              Tema
+            </Text>
+            <Text
+              style={{
+                marginBottom: 8,
+                color: colors.text,
+                fontSize: 11,
+              }}
+            >
+              Em desenvolvimento!
+            </Text>
+
+            <View
+              style={{
+                borderWidth: 1,
+                borderColor: "#ddd",
+                borderRadius: 10,
+                overflow: "hidden",
+              }}
+            >
+              <Picker
+                style={{ color: colors.text }}
+                selectedValue={settings.theme}
+                dropdownIconColor={colors.text}
+                onValueChange={(value) =>
+                  updateSetting({
+                    theme: value,
+                  })
+                }
+              >
+                <Picker.Item label="🌞 Claro" value={"light"} />
+                <Picker.Item label="🌙 Escuro" value={"dark"} />
+              </Picker>
+            </View>
+          </View>
+        </Section>
+
         {/* 📍 MAPA */}
         <Section title="Mapa">
           <SwitchItem
@@ -403,8 +459,6 @@ export default function Settings() {
 
         {/* 🎨 SISTEMA */}
         <Section title="Sistema">
-          <Item label="Tema" onPress={() => alert("Em breve ✨")} />
-
           <Item label="Exportar árvores" onPress={exportTrees} />
 
           <Item label="Importar árvores" onPress={importTrees} />
