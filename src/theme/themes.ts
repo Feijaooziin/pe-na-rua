@@ -15,9 +15,13 @@ export const lightTheme = {
   textSecondary: "#55715B",
 
   border: "#E0E0E0",
+  borderDanger: "#E5393566",
 
   input: "#FFFFFF",
   placeholder: "#999",
+
+  switchTrack: "#4CAF5077",
+  switchTrackDisabled: "#ccc",
 
   overlay: "rgba(0,0,0,0.5)",
 };
@@ -36,12 +40,16 @@ export const darkTheme = {
   danger: "#EF5350",
 
   text: "#F1F8E9",
-  textSecondary: "#A5D6A7",
+  textSecondary: "#B0BEC5",
 
   border: "#333",
+  borderDanger: "#EF535066",
 
   input: "#2A2A2A",
   placeholder: "#777",
+
+  switchTrack: "#66BB6A77",
+  switchTrackDisabled: "#444",
 
   overlay: "rgba(0,0,0,0.7)",
 };
