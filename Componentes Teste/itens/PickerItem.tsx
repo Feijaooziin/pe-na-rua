@@ -10,7 +10,7 @@ type Option = {
 
 type Props = {
   label: string;
-  value: string | number;
+  value?: string | number;
   onChange: (value: any) => void;
   items: Option[];
 };

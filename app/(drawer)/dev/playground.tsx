@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback, useState } from "react";
 import { Alert, ScrollView, Text, View } from "react-native";
 
 import Header from "@/src/components/Header";
-import { colors } from "@/src/theme/colors";
 
 import CategoryBadge from "@/Componentes Teste/badges/CategoryBadge";
 import { DangerItem, Item } from "@/Componentes Teste/itens/Item";
@@ -12,12 +12,24 @@ import {
   SwitchDangerItem,
   SwitchItem,
 } from "@/Componentes Teste/itens/SwitchItem";
+import { useSettings } from "@/src/hooks/useSettings";
+import { darkTheme, lightTheme } from "@/src/theme/themes";
 
 export default function Playground() {
   const [teste, setTeste] = useState(true);
   const [teste2, setTeste2] = useState(false);
   const [testeDanger, setTesteDanger] = useState(false);
   const [fruta, setFruta] = useState("Maçã");
+
+  const { settings, loadSettings } = useSettings();
+  const colors = settings?.theme === "dark" ? darkTheme : lightTheme;
+  const isDark = settings?.theme === "dark";
+
+  useFocusEffect(
+    useCallback(() => {
+      loadSettings();
+    }, []),
+  );
 
   return (
     <View
@@ -45,6 +57,51 @@ export default function Playground() {
         >
           Ambiente para testar componentes, layouts e novas ideias do app.
         </Text>
+
+        {/* 🎨 TEMA */}
+        <View
+          style={{
+            marginBottom: 32,
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 18,
+              fontWeight: "bold",
+              color: colors.text,
+              marginBottom: 12,
+            }}
+          >
+            🎨 Tema
+          </Text>
+
+          <Section title="Aparência">
+            <Item label={isDark ? "Tema escuro ativo" : "Tema claro ativo"} />
+          </Section>
+
+          <Section title="🌈 Colors Preview">
+            <View
+              style={{
+                backgroundColor: colors.primary,
+                height: 50,
+                borderRadius: 12,
+                margin: 10,
+              }}
+            />
+
+            <View
+              style={{
+                backgroundColor: colors.surface,
+                height: 50,
+                borderRadius: 12,
+                marginBottom: 10,
+                marginHorizontal: 10,
+                borderWidth: 1,
+                borderColor: colors.border,
+              }}
+            />
+          </Section>
+        </View>
 
         {/* BADGES */}
         <View
