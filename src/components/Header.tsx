@@ -11,12 +11,14 @@ interface HeaderProps {
 
 export default function Header({ title = "Pé na Rua 🌳" }: HeaderProps) {
   const navigation = useNavigation();
-  const { colors, isDark } = useTheme();
+  const { colors } = useTheme();
 
   return (
     <SafeAreaView
       style={{
         backgroundColor: colors.surface,
+        borderBottomWidth: 1,
+        borderBottomColor: colors.border,
       }}
     >
       <View
