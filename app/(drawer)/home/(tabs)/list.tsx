@@ -5,6 +5,7 @@ import { useCallback, useState } from "react";
 import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 
 import CategoryBadge from "@/src/components/badges/CategoryBadge";
+import FavoriteButton from "@/src/components/buttons/FavoriteButton";
 import FilterBar from "@/src/components/FilterBar";
 import Header from "@/src/components/Header";
 import { getTrees, toggleFavorite } from "@/src/database/trees";
@@ -162,27 +163,10 @@ export default function List() {
           </Text>
 
           {/* FAV BTN */}
-          <TouchableOpacity
+          <FavoriteButton
+            favorite={item.favorite}
             onPress={() => handleFavorite(item)}
-            style={{
-              position: "absolute",
-              bottom: 12,
-              right: 12,
-              width: 38,
-              height: 38,
-              borderRadius: 999,
-              backgroundColor: colors.surfaceSecondary,
-              justifyContent: "center",
-              alignItems: "center",
-              elevation: 3,
-            }}
-          >
-            <Ionicons
-              name={item.favorite ? "heart" : "heart-outline"}
-              size={22}
-              color={item.favorite ? "#e53935" : "#666"}
-            />
-          </TouchableOpacity>
+          />
         </View>
       </TouchableOpacity>
     );
