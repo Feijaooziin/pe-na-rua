@@ -4,7 +4,7 @@ import { Drawer } from "expo-router/drawer";
 import { useTheme } from "@/src/hooks/useTheme";
 
 export default function DrawerLayout() {
-  const { colors, isDark } = useTheme();
+  const { colors } = useTheme();
 
   return (
     <Drawer

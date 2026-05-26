@@ -1,5 +1,4 @@
-import { useFocusEffect } from "@react-navigation/native";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { Alert, ScrollView, Text, View } from "react-native";
 
 import Header from "@/src/components/Header";
@@ -11,8 +10,7 @@ import {
   SwitchDangerItem,
   SwitchItem,
 } from "@/Componentes Teste/itens/SwitchItem";
-import { useSettings } from "@/src/hooks/useSettings";
-import { darkTheme, lightTheme } from "@/src/theme/themes";
+import { useTheme } from "@/src/hooks/useTheme";
 
 export default function Playground() {
   const [teste, setTeste] = useState(true);
@@ -20,15 +18,7 @@ export default function Playground() {
   const [testeDanger, setTesteDanger] = useState(false);
   const [fruta, setFruta] = useState("Maçã");
 
-  const { settings, loadSettings } = useSettings();
-  const colors = settings?.theme === "dark" ? darkTheme : lightTheme;
-  const isDark = settings?.theme === "dark";
-
-  useFocusEffect(
-    useCallback(() => {
-      loadSettings();
-    }, []),
-  );
+  const { colors, isDark } = useTheme();
 
   return (
     <View
