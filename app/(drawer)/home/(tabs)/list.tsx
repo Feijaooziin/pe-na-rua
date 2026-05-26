@@ -6,6 +6,7 @@ import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 
 import CategoryBadge from "@/src/components/badges/CategoryBadge";
 import FavoriteButton from "@/src/components/buttons/FavoriteButton";
+import FloatingButton from "@/src/components/buttons/FloatingButton";
 import FilterBar from "@/src/components/FilterBar";
 import Header from "@/src/components/Header";
 import { getTrees, toggleFavorite } from "@/src/database/trees";
@@ -241,26 +242,10 @@ export default function List() {
       />
 
       {/* FAB */}
-      <TouchableOpacity
+      <FloatingButton
+        icon="add"
         onPress={() => router.push("/home/create" as any)}
-        style={{
-          position: "absolute",
-          bottom: 18,
-          right: 18,
-          backgroundColor: colors.primary,
-          shadowColor: colors.shadow,
-          shadowOpacity: colors.shadowOpacity,
-          shadowRadius: 6,
-          elevation: 6,
-          width: 60,
-          height: 60,
-          borderRadius: 30,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Ionicons name="add" size={32} color="#fff" />
-      </TouchableOpacity>
+      />
     </View>
   );
 }
