@@ -1,11 +1,11 @@
+import { useSettings } from "@/src/hooks/useSettings";
+import { darkTheme, lightTheme } from "@/src/theme/themes";
 import { Ionicons } from "@expo/vector-icons";
 import { DrawerActions, useFocusEffect } from "@react-navigation/native";
 import { useNavigation } from "expo-router";
 import { useCallback } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useSettings } from "../hooks/useSettings";
-import { darkTheme, lightTheme } from "../theme/themes";
 
 interface HeaderProps {
   title?: string;

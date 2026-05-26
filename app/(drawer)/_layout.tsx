@@ -1,11 +1,30 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Drawer } from "expo-router/drawer";
 
+import { useTheme } from "@/src/hooks/useTheme";
+
 export default function DrawerLayout() {
+  const { colors, isDark } = useTheme();
+
   return (
     <Drawer
       screenOptions={{
         headerShown: false,
+
+        drawerStyle: {
+          backgroundColor: colors.surface,
+        },
+
+        sceneStyle: {
+          backgroundColor: colors.background,
+        },
+
+        drawerActiveTintColor: colors.primary,
+        drawerInactiveTintColor: colors.textSecondary,
+
+        drawerLabelStyle: {
+          color: colors.text,
+        },
       }}
     >
       <Drawer.Screen
@@ -17,6 +36,7 @@ export default function DrawerLayout() {
           ),
         }}
       />
+
       <Drawer.Screen
         name="settings"
         options={{

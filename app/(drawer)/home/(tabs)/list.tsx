@@ -4,10 +4,10 @@ import { router } from "expo-router";
 import { useCallback, useState } from "react";
 import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 
+import { useSettings } from "@/src//hooks/useSettings";
 import FilterBar from "@/src/components/FilterBar";
 import Header from "@/src/components/Header";
 import { getTrees, toggleFavorite } from "@/src/database/trees";
-import { useSettings } from "@/src/hooks/useSettings";
 import { darkTheme, lightTheme } from "@/src/theme/themes";
 import { Tree } from "@/src/types/tree";
 import { getCategoryColor, getCategoryLabel } from "@/src/utils/category";
@@ -17,7 +17,6 @@ export default function List() {
   const { settings, loadSettings } = useSettings();
   const colors = settings?.theme === "dark" ? darkTheme : lightTheme;
   const isDark = settings?.theme === "dark";
-
   useFocusEffect(
     useCallback(() => {
       loadSettings();

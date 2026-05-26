@@ -13,11 +13,12 @@ import {
 import Header from "@/src/components/Header";
 import { db } from "@/src/database/db";
 import { useSettings } from "@/src/hooks/useSettings";
+import { useTheme } from "@/src/hooks/useTheme";
 import { exportTrees, importTrees } from "@/src/services/backup";
 import { resetSettings } from "@/src/storage/settings";
-import { colors } from "@/src/theme/colors";
 
 export default function Settings() {
+  const { colors } = useTheme();
   const { settings, loading, updateSetting, loadSettings } = useSettings();
 
   function handleResetSettings() {
