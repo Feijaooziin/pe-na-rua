@@ -34,7 +34,7 @@ export default function FloatingButton({
         elevation: 6,
       }}
     >
-      <Ionicons name={icon} size={32} color={"#FFF"} />
+      <Ionicons name={icon} size={32} color={colors.fabText} />
     </TouchableOpacity>
   );
 }
