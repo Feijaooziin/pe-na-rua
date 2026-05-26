@@ -4,7 +4,6 @@ import { Alert, ScrollView, Text, View } from "react-native";
 
 import Header from "@/src/components/Header";
 
-import CategoryBadge from "@/Componentes Teste/badges/CategoryBadge";
 import { DangerItem, Item } from "@/Componentes Teste/itens/Item";
 import PickerItem from "@/Componentes Teste/itens/PickerItem";
 import { DangerSection, Section } from "@/Componentes Teste/itens/Section";
@@ -101,64 +100,6 @@ export default function Playground() {
               }}
             />
           </Section>
-        </View>
-
-        {/* BADGES */}
-        <View
-          style={{
-            marginBottom: 32,
-          }}
-        >
-          <Text
-            style={{
-              fontSize: 18,
-              fontWeight: "bold",
-              color: colors.text,
-              marginBottom: 12,
-              flexDirection: "row",
-            }}
-          >
-            🏷️ Badges
-          </Text>
-
-          <CategoryBadge category={""} />
-          <CategoryBadge category={""} small />
-        </View>
-
-        {/* BUTTONS */}
-        <View
-          style={{
-            marginBottom: 32,
-          }}
-        >
-          <Text
-            style={{
-              fontSize: 18,
-              fontWeight: "bold",
-              color: colors.text,
-              marginBottom: 12,
-            }}
-          >
-            🔘 Buttons
-          </Text>
-        </View>
-
-        {/* CARDS */}
-        <View
-          style={{
-            marginBottom: 32,
-          }}
-        >
-          <Text
-            style={{
-              fontSize: 18,
-              fontWeight: "bold",
-              color: colors.text,
-              marginBottom: 12,
-            }}
-          >
-            🌳 Tree Cards
-          </Text>
         </View>
 
         {/* ITENS */}
