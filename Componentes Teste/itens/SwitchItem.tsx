@@ -1,5 +1,10 @@
-import { colors } from "@/src/theme/colors";
+import { useCallback } from "react";
 import { Switch, Text, View } from "react-native";
+
+import { useFocusEffect } from "@react-navigation/native";
+
+import { useSettings } from "@/src/hooks/useSettings";
+import { darkTheme, lightTheme } from "@/src/theme/themes";
 
 type SwitchItemProps = {
   label: string;
@@ -8,6 +13,16 @@ type SwitchItemProps = {
 };
 
 export function SwitchItem({ label, value, onValueChange }: SwitchItemProps) {
+  const { settings, loadSettings } = useSettings();
+
+  const colors = settings?.theme === "dark" ? darkTheme : lightTheme;
+
+  useFocusEffect(
+    useCallback(() => {
+      loadSettings();
+    }, []),
+  );
+
   return (
     <View
       style={{
@@ -16,17 +31,18 @@ export function SwitchItem({ label, value, onValueChange }: SwitchItemProps) {
         alignItems: "center",
         padding: 15,
         borderBottomWidth: 1,
-        borderColor: "#eee",
+        borderColor: colors.border,
       }}
     >
       <Text style={{ color: colors.text }}>{label}</Text>
+
       <Switch
         value={value}
         onValueChange={onValueChange}
         thumbColor={colors.primary}
         trackColor={{
-          false: "#ccc",
-          true: "#4CAF5077",
+          false: colors.switchTrackDisabled,
+          true: colors.switchTrack,
         }}
       />
     </View>
@@ -38,6 +54,16 @@ export function SwitchDangerItem({
   value,
   onValueChange,
 }: SwitchItemProps) {
+  const { settings, loadSettings } = useSettings();
+
+  const colors = settings?.theme === "dark" ? darkTheme : lightTheme;
+
+  useFocusEffect(
+    useCallback(() => {
+      loadSettings();
+    }, []),
+  );
+
   return (
     <View
       style={{
@@ -50,13 +76,14 @@ export function SwitchDangerItem({
       }}
     >
       <Text style={{ color: colors.danger }}>{label}</Text>
+
       <Switch
         value={value}
         onValueChange={onValueChange}
         thumbColor={colors.danger}
         trackColor={{
-          false: "#ccc",
-          true: "#e5383577",
+          false: colors.switchTrackDisabled,
+          true: `${colors.danger}77`,
         }}
       />
     </View>
