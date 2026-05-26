@@ -1,12 +1,11 @@
+import { getSettings, saveSettings, Settings } from "@/src/storage/settings";
 import { createContext, ReactNode, useEffect, useState } from "react";
-import { getSettings, saveSettings } from "@/src/storage/settings";
-import { Settings } from "@/src/storage/settings";
 
 type SettingsContextData = {
   settings: Settings | null;
   loading: boolean;
-
-  updateSetting: (newValues: Partial<Settings>) => Promise<void>;
+  updateSetting: (values: Partial<Settings>) => Promise<void>;
+  loadSettings: () => Promise<void>;
 };
 
 type ProviderProps = {
@@ -58,6 +57,7 @@ export function SettingsProvider({ children }: ProviderProps) {
         settings,
         loading,
         updateSetting,
+        loadSettings,
       }}
     >
       {children}

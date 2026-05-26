@@ -32,7 +32,6 @@ export default function Settings() {
           onPress: async () => {
             try {
               await resetSettings();
-
               await loadSettings();
 
               Alert.alert("Sucesso", "Configurações resetadas com sucesso!");
@@ -319,8 +318,9 @@ export default function Settings() {
                   })
                 }
               >
-                <Picker.Item label="🌞 Claro" value={"light"} />
-                <Picker.Item label="🌙 Escuro" value={"dark"} />
+                <Picker.Item label="📱 Sistema" value="system" />
+                <Picker.Item label="🌞 Claro" value="light" />
+                <Picker.Item label="🌙 Escuro" value="dark" />
               </Picker>
             </View>
           </View>

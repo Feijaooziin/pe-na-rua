@@ -10,7 +10,7 @@ export type Settings = {
   autoLocation: boolean;
   shareText: string;
   includeMaps: boolean;
-  theme: "light" | "dark";
+  theme: "light" | "dark" | "system";
 };
 
 const DEFAULT_SETTINGS: Settings = {
@@ -21,7 +21,7 @@ const DEFAULT_SETTINGS: Settings = {
   autoLocation: true,
   shareText: "📱 Registrado no app Pé na Rua",
   includeMaps: true,
-  theme: "light",
+  theme: "system",
 };
 
 // 👉 pegar configs
