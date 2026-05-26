@@ -31,6 +31,7 @@ export const lightTheme = {
   switchTrackDisabled: "#ccc",
 
   shadow: "#000",
+  shadowOpacity: 0.25,
   overlay: "rgba(0,0,0,0.5)",
 };
 
@@ -57,6 +58,7 @@ export const darkTheme = {
   textMuted: "#888",
 
   border: "#333",
+  borderLight: "#EEEEEE",
   borderDanger: "#EF535066",
 
   input: "#2A2A2A",
@@ -65,5 +67,7 @@ export const darkTheme = {
   switchTrack: "#66BB6A77",
   switchTrackDisabled: "#444",
 
+  shadow: "#000",
+  shadowOpacity: 0.05,
   overlay: "rgba(0,0,0,0.7)",
 };

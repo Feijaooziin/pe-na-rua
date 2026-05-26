@@ -7,12 +7,23 @@ import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 import FilterBar from "@/src/components/FilterBar";
 import Header from "@/src/components/Header";
 import { getTrees, toggleFavorite } from "@/src/database/trees";
-import { colors } from "@/src/theme/colors";
+import { useSettings } from "@/src/hooks/useSettings";
+import { darkTheme, lightTheme } from "@/src/theme/themes";
 import { Tree } from "@/src/types/tree";
 import { getCategoryColor, getCategoryLabel } from "@/src/utils/category";
 import { formatDate } from "@/src/utils/date";
 
 export default function List() {
+  const { settings, loadSettings } = useSettings();
+  const colors = settings?.theme === "dark" ? darkTheme : lightTheme;
+  const isDark = settings?.theme === "dark";
+
+  useFocusEffect(
+    useCallback(() => {
+      loadSettings();
+    }, []),
+  );
+
   const [trees, setTrees] = useState<Tree[]>([]);
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -84,10 +95,10 @@ export default function List() {
         activeOpacity={0.8}
         onPress={() => router.push(`/home/details/${item.id}` as any)}
         style={{
-          backgroundColor: "#fff",
+          backgroundColor: colors.surface,
           borderRadius: 16,
-          shadowColor: "#000",
-          shadowOpacity: 0.05,
+          shadowColor: colors.shadow,
+          shadowOpacity: colors.shadowOpacity,
           shadowRadius: 8,
           elevation: 3,
           marginBottom: 16,
@@ -109,12 +120,12 @@ export default function List() {
           <View
             style={{
               height: 150,
-              backgroundColor: "#ddd",
+              backgroundColor: colors.borderLight,
               justifyContent: "center",
               alignItems: "center",
             }}
           >
-            <Text>Sem imagem</Text>
+            <Text style={{ color: colors.textMuted }}>Sem imagem</Text>
           </View>
         )}
 
@@ -135,6 +146,7 @@ export default function List() {
             {item.name}
           </Text>
 
+          {/* BADGE */}
           <View
             style={{
               alignSelf: "flex-start",
@@ -160,7 +172,7 @@ export default function List() {
             numberOfLines={2}
             style={{
               marginTop: 5,
-              color: "#555",
+              color: colors.textSecondary,
               paddingRight: 50,
             }}
           >
@@ -171,12 +183,13 @@ export default function List() {
             style={{
               marginTop: 8,
               fontSize: 12,
-              color: "#888",
+              color: colors.textMuted,
             }}
           >
             📅 {formatDate(item.created_at)}
           </Text>
 
+          {/* FAV BTN */}
           <TouchableOpacity
             onPress={() => handleFavorite(item)}
             style={{
@@ -185,10 +198,8 @@ export default function List() {
               right: 12,
               width: 38,
               height: 38,
-              borderWidth: 1,
-              borderColor: "#bbb",
               borderRadius: 999,
-              backgroundColor: "#eee",
+              backgroundColor: colors.surfaceSecondary,
               justifyContent: "center",
               alignItems: "center",
               elevation: 3,
@@ -242,12 +253,12 @@ export default function List() {
               marginTop: 40,
             }}
           >
-            <Ionicons name="leaf-outline" size={48} color="#bbb" />
+            <Ionicons name="leaf-outline" size={48} color={colors.textMuted} />
 
             <Text
               style={{
                 fontSize: 16,
-                color: "#777",
+                color: colors.textSecondary,
                 marginTop: 10,
                 fontWeight: "bold",
               }}
@@ -258,7 +269,7 @@ export default function List() {
             <Text
               style={{
                 fontSize: 13,
-                color: "#aaa",
+                color: colors.textMuted,
                 marginTop: 5,
                 textAlign: "center",
               }}
@@ -281,8 +292,8 @@ export default function List() {
           bottom: 18,
           right: 18,
           backgroundColor: colors.primary,
-          shadowColor: "#000",
-          shadowOpacity: 0.2,
+          shadowColor: colors.shadow,
+          shadowOpacity: colors.shadowOpacity,
           shadowRadius: 6,
           elevation: 6,
           width: 60,
