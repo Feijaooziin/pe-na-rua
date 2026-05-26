@@ -3,6 +3,8 @@ import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
 
+import { SettingsProvider } from "@/src/context/SettingsContext";
+
 export default function Layout() {
   const [ready, setReady] = useState(false);
 
@@ -19,5 +21,9 @@ export default function Layout() {
     );
   }
 
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return (
+    <SettingsProvider>
+      <Stack screenOptions={{ headerShown: false }} />
+    </SettingsProvider>
+  );
 }

@@ -1,9 +1,7 @@
-import { useSettings } from "@/src/hooks/useSettings";
-import { darkTheme, lightTheme } from "@/src/theme/themes";
+import { useTheme } from "@/src//hooks/useTheme";
 import { Ionicons } from "@expo/vector-icons";
-import { DrawerActions, useFocusEffect } from "@react-navigation/native";
+import { DrawerActions } from "@react-navigation/native";
 import { useNavigation } from "expo-router";
-import { useCallback } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -13,15 +11,7 @@ interface HeaderProps {
 
 export default function Header({ title = "Pé na Rua 🌳" }: HeaderProps) {
   const navigation = useNavigation();
-  const { settings, loadSettings } = useSettings();
-  const colors = settings?.theme === "dark" ? darkTheme : lightTheme;
-  const isDark = settings?.theme === "dark";
-
-  useFocusEffect(
-    useCallback(() => {
-      loadSettings();
-    }, []),
-  );
+  const { colors, isDark } = useTheme();
 
   return (
     <SafeAreaView
