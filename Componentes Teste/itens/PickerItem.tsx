@@ -1,7 +1,11 @@
 import { Picker } from "@react-native-picker/picker";
 import { Text, View } from "react-native";
 
-import { colors } from "@/src/theme/colors";
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback } from "react";
+
+import { useSettings } from "@/src/hooks/useSettings";
+import { darkTheme, lightTheme } from "@/src/theme/themes";
 
 type Option = {
   label: string;
@@ -16,12 +20,22 @@ type Props = {
 };
 
 export default function PickerItem({ label, value, onChange, items }: Props) {
+  const { settings, loadSettings } = useSettings();
+
+  const colors = settings?.theme === "dark" ? darkTheme : lightTheme;
+
+  useFocusEffect(
+    useCallback(() => {
+      loadSettings();
+    }, []),
+  );
+
   return (
     <View
       style={{
         padding: 15,
         borderBottomWidth: 1,
-        borderColor: "#eee",
+        borderColor: colors.border,
       }}
     >
       <Text
@@ -36,13 +50,17 @@ export default function PickerItem({ label, value, onChange, items }: Props) {
       <View
         style={{
           borderWidth: 1,
-          borderColor: "#ddd",
+          borderColor: colors.border,
           borderRadius: 10,
           overflow: "hidden",
+          backgroundColor: colors.input,
         }}
       >
         <Picker
-          style={{ color: colors.text }}
+          style={{
+            color: colors.text,
+            backgroundColor: colors.input,
+          }}
           dropdownIconColor={colors.text}
           selectedValue={value}
           onValueChange={onChange}
@@ -52,6 +70,7 @@ export default function PickerItem({ label, value, onChange, items }: Props) {
               key={String(item.value)}
               label={item.label}
               value={item.value}
+              color={colors.text}
             />
           ))}
         </Picker>
