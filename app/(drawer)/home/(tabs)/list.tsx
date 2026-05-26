@@ -4,16 +4,16 @@ import { router } from "expo-router";
 import { useCallback, useState } from "react";
 import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 
+import CategoryBadge from "@/src/components/badges/CategoryBadge";
 import FilterBar from "@/src/components/FilterBar";
 import Header from "@/src/components/Header";
 import { getTrees, toggleFavorite } from "@/src/database/trees";
 import { useTheme } from "@/src/hooks/useTheme";
 import { Tree } from "@/src/types/tree";
-import { getCategoryColor, getCategoryLabel } from "@/src/utils/category";
 import { formatDate } from "@/src/utils/date";
 
 export default function List() {
-  const { colors, isDark } = useTheme();
+  const { colors } = useTheme();
 
   const [trees, setTrees] = useState<Tree[]>([]);
   const [search, setSearch] = useState("");
@@ -138,26 +138,7 @@ export default function List() {
           </Text>
 
           {/* BADGE */}
-          <View
-            style={{
-              alignSelf: "flex-start",
-              backgroundColor: getCategoryColor(item.category),
-              paddingHorizontal: 10,
-              paddingVertical: 4,
-              borderRadius: 100,
-              marginTop: 6,
-            }}
-          >
-            <Text
-              style={{
-                color: "#fff",
-                fontWeight: "bold",
-                fontSize: 11,
-              }}
-            >
-              {getCategoryLabel(item.category)}
-            </Text>
-          </View>
+          <CategoryBadge category={item.category} />
 
           <Text
             numberOfLines={2}
