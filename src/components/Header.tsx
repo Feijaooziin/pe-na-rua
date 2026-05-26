@@ -1,9 +1,11 @@
 import { Ionicons } from "@expo/vector-icons";
-import { DrawerActions } from "@react-navigation/native";
+import { DrawerActions, useFocusEffect } from "@react-navigation/native";
 import { useNavigation } from "expo-router";
+import { useCallback } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { colors } from "../theme/colors";
+import { useSettings } from "../hooks/useSettings";
+import { darkTheme, lightTheme } from "../theme/themes";
 
 interface HeaderProps {
   title?: string;
@@ -11,11 +13,20 @@ interface HeaderProps {
 
 export default function Header({ title = "Pé na Rua 🌳" }: HeaderProps) {
   const navigation = useNavigation();
+  const { settings, loadSettings } = useSettings();
+  const colors = settings?.theme === "dark" ? darkTheme : lightTheme;
+  const isDark = settings?.theme === "dark";
+
+  useFocusEffect(
+    useCallback(() => {
+      loadSettings();
+    }, []),
+  );
 
   return (
     <SafeAreaView
       style={{
-        backgroundColor: "#fff",
+        backgroundColor: colors.surface,
       }}
     >
       <View
@@ -40,7 +51,7 @@ export default function Header({ title = "Pé na Rua 🌳" }: HeaderProps) {
               fontSize: 20,
               fontWeight: "bold",
               color: colors.text,
-              marginLeft: 16, // 👈 espaçamento do ícone
+              marginLeft: 16,
             }}
             numberOfLines={1}
           >
@@ -54,6 +65,7 @@ export default function Header({ title = "Pé na Rua 🌳" }: HeaderProps) {
           style={{
             width: 45,
             height: 45,
+            borderRadius: 100,
           }}
         />
       </View>
