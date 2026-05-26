@@ -1,18 +1,16 @@
-import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
 import { router } from "expo-router";
 import { useCallback, useState } from "react";
-import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, View } from "react-native";
 
-import CategoryBadge from "@/src/components/badges/CategoryBadge";
-import FavoriteButton from "@/src/components/buttons/FavoriteButton";
 import FloatingButton from "@/src/components/buttons/FloatingButton";
+import TreeCard from "@/src/components/cards/TreeCard";
+import EmptyState from "@/src/components/feedback/EmptyState";
 import FilterBar from "@/src/components/FilterBar";
 import Header from "@/src/components/Header";
 import { getTrees, toggleFavorite } from "@/src/database/trees";
 import { useTheme } from "@/src/hooks/useTheme";
 import { Tree } from "@/src/types/tree";
-import { formatDate } from "@/src/utils/date";
 
 export default function List() {
   const { colors } = useTheme();
@@ -82,97 +80,6 @@ export default function List() {
     );
   }
 
-  function renderItem({ item }: { item: Tree }) {
-    return (
-      <TouchableOpacity
-        activeOpacity={0.8}
-        onPress={() => router.push(`/home/details/${item.id}` as any)}
-        style={{
-          backgroundColor: colors.surface,
-          borderRadius: 16,
-          shadowColor: colors.shadow,
-          shadowOpacity: colors.shadowOpacity,
-          shadowRadius: 8,
-          elevation: 3,
-          marginBottom: 16,
-          overflow: "hidden",
-        }}
-      >
-        {/* IMAGEM */}
-        {Array.isArray(item.images) && item.images.length > 0 ? (
-          <Image
-            source={{ uri: item.images[0] }}
-            style={{
-              width: "100%",
-              height: 150,
-              borderTopLeftRadius: 16,
-              borderTopRightRadius: 16,
-            }}
-          />
-        ) : (
-          <View
-            style={{
-              height: 150,
-              backgroundColor: colors.borderLight,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Text style={{ color: colors.textMuted }}>Sem imagem</Text>
-          </View>
-        )}
-
-        {/* TEXTO */}
-        <View
-          style={{
-            padding: 15,
-            position: "relative",
-          }}
-        >
-          <Text
-            style={{
-              fontSize: 18,
-              fontWeight: "bold",
-              color: colors.text,
-            }}
-          >
-            {item.name}
-          </Text>
-
-          {/* BADGE */}
-          <CategoryBadge category={item.category} />
-
-          <Text
-            numberOfLines={2}
-            style={{
-              marginTop: 5,
-              color: colors.textSecondary,
-              paddingRight: 50,
-            }}
-          >
-            {item.description}
-          </Text>
-
-          <Text
-            style={{
-              marginTop: 8,
-              fontSize: 12,
-              color: colors.textMuted,
-            }}
-          >
-            📅 {formatDate(item.created_at)}
-          </Text>
-
-          {/* FAV BTN */}
-          <FavoriteButton
-            favorite={item.favorite}
-            onPress={() => handleFavorite(item)}
-          />
-        </View>
-      </TouchableOpacity>
-    );
-  }
-
   return (
     <View
       style={{
@@ -182,6 +89,8 @@ export default function List() {
     >
       {/* HEADER */}
       <Header />
+
+      {/* FILTRO */}
       <FilterBar
         search={search}
         setSearch={setSearch}
@@ -199,41 +108,15 @@ export default function List() {
       <FlatList
         data={sortedTrees}
         keyExtractor={(item) => String(item.id)}
-        renderItem={renderItem}
         showsVerticalScrollIndicator={false}
+        renderItem={({ item }) => (
+          <TreeCard tree={item} onFavorite={() => handleFavorite(item)} />
+        )}
         ListEmptyComponent={
-          <View
-            style={{
-              flex: 1,
-              justifyContent: "center",
-              alignItems: "center",
-              marginTop: 40,
-            }}
-          >
-            <Ionicons name="leaf-outline" size={48} color={colors.textMuted} />
-
-            <Text
-              style={{
-                fontSize: 16,
-                color: colors.textSecondary,
-                marginTop: 10,
-                fontWeight: "bold",
-              }}
-            >
-              Nenhum resultado encontrado
-            </Text>
-
-            <Text
-              style={{
-                fontSize: 13,
-                color: colors.textMuted,
-                marginTop: 5,
-                textAlign: "center",
-              }}
-            >
-              Tente mudar os filtros{`\n`}ou adicionar novas plantas 🌱
-            </Text>
-          </View>
+          <EmptyState
+            title="Nenhum resultado encontrado"
+            description={`Tente mudar os filtros\nou adicionar novas plantas 🌱`}
+          />
         }
         contentContainerStyle={{
           padding: 15,
