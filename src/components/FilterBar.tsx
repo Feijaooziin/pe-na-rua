@@ -1,4 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
+import { useState } from "react";
 import {
   Modal,
   ScrollView,
@@ -9,8 +10,7 @@ import {
 } from "react-native";
 
 import { categories } from "@/src/constants/categories";
-import { colors } from "@/src/theme/colors";
-import { useState } from "react";
+import { useTheme } from "@/src/hooks/useTheme";
 
 type SortField = "name" | "category" | "created_at";
 type SortOrder = "asc" | "desc";
@@ -44,6 +44,8 @@ export default function FilterBar({
   sortOrder,
   setSortOrder,
 }: Props) {
+  const { colors, isDark } = useTheme();
+
   const [expanded, setExpanded] = useState(false);
   const [sortModalVisible, setSortModalVisible] = useState(false);
 
@@ -64,9 +66,9 @@ export default function FilterBar({
   return (
     <View
       style={{
-        backgroundColor: "#f7f9f4",
+        backgroundColor: colors.surface,
         borderBottomWidth: 1,
-        borderBottomColor: "#dfe5d7",
+        borderBottomColor: colors.border,
       }}
     >
       <View
@@ -78,6 +80,7 @@ export default function FilterBar({
           marginBottom: 12,
         }}
       >
+        {/* ORDENAÇÃO */}
         <TouchableOpacity
           onPress={() => setSortModalVisible(true)}
           activeOpacity={0.8}
@@ -87,18 +90,22 @@ export default function FilterBar({
             alignItems: "center",
             justifyContent: "center",
             gap: 8,
-            backgroundColor: "#fff",
+            backgroundColor: colors.surfaceElevated,
             paddingHorizontal: 14,
             height: 42,
             borderRadius: 999,
             borderWidth: 1,
-            borderColor: "#dfe5d7",
+            borderColor: colors.border,
+            shadowColor: colors.shadow,
+            shadowOpacity: colors.shadowOpacity,
+            shadowRadius: 4,
+            elevation: 1,
           }}
         >
           <Ionicons
             name="swap-vertical-outline"
             size={18}
-            color={colors.text}
+            color={colors.icon}
           />
 
           <Text
@@ -126,19 +133,23 @@ export default function FilterBar({
             style={{
               flexDirection: "row",
               alignItems: "center",
-              backgroundColor: showFavoritesOnly ? "#e53935" : "#fff",
+              backgroundColor: showFavoritesOnly
+                ? colors.danger
+                : colors.surfaceElevated,
+
               paddingHorizontal: 14,
               height: 42,
               borderRadius: 999,
               borderWidth: 1,
-              borderColor: showFavoritesOnly ? "#e53935" : "#dfe5d7",
+              borderColor: showFavoritesOnly ? colors.danger : colors.border,
+
               marginTop: 12,
             }}
           >
             <Ionicons
-              name={"heart"}
+              name="heart"
               size={16}
-              color={showFavoritesOnly ? "#fff" : "#e53935"}
+              color={showFavoritesOnly ? "#fff" : colors.danger}
               style={{ marginRight: 6 }}
             />
 
@@ -169,14 +180,14 @@ export default function FilterBar({
               alignItems: "center",
               justifyContent: "center",
               gap: 8,
-              backgroundColor: "#fff",
+              backgroundColor: colors.surfaceElevated,
               paddingHorizontal: 14,
               height: 42,
               borderRadius: 999,
               borderWidth: 1,
-              borderColor: "#dfe5d7",
-              shadowColor: "#000",
-              shadowOpacity: 0.03,
+              borderColor: colors.border,
+              shadowColor: colors.shadow,
+              shadowOpacity: colors.shadowOpacity,
               shadowRadius: 4,
               elevation: 1,
             }}
@@ -198,7 +209,7 @@ export default function FilterBar({
             <Ionicons
               name={expanded ? "close" : "menu"}
               size={18}
-              color={colors.text}
+              color={colors.icon}
             />
           </TouchableOpacity>
 
@@ -215,7 +226,7 @@ export default function FilterBar({
             >
               <Text
                 style={{
-                  color: colors.text,
+                  color: colors.primary,
                   fontWeight: "600",
                   fontSize: 13,
                   textAlign: "right",
@@ -240,14 +251,14 @@ export default function FilterBar({
               style={{
                 flexDirection: "row",
                 alignItems: "center",
-                backgroundColor: "#fff",
+                backgroundColor: colors.input,
                 borderRadius: 14,
                 paddingHorizontal: 14,
                 height: 52,
                 borderWidth: 1,
-                borderColor: "#dfe5d7",
-                shadowColor: "#000",
-                shadowOpacity: 0.03,
+                borderColor: colors.inputBorder,
+                shadowColor: colors.shadow,
+                shadowOpacity: colors.shadowOpacity,
                 shadowRadius: 4,
                 elevation: 1,
               }}
@@ -255,7 +266,7 @@ export default function FilterBar({
               <Ionicons
                 name="search"
                 size={20}
-                color="#777"
+                color={colors.iconSecondary}
                 style={{ marginRight: 8 }}
               />
 
@@ -263,7 +274,7 @@ export default function FilterBar({
                 value={search}
                 onChangeText={setSearch}
                 placeholder="Buscar por nome..."
-                placeholderTextColor="#999"
+                placeholderTextColor={colors.placeholder}
                 style={{
                   flex: 1,
                   color: colors.text,
@@ -298,7 +309,9 @@ export default function FilterBar({
               onPress={() => setSelectedCategory("all")}
               style={{
                 backgroundColor:
-                  selectedCategory === "all" ? colors.primary : "#fff",
+                  selectedCategory === "all"
+                    ? colors.primary
+                    : colors.surfaceElevated,
 
                 paddingHorizontal: 16,
                 paddingVertical: 10,
@@ -307,12 +320,13 @@ export default function FilterBar({
 
                 borderWidth: 1,
                 borderColor:
-                  selectedCategory === "all" ? colors.primary : "#dce3d3",
+                  selectedCategory === "all" ? colors.primary : colors.border,
               }}
             >
               <Text
                 style={{
                   color: selectedCategory === "all" ? "#fff" : colors.text,
+
                   fontWeight: "bold",
                 }}
               >
@@ -328,7 +342,9 @@ export default function FilterBar({
                   key={item.value}
                   onPress={() => setSelectedCategory(item.value)}
                   style={{
-                    backgroundColor: isSelected ? colors.primary : "#fff",
+                    backgroundColor: isSelected
+                      ? colors.primary
+                      : colors.surfaceElevated,
 
                     paddingHorizontal: 16,
                     paddingVertical: 10,
@@ -336,7 +352,7 @@ export default function FilterBar({
                     marginRight: 10,
 
                     borderWidth: 1,
-                    borderColor: isSelected ? colors.primary : "#dce3d3",
+                    borderColor: isSelected ? colors.primary : colors.border,
                   }}
                 >
                   <Text
@@ -354,20 +370,23 @@ export default function FilterBar({
         </>
       )}
 
+      {/* MODAL */}
       <Modal visible={sortModalVisible} transparent animationType="fade">
         <View
           style={{
             flex: 1,
-            backgroundColor: "rgba(0,0,0,0.5)",
+            backgroundColor: colors.overlay,
             justifyContent: "center",
             padding: 20,
           }}
         >
           <View
             style={{
-              backgroundColor: "#fff",
+              backgroundColor: colors.modal,
               borderRadius: 18,
               padding: 20,
+              borderWidth: 1,
+              borderColor: colors.border,
             }}
           >
             <Text
@@ -409,11 +428,14 @@ export default function FilterBar({
                     flexDirection: "row",
                     justifyContent: "space-between",
                     alignItems: "center",
+                    borderBottomWidth: 1,
+                    borderBottomColor: colors.divider,
                   }}
                 >
                   <Text
                     style={{
                       color: selected ? colors.primary : colors.text,
+
                       fontWeight: selected ? "bold" : "normal",
                     }}
                   >
@@ -455,15 +477,22 @@ export default function FilterBar({
                 style={{
                   flex: 1,
                   backgroundColor:
-                    sortOrder === "asc" ? colors.primary : "#f3f3f3",
+                    sortOrder === "asc"
+                      ? colors.primary
+                      : colors.surfaceSecondary,
+
                   padding: 14,
                   borderRadius: 12,
                   alignItems: "center",
+                  borderWidth: 1,
+                  borderColor:
+                    sortOrder === "asc" ? colors.primary : colors.border,
                 }}
               >
                 <Text
                   style={{
                     color: sortOrder === "asc" ? "#fff" : colors.text,
+
                     fontWeight: "bold",
                   }}
                 >
@@ -476,15 +505,22 @@ export default function FilterBar({
                 style={{
                   flex: 1,
                   backgroundColor:
-                    sortOrder === "desc" ? colors.primary : "#f3f3f3",
+                    sortOrder === "desc"
+                      ? colors.primary
+                      : colors.surfaceSecondary,
+
                   padding: 14,
                   borderRadius: 12,
                   alignItems: "center",
+                  borderWidth: 1,
+                  borderColor:
+                    sortOrder === "desc" ? colors.primary : colors.border,
                 }}
               >
                 <Text
                   style={{
                     color: sortOrder === "desc" ? "#fff" : colors.text,
+
                     fontWeight: "bold",
                   }}
                 >
@@ -493,7 +529,7 @@ export default function FilterBar({
               </TouchableOpacity>
             </View>
 
-            {/* RESETAR ORDENAÇÃO */}
+            {/* RESETAR */}
             {!isDefaultSort && (
               <TouchableOpacity
                 onPress={() => {
@@ -505,9 +541,9 @@ export default function FilterBar({
                   padding: 14,
                   borderRadius: 12,
                   alignItems: "center",
-                  backgroundColor: "#f3f3f3",
+                  backgroundColor: colors.surfaceSecondary,
                   borderWidth: 1,
-                  borderColor: "#ddd",
+                  borderColor: colors.border,
                 }}
               >
                 <Text
