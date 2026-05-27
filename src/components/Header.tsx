@@ -63,7 +63,7 @@ export default function Header({ title = "Pé na Rua 🌳" }: HeaderProps) {
               borderRadius: 100,
             }}
           />
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={{
               alignItems: "center",
               justifyContent: "center",
@@ -81,7 +81,7 @@ export default function Header({ title = "Pé na Rua 🌳" }: HeaderProps) {
               size={22}
               color={colors.textSecondary}
             />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </View>
     </SafeAreaView>
