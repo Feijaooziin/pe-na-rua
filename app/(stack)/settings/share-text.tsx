@@ -1,12 +1,22 @@
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
-import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  Alert,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 import { useSettings } from "@/src/hooks/useSettings";
-import { colors } from "@/src/theme/colors";
+import { useTheme } from "@/src/hooks/useTheme";
 
 export default function ShareText() {
+  const { colors } = useTheme();
+
   const { settings, updateSetting } = useSettings();
+
   const [text, setText] = useState("");
 
   useEffect(() => {
@@ -27,7 +37,10 @@ export default function ShareText() {
         {
           text: "Salvar",
           onPress: () => {
-            updateSetting({ shareText: text });
+            updateSetting({
+              shareText: text,
+            });
+
             router.back();
           },
         },
@@ -36,38 +49,91 @@ export default function ShareText() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.background }}>
-      <View style={{ padding: 20 }}>
-        <Text style={{ marginBottom: 10 }}>
-          Esse texto será enviado ao compartilhar:
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: colors.background,
+      }}
+    >
+      <ScrollView
+        contentContainerStyle={{
+          padding: 20,
+          paddingBottom: 40,
+        }}
+        showsVerticalScrollIndicator={false}
+      >
+        <Text
+          style={{
+            color: colors.text,
+            fontSize: 16,
+            fontWeight: "600",
+            marginBottom: 8,
+          }}
+        >
+          Texto de compartilhamento
+        </Text>
+
+        <Text
+          style={{
+            color: colors.textSecondary,
+            fontSize: 14,
+            lineHeight: 20,
+            marginBottom: 20,
+          }}
+        >
+          Esse texto será enviado ao compartilhar uma árvore.
         </Text>
 
         <TextInput
           value={text}
           onChangeText={setText}
           multiline
+          placeholder="Digite o texto de compartilhamento..."
+          placeholderTextColor={colors.textMuted}
           style={{
-            backgroundColor: "#fff",
-            borderRadius: 10,
-            padding: 15,
-            minHeight: 120,
+            backgroundColor: colors.surface,
+            color: colors.text,
+
+            borderWidth: 1,
+            borderColor: colors.border,
+
+            borderRadius: 16,
+
+            padding: 16,
+
+            minHeight: 180,
+
             textAlignVertical: "top",
+
             marginBottom: 20,
           }}
         />
 
         <TouchableOpacity
+          activeOpacity={0.8}
           onPress={handleSave}
           style={{
             backgroundColor: colors.primary,
-            padding: 15,
-            borderRadius: 12,
+
+            paddingVertical: 16,
+
+            borderRadius: 14,
+
             alignItems: "center",
+            justifyContent: "center",
           }}
         >
-          <Text style={{ color: "#fff", fontWeight: "bold" }}>Salvar</Text>
+          <Text
+            style={{
+              color: "#FFFFFF",
+              fontWeight: "700",
+              fontSize: 15,
+            }}
+          >
+            Salvar alterações
+          </Text>
         </TouchableOpacity>
-      </View>
+      </ScrollView>
     </View>
   );
 }
