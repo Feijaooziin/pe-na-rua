@@ -1,23 +1,42 @@
-import { useColorScheme } from "react-native";
-
 import { useSettings } from "@/src/hooks/useSettings";
-import { darkTheme, lightTheme } from "@/src/theme/themes";
+import {
+  arborDay,
+  arborDeepForest,
+  arborForest,
+  arborNight,
+} from "@/src/theme/themes";
+
+export type ThemeName =
+  | "arborDay"
+  | "arborNight"
+  | "arborForest"
+  | "arborDeepForest";
+
+const themes: Record<ThemeName, any> = {
+  arborDay,
+  arborNight,
+  arborForest,
+  arborDeepForest,
+};
 
 export function useTheme() {
   const { settings } = useSettings();
-  const systemTheme = useColorScheme();
 
-  const currentTheme =
-    settings?.theme === "system" ? systemTheme : settings?.theme;
+  const fallback: ThemeName = "arborDay";
 
-  const isDark = currentTheme === "dark";
+  const themeName =
+    (settings?.theme as ThemeName) && themes[settings?.theme as ThemeName]
+      ? (settings?.theme as ThemeName)
+      : fallback;
 
-  const colors = isDark ? darkTheme : lightTheme;
+  const colors = themes[themeName] ?? themes.arborDay;
+
+  const isDark = themeName === "arborNight" || themeName === "arborDeepForest";
 
   return {
     colors,
     isDark,
+    currentTheme: themeName,
     settings,
-    currentTheme,
   };
 }

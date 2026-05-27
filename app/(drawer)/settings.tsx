@@ -151,7 +151,7 @@ export default function Settings() {
         <Section title="🎨 Tema">
           <PickerItem
             label="Tema do aplicativo"
-            description="Escolha entre claro, escuro ou automático."
+            description="Escolha o estilo visual do app."
             value={settings.theme}
             onChange={(value) =>
               updateSetting({
@@ -160,16 +160,20 @@ export default function Settings() {
             }
             items={[
               {
-                label: "📱 Sistema",
-                value: "system",
+                label: "🌞 Day (Claro natural)",
+                value: "arborDay",
               },
               {
-                label: "🌞 Claro",
-                value: "light",
+                label: "🌙 Night (escuro neutro)",
+                value: "arborNight",
               },
               {
-                label: "🌙 Escuro",
-                value: "dark",
+                label: "🌿 Forest (Natureza suave)",
+                value: "arborForest",
+              },
+              {
+                label: "🌲 Deep Forest (Imersivo escuro)",
+                value: "arborDeepForest",
               },
             ]}
           />
