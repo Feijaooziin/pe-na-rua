@@ -3,10 +3,18 @@ import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
+import Toast from "react-native-toast-message";
 
 import { SettingsProvider } from "@/src/context/SettingsContext";
 import { initDB } from "@/src/database/db";
 import { useTheme } from "@/src/hooks/useTheme";
+
+import { CustomToast } from "@/src/components/CustomToast";
+const toastConfig = {
+  success: (props: any) => <CustomToast {...props} type="success" />,
+  error: (props: any) => <CustomToast {...props} type="error" />,
+  info: (props: any) => <CustomToast {...props} type="info" />,
+};
 
 function AppContent() {
   const { colors, isDark } = useTheme();
@@ -33,6 +41,8 @@ function AppContent() {
           },
         }}
       />
+
+      <Toast config={toastConfig} />
     </View>
   );
 }

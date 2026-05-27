@@ -11,9 +11,10 @@ import {
   ScrollView,
   Text,
   TouchableOpacity,
-  View, 
+  View,
 } from "react-native";
 import ImageViewer from "react-native-image-zoom-viewer";
+import Toast from "react-native-toast-message";
 
 import CategoryBadge from "@/src/components/badges/CategoryBadge";
 import { Item } from "@/src/components/itens/Item";
@@ -190,7 +191,6 @@ export default function Details() {
         )}
 
         {/* CONTEÚDO */}
-
         <View
           style={{
             padding: 20,
@@ -263,10 +263,11 @@ export default function Details() {
 
                 await Clipboard.setStringAsync(coords);
 
-                Alert.alert(
-                  "Copiado",
-                  "Coordenadas copiadas para a área de transferência.",
-                );
+                Toast.show({
+                  type: "success",
+                  text1: "Coordenadas copiadas",
+                  text2: coords,
+                });
               }}
             />
           </Section>
