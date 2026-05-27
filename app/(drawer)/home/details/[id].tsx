@@ -56,8 +56,7 @@ export default function Details() {
   }, [images]);
 
   function openMaps() {
-    const url = `https://www.google.com/maps?q=${tree?.latitude},${tree?.longitude}`;
-
+    const url = `https://www.google.com/maps/dir/?api=1&destination=${tree?.latitude},${tree?.longitude}`;
     Linking.openURL(url);
   }
 
@@ -312,7 +311,7 @@ export default function Details() {
               gap: 10,
             }}
           >
-            <Ionicons name="map-outline" size={18} color="#fff" />
+            <Ionicons name="navigate-outline" size={18} color="#fff" />
 
             <Text
               style={{
@@ -320,7 +319,7 @@ export default function Details() {
                 fontWeight: "bold",
               }}
             >
-              Abrir no Google Maps
+              Navegar até a árvore
             </Text>
           </TouchableOpacity>
 
