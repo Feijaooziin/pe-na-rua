@@ -64,6 +64,10 @@ export default function Header({ title = "Pé na Rua 🌳" }: HeaderProps) {
             }}
           />
           <TouchableOpacity
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+            }}
             onPress={() =>
               updateSetting({
                 theme: isDark ? "light" : "dark",
@@ -71,10 +75,11 @@ export default function Header({ title = "Pé na Rua 🌳" }: HeaderProps) {
             }
             activeOpacity={0.8}
           >
+            <Text style={{ color: colors.textSecondary }}>TEMA:</Text>
             <Ionicons
-              name={isDark ? "sunny" : "moon"}
+              name={isDark ? "moon" : "sunny"}
               size={22}
-              color={colors.text}
+              color={colors.textSecondary}
             />
           </TouchableOpacity>
         </View>

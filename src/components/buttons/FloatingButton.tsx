@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
 
+import { FAB_BOTTOM } from "@/src/constants/layout";
 import { useTheme } from "@/src/hooks/useTheme";
 
 type FloatingButtonProps = {
@@ -20,7 +21,7 @@ export default function FloatingButton({
       activeOpacity={0.8}
       style={{
         position: "absolute",
-        bottom: 96,
+        bottom: FAB_BOTTOM,
         right: 18,
         width: 60,
         height: 60,

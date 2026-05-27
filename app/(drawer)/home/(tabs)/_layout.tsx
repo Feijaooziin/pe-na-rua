@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 
+import { TAB_BAR_HEIGHT } from "@/src/constants/layout";
 import { useTheme } from "@/src/hooks/useTheme";
 
 export default function TabsLayout() {
@@ -20,7 +21,7 @@ export default function TabsLayout() {
           left: 12,
           right: 12,
           bottom: 12,
-          height: 78,
+          height: TAB_BAR_HEIGHT,
           paddingTop: 6,
           paddingBottom: 12,
           borderRadius: 24,
