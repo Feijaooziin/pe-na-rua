@@ -1,4 +1,3 @@
-import { Picker } from "@react-native-picker/picker";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import {
@@ -23,6 +22,8 @@ import { useTheme } from "@/src/hooks/useTheme";
 
 import { Tree } from "@/src/types/tree";
 
+import PickerItem from "@/src/components/itens/PickerItem";
+import { Section } from "@/src/components/itens/Section";
 import { chooseImage } from "@/src/utils/imagePicker";
 
 export default function Edit() {
@@ -279,175 +280,100 @@ export default function Edit() {
         </Text>
 
         {/* INPUT NOME */}
-        <Text
-          style={{
-            marginTop: 10,
-            marginBottom: 6,
-
-            fontWeight: "bold",
-
-            color: colors.text,
-          }}
-        >
-          Nome
-        </Text>
-
-        <TextInput
-          value={name}
-          onChangeText={setName}
-          placeholder="Ex: Mangueira"
-          placeholderTextColor={colors.textMuted}
-          style={{
-            borderWidth: 1,
-            borderColor: colors.border,
-
-            borderRadius: 14,
-
-            padding: 14,
-
-            backgroundColor: colors.input,
-
-            color: colors.text,
-          }}
-        />
-
-        {/* INPUT DESCRIÇÃO */}
-        <Text
-          style={{
-            marginTop: 18,
-            marginBottom: 6,
-
-            fontWeight: "bold",
-
-            color: colors.text,
-          }}
-        >
-          Descrição
-        </Text>
-
-        <TextInput
-          value={description}
-          onChangeText={setDescription}
-          placeholder="Detalhes sobre a árvore..."
-          placeholderTextColor={colors.textMuted}
-          multiline
-          style={{
-            borderWidth: 1,
-            borderColor: colors.border,
-
-            borderRadius: 14,
-
-            padding: 14,
-
-            backgroundColor: colors.input,
-
-            color: colors.text,
-
-            minHeight: 120,
-
-            textAlignVertical: "top",
-          }}
-        />
-
-        {/* CATEGORIA */}
-        <Text
-          style={{
-            marginTop: 18,
-            marginBottom: 6,
-
-            fontWeight: "bold",
-
-            color: colors.text,
-          }}
-        >
-          Categoria
-        </Text>
-
-        <View
-          style={{
-            backgroundColor: colors.input,
-
-            borderRadius: 14,
-
-            overflow: "hidden",
-
-            borderWidth: 1,
-            borderColor: colors.border,
-          }}
-        >
-          <Picker
+        <Section title="nome">
+          <TextInput
+            value={name}
+            onChangeText={setName}
+            placeholder="Ex: Mangueira"
+            placeholderTextColor={colors.textMuted}
             style={{
+              padding: 14,
+              backgroundColor: colors.input,
               color: colors.text,
             }}
-            dropdownIconColor={colors.text}
-            selectedValue={category}
-            onValueChange={(value) => setCategory(value)}
-          >
-            {categories.map((item) => (
-              <Picker.Item
-                key={item.value}
-                label={item.label}
-                value={item.value}
-                color={isDark ? "#fff" : "#000"}
-              />
-            ))}
-          </Picker>
+          />
+        </Section>
+
+        {/* INPUT DESCRIÇÃO */}
+        <Section title="Descrição">
+          <TextInput
+            value={description}
+            onChangeText={setDescription}
+            placeholder="Detalhes sobre a árvore..."
+            placeholderTextColor={colors.textMuted}
+            multiline
+            style={{
+              padding: 14,
+              backgroundColor: colors.input,
+              color: colors.text,
+              minHeight: 120,
+              textAlignVertical: "top",
+            }}
+          />
+        </Section>
+
+        {/* CATEGORIA */}
+        <Section title="Categoria">
+          <PickerItem
+            label="Selecione a Categoria"
+            value={category}
+            onChange={setCategory}
+            items={categories}
+          />
+        </Section>
+
+        <View style={{ marginTop: -36 }}>
+          <Section title="">
+            {/* BOTÃO SALVAR */}
+            <TouchableOpacity
+              onPress={handleUpdate}
+              style={{
+                marginTop: 12,
+                marginHorizontal: 12,
+                backgroundColor: colors.primary,
+                padding: 16,
+                borderRadius: 14,
+                alignItems: "center",
+              }}
+            >
+              <Text
+                style={{
+                  color: "#fff",
+                  fontWeight: "bold",
+                  fontSize: 15,
+                }}
+              >
+                Salvar alterações
+              </Text>
+            </TouchableOpacity>
+
+            {/* CANCELAR */}
+            <TouchableOpacity
+              onPress={() => router.back()}
+              style={{
+                margin: 12,
+                padding: 16,
+                borderRadius: 14,
+                alignItems: "center",
+
+                backgroundColor: colors.surface,
+
+                borderWidth: 1,
+                borderColor: colors.danger,
+              }}
+            >
+              <Text
+                style={{
+                  color: colors.danger,
+                  fontWeight: "bold",
+                  fontSize: 15,
+                }}
+              >
+                Cancelar
+              </Text>
+            </TouchableOpacity>
+          </Section>
         </View>
-
-        {/* BOTÃO SALVAR */}
-        <TouchableOpacity
-          onPress={handleUpdate}
-          style={{
-            marginTop: 28,
-
-            backgroundColor: colors.primary,
-
-            padding: 16,
-
-            borderRadius: 14,
-
-            alignItems: "center",
-          }}
-        >
-          <Text
-            style={{
-              color: "#fff",
-              fontWeight: "bold",
-              fontSize: 15,
-            }}
-          >
-            Salvar alterações
-          </Text>
-        </TouchableOpacity>
-
-        {/* BOTÃO CANCELAR */}
-        <TouchableOpacity
-          onPress={() => router.back()}
-          style={{
-            marginTop: 12,
-
-            padding: 16,
-
-            borderRadius: 14,
-
-            alignItems: "center",
-
-            borderWidth: 1,
-            borderColor: colors.danger,
-
-            backgroundColor: colors.surface,
-          }}
-        >
-          <Text
-            style={{
-              color: colors.danger,
-              fontWeight: "bold",
-              fontSize: 15,
-            }}
-          >
-            Cancelar
-          </Text>
-        </TouchableOpacity>
       </View>
     </ScrollView>
   );

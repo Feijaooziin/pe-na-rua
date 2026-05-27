@@ -207,7 +207,7 @@ export default function Create() {
         {/* CATEGORIA */}
         <Section title="Categoria">
           <PickerItem
-            label="Categoria"
+            label="Selecione a Categoria"
             value={category}
             onChange={setCategory}
             items={categories}
@@ -273,7 +273,7 @@ export default function Create() {
             label={
               latitude && longitude
                 ? `📍 ${latitude.toFixed(5)}, ${longitude.toFixed(5)}`
-                : "Pegando localização..."
+                : "Atualizando localização..."
             }
           />
           <TouchableOpacity
@@ -306,7 +306,8 @@ export default function Create() {
             <TouchableOpacity
               onPress={handleCreate}
               style={{
-                margin: 12,
+                marginTop: 12,
+                marginHorizontal: 12,
                 backgroundColor: colors.primary,
                 padding: 16,
                 borderRadius: 14,
