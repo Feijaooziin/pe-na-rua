@@ -1,10 +1,6 @@
-import { useCallback } from "react";
 import { Text, TouchableOpacity } from "react-native";
 
-import { useFocusEffect } from "@react-navigation/native";
-
-import { useSettings } from "@/src/hooks/useSettings";
-import { darkTheme, lightTheme } from "@/src/theme/themes";
+import { useTheme } from "@/src/hooks/useTheme";
 
 type ItemProps = {
   label: string;
@@ -13,28 +9,24 @@ type ItemProps = {
 };
 
 export function Item({ label, desc, onPress }: ItemProps) {
-  const { settings, loadSettings } = useSettings();
-
-  const colors = settings?.theme === "dark" ? darkTheme : lightTheme;
-
-  useFocusEffect(
-    useCallback(() => {
-      loadSettings();
-    }, []),
-  );
+  const { colors } = useTheme();
 
   return (
     <TouchableOpacity
+      activeOpacity={0.7}
       onPress={onPress}
       style={{
-        padding: 15,
+        padding: 16,
         borderBottomWidth: 1,
         borderColor: colors.border,
+        backgroundColor: colors.surface,
       }}
     >
       <Text
         style={{
           color: colors.text,
+          fontSize: 15,
+          fontWeight: "500",
         }}
       >
         {label}
@@ -45,7 +37,8 @@ export function Item({ label, desc, onPress }: ItemProps) {
           style={{
             fontSize: 12,
             color: colors.textMuted,
-            marginTop: 4,
+            marginTop: 5,
+            lineHeight: 18,
           }}
         >
           {desc}
@@ -56,28 +49,24 @@ export function Item({ label, desc, onPress }: ItemProps) {
 }
 
 export function DangerItem({ label, desc, onPress }: ItemProps) {
-  const { settings, loadSettings } = useSettings();
-
-  const colors = settings?.theme === "dark" ? darkTheme : lightTheme;
-
-  useFocusEffect(
-    useCallback(() => {
-      loadSettings();
-    }, []),
-  );
+  const { colors } = useTheme();
 
   return (
     <TouchableOpacity
+      activeOpacity={0.7}
       onPress={onPress}
       style={{
-        padding: 15,
+        padding: 16,
         borderBottomWidth: 1,
         borderColor: colors.borderDanger,
+        backgroundColor: colors.surface,
       }}
     >
       <Text
         style={{
           color: colors.danger,
+          fontSize: 15,
+          fontWeight: "600",
         }}
       >
         {label}
@@ -88,7 +77,8 @@ export function DangerItem({ label, desc, onPress }: ItemProps) {
           style={{
             fontSize: 12,
             color: colors.textMuted,
-            marginTop: 4,
+            marginTop: 5,
+            lineHeight: 18,
           }}
         >
           {desc}
