@@ -17,31 +17,22 @@ export default function TabsLayout() {
 
         tabBarStyle: {
           position: "absolute",
-
           left: 12,
           right: 12,
           bottom: 12,
-
-          borderRadius: 22,
-
           height: 78,
-
-          backgroundColor: colors.surface,
-
-          borderTopWidth: 0,
-
           paddingTop: 6,
           paddingBottom: 12,
-
+          borderRadius: 24,
+          backgroundColor: colors.surface,
+          borderTopWidth: 0,
           shadowColor: "#000",
           shadowOpacity: 0.05,
           shadowRadius: 8,
-
           shadowOffset: {
             width: 0,
             height: -2,
           },
-
           elevation: 8,
         },
 
