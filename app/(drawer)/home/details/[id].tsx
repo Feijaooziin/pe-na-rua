@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
+import * as Clipboard from "expo-clipboard";
 import * as Linking from "expo-linking";
 import { router, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
@@ -10,11 +11,13 @@ import {
   ScrollView,
   Text,
   TouchableOpacity,
-  View,
+  View, 
 } from "react-native";
 import ImageViewer from "react-native-image-zoom-viewer";
 
 import CategoryBadge from "@/src/components/badges/CategoryBadge";
+import { Item } from "@/src/components/itens/Item";
+import { Section } from "@/src/components/itens/Section";
 import { FINAL } from "@/src/constants/layout";
 import { deleteTree, getTreeById } from "@/src/database/trees";
 import { useSettings } from "@/src/hooks/useSettings";
@@ -193,90 +196,85 @@ export default function Details() {
             padding: 20,
           }}
         >
-          {/* NOME */}
-          <Text
-            style={{
-              fontSize: 28,
-              fontWeight: "bold",
-              color: colors.text,
-              marginTop: 8,
-              marginHorizontal: 8,
-            }}
-          >
-            {tree.name}
-          </Text>
-
-          {/* CATEGORIA */}
-          <CategoryBadge category={tree.category} />
-
-          {/* DATA */}
-          <Text
-            style={{
-              marginTop: 10,
-
-              color: colors.textMuted,
-
-              fontSize: 13,
-            }}
-          >
-            📅 Cadastrada em {formatDate(tree.created_at)}
-          </Text>
-
-          {/* DESCRIÇÃO */}
-          <Text
-            style={{
-              marginTop: 18,
-
-              fontSize: 16,
-
-              lineHeight: 24,
-
-              color: colors.textSecondary,
-            }}
-          >
-            {tree.description}
-          </Text>
-
-          {/* COORDENADAS */}
           <View
             style={{
-              marginTop: 18,
-
-              padding: 14,
-
-              backgroundColor: colors.surface,
-
-              borderRadius: 14,
-
-              borderWidth: 1,
-              borderColor: colors.border,
+              flexDirection: "row",
+              alignItems: "flex-end",
+              justifyContent: "space-between",
             }}
           >
+            {/* NOME */}
             <Text
               style={{
-                color: colors.text,
+                fontSize: 28,
                 fontWeight: "bold",
-                marginBottom: 6,
+                color: colors.text,
               }}
             >
-              Localização
+              {tree.name}
             </Text>
 
+            {/* DATA */}
             <Text
               style={{
-                color: colors.textSecondary,
+                marginTop: 12,
+                color: colors.textMuted,
+
+                fontSize: 10,
               }}
             >
-              📍 {tree.latitude}, {tree.longitude}
+              📅 CRIADA {formatDate(tree.created_at)}
             </Text>
           </View>
+
+          {/* CATEGORIA */}
+          <View style={{ marginTop: 8, marginBottom: 20 }}>
+            <CategoryBadge category={tree.category} />
+          </View>
+
+          {/* DESCRIÇÃO */}
+          {tree.description && (
+            <Section title="Descrição">
+              <View
+                style={{
+                  padding: 14,
+                  backgroundColor: colors.surface,
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 16,
+                    lineHeight: 24,
+                    color: colors.textSecondary,
+                  }}
+                >
+                  {tree.description}
+                </Text>
+              </View>
+            </Section>
+          )}
+
+          {/* COORDENADAS */}
+          <Section title="localização">
+            <Item
+              label={`📍 ${tree.latitude}, ${tree.longitude}`}
+              onPress={async () => {
+                const coords = `${tree.latitude}, ${tree.longitude}`;
+
+                await Clipboard.setStringAsync(coords);
+
+                Alert.alert(
+                  "Copiado",
+                  "Coordenadas copiadas para a área de transferência.",
+                );
+              }}
+            />
+          </Section>
 
           {/* BOTÃO MAPS */}
           <TouchableOpacity
             onPress={openMaps}
             style={{
-              marginTop: 18,
-
               backgroundColor: "#1976d2",
 
               padding: 15,
