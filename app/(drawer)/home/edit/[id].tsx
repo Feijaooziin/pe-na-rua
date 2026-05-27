@@ -67,7 +67,19 @@ export default function Edit() {
   }, [id]);
 
   function removeImage(index: number) {
-    setImages((prev) => prev.filter((_, i) => i !== index));
+    Alert.alert("Remover imagem", "Deseja excluir essa foto?", [
+      {
+        text: "Cancelar",
+        style: "cancel",
+      },
+      {
+        text: "Remover",
+        style: "destructive",
+        onPress: () => {
+          setImages((prev) => prev.filter((_, i) => i !== index));
+        },
+      },
+    ]);
   }
 
   function setAsMain(index: number) {

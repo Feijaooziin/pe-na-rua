@@ -23,7 +23,7 @@ export default function ImagePickerPreview({
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
-      style={{ marginBottom: 20 }}
+      style={{ marginBottom: 8 }}
     >
       {images.map((img, index) => (
         <View

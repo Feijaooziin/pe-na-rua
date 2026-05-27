@@ -128,7 +128,7 @@ export const darkTheme = {
 
   // FAB
   fab: "#66BB6A",
-  fabText: "#121212",
+  fabText: "#FFFFFF",
 
   // EFFECTS
   shadow: "#000000",

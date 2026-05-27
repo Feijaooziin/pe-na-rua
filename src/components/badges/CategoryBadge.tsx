@@ -1,4 +1,3 @@
-import { useTheme } from "@/src/hooks/useTheme";
 import { getCategoryColor, getCategoryLabel } from "@/src/utils/category";
 import { Text, View } from "react-native";
 
@@ -8,8 +7,6 @@ type Props = {
 };
 
 export default function CategoryBadge({ category, small = false }: Props) {
-  const { colors } = useTheme();
-
   return (
     <View
       style={{
@@ -23,7 +20,7 @@ export default function CategoryBadge({ category, small = false }: Props) {
     >
       <Text
         style={{
-          color: colors.textInverse,
+          color: "#FFFFFF",
           fontWeight: "bold",
           fontSize: small ? 10 : 13,
         }}

@@ -13,6 +13,7 @@ import { DangerItem, Item } from "@/src/components/itens/Item";
 import PickerItem from "@/src/components/itens/PickerItem";
 import { DangerSection, Section } from "@/src/components/itens/Section";
 import { SwitchItem } from "@/src/components/itens/SwitchItem";
+import { FINAL } from "@/src/constants/layout";
 
 export default function Settings() {
   const { colors } = useTheme();
@@ -160,7 +161,7 @@ export default function Settings() {
       <ScrollView
         contentContainerStyle={{
           padding: 20,
-          paddingBottom: 40,
+          paddingBottom: FINAL,
         }}
         showsVerticalScrollIndicator={false}
       >

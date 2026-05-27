@@ -10,10 +10,11 @@ import {
   View,
 } from "react-native";
 
-import { Picker } from "@react-native-picker/picker";
-
 import Header from "@/src/components/Header";
 import ImagePickerPreview from "@/src/components/ImagePickerPreview";
+import { Item } from "@/src/components/itens/Item";
+import PickerItem from "@/src/components/itens/PickerItem";
+import { Section } from "@/src/components/itens/Section";
 import { categories } from "@/src/constants/categories";
 import { FINAL } from "@/src/constants/layout";
 import { insertTree } from "@/src/database/trees";
@@ -172,252 +173,185 @@ export default function Create() {
         </Text>
 
         {/* NOME */}
-        <Text
-          style={{
-            marginBottom: 6,
-            color: colors.text,
-            fontWeight: "600",
-          }}
-        >
-          Nome
-        </Text>
-
-        <TextInput
-          value={name}
-          onChangeText={setName}
-          placeholder="Ex: Ipê amarelo"
-          placeholderTextColor={colors.textMuted}
-          style={{
-            backgroundColor: colors.surface,
-            borderRadius: 12,
-            padding: 14,
-            marginBottom: 16,
-
-            borderWidth: 1,
-            borderColor: colors.border,
-
-            color: colors.text,
-          }}
-        />
+        <Section title="Nome">
+          <TextInput
+            value={name}
+            onChangeText={setName}
+            placeholder="Ex: Ipê amarelo"
+            placeholderTextColor={colors.textMuted}
+            style={{
+              backgroundColor: colors.surface,
+              padding: 14,
+              color: colors.text,
+            }}
+          />
+        </Section>
 
         {/* DESCRIÇÃO */}
-        <Text
-          style={{
-            marginBottom: 6,
-            color: colors.text,
-            fontWeight: "600",
-          }}
-        >
-          Descrição
-        </Text>
-
-        <TextInput
-          value={description}
-          onChangeText={setDescription}
-          placeholder="Detalhes da árvore..."
-          placeholderTextColor={colors.textMuted}
-          multiline
-          style={{
-            backgroundColor: colors.surface,
-            borderRadius: 12,
-            padding: 14,
-            height: 110,
-            textAlignVertical: "top",
-            marginBottom: 16,
-
-            borderWidth: 1,
-            borderColor: colors.border,
-
-            color: colors.text,
-          }}
-        />
+        <Section title="Descrição">
+          <TextInput
+            value={description}
+            onChangeText={setDescription}
+            placeholder="Detalhes da árvore..."
+            placeholderTextColor={colors.textMuted}
+            multiline
+            style={{
+              backgroundColor: colors.surface,
+              padding: 14,
+              color: colors.text,
+              height: 110,
+              textAlignVertical: "top",
+            }}
+          />
+        </Section>
 
         {/* CATEGORIA */}
-        <Text
-          style={{
-            marginBottom: 6,
-            color: colors.text,
-            fontWeight: "600",
-          }}
-        >
-          Categoria
-        </Text>
-
-        <View
-          style={{
-            backgroundColor: colors.surface,
-            borderRadius: 12,
-            marginBottom: 16,
-            overflow: "hidden",
-
-            borderWidth: 1,
-            borderColor: colors.border,
-          }}
-        >
-          <Picker
-            style={{
-              color: colors.text,
-            }}
-            dropdownIconColor={colors.text}
-            selectedValue={category}
-            onValueChange={(value) => setCategory(value)}
-          >
-            {categories.map((item) => (
-              <Picker.Item
-                key={item.value}
-                label={item.label}
-                value={item.value}
-              />
-            ))}
-          </Picker>
-        </View>
+        <Section title="Categoria">
+          <PickerItem
+            label="Categoria"
+            value={category}
+            onChange={setCategory}
+            items={categories}
+          />
+        </Section>
 
         {/* IMAGENS */}
-        <TouchableOpacity
-          onPress={() =>
-            chooseImage({
-              currentImages: images,
-              maxImages,
-              allowCamera: true,
-              onImagesSelected: (newImages) =>
-                setImages((prev) => [...prev, ...newImages]),
-            })
-          }
-          style={{
-            backgroundColor: colors.surface,
-            borderRadius: 12,
-            padding: 15,
-            alignItems: "center",
-            marginBottom: 8,
-
-            borderWidth: 1,
-            borderColor: colors.border,
-          }}
-        >
+        <Section title="Imagens">
           <Text
             style={{
-              color: colors.primary,
-              fontWeight: "600",
+              marginVertical: 8,
+              fontSize: 15,
+              textAlign: "center",
+              color: isLimitReached ? colors.danger : colors.textSecondary,
+
+              fontWeight: isLimitReached ? "bold" : "normal",
             }}
           >
-            Adicionar imagens 📸
+            {images.length} / {maxImages} imagens usadas
           </Text>
-        </TouchableOpacity>
+          <View style={{ paddingHorizontal: 8 }}>
+            <ImagePickerPreview
+              images={images}
+              onRemove={removeImage}
+              onSetMain={setAsMain}
+            />
+          </View>
 
-        <Text
-          style={{
-            marginBottom: 16,
-            fontSize: 15,
-            textAlign: "center",
-            color: isLimitReached ? colors.danger : colors.textSecondary,
-
-            fontWeight: isLimitReached ? "bold" : "normal",
-          }}
-        >
-          {images.length} / {maxImages} imagens usadas
-        </Text>
-
-        <ImagePickerPreview
-          images={images}
-          onRemove={removeImage}
-          onSetMain={setAsMain}
-        />
+          <TouchableOpacity
+            onPress={() =>
+              chooseImage({
+                currentImages: images,
+                maxImages,
+                allowCamera: true,
+                onImagesSelected: (newImages) =>
+                  setImages((prev) => [...prev, ...newImages]),
+              })
+            }
+            style={{
+              backgroundColor: colors.surface,
+              borderRadius: 12,
+              padding: 15,
+              alignItems: "center",
+              margin: 8,
+              borderWidth: 1,
+              borderColor: colors.border,
+            }}
+          >
+            <Text
+              style={{
+                color: colors.primary,
+                fontWeight: "600",
+              }}
+            >
+              Adicionar imagens 📸
+            </Text>
+          </TouchableOpacity>
+        </Section>
 
         {/* LOCALIZAÇÃO */}
-        <View
-          style={{
-            backgroundColor: colors.surface,
-            borderRadius: 14,
-            padding: 14,
-            marginTop: 16,
-            marginBottom: 16,
-
-            borderWidth: 1,
-            borderColor: colors.border,
-          }}
-        >
-          <Text
+        <Section title="coordenadas">
+          <Item
+            label={
+              latitude && longitude
+                ? `📍 ${latitude.toFixed(5)}, ${longitude.toFixed(5)}`
+                : "Pegando localização..."
+            }
+          />
+          <TouchableOpacity
+            onPress={getLocation}
             style={{
-              color: colors.text,
-              fontSize: 15,
-              fontWeight: "600",
+              backgroundColor: colors.surface,
+              borderRadius: 12,
+              padding: 15,
+              alignItems: "center",
+              margin: 8,
+
+              borderWidth: 1,
+              borderColor: colors.border,
             }}
           >
-            {latitude && longitude
-              ? `📍 ${latitude.toFixed(5)}, ${longitude.toFixed(5)}`
-              : "Pegando localização..."}
-          </Text>
+            <Text
+              style={{
+                color: colors.primary,
+                fontWeight: "600",
+              }}
+            >
+              Atualizar localização
+            </Text>
+          </TouchableOpacity>
+        </Section>
+
+        <View style={{ marginTop: -36 }}>
+          <Section title="">
+            {/* SALVAR */}
+            <TouchableOpacity
+              onPress={handleCreate}
+              style={{
+                margin: 12,
+                backgroundColor: colors.primary,
+                padding: 16,
+                borderRadius: 14,
+                alignItems: "center",
+              }}
+            >
+              <Text
+                style={{
+                  color: "#fff",
+                  fontWeight: "bold",
+                  fontSize: 15,
+                }}
+              >
+                Salvar árvore
+              </Text>
+            </TouchableOpacity>
+
+            {/* CANCELAR */}
+            <TouchableOpacity
+              onPress={() => router.back()}
+              style={{
+                margin: 12,
+                padding: 16,
+                borderRadius: 14,
+                alignItems: "center",
+
+                backgroundColor: colors.surface,
+
+                borderWidth: 1,
+                borderColor: colors.danger,
+              }}
+            >
+              <Text
+                style={{
+                  color: colors.danger,
+                  fontWeight: "bold",
+                  fontSize: 15,
+                }}
+              >
+                Cancelar
+              </Text>
+            </TouchableOpacity>
+          </Section>
         </View>
-
-        <TouchableOpacity
-          onPress={getLocation}
-          style={{
-            backgroundColor: colors.surface,
-            borderRadius: 12,
-            padding: 15,
-            alignItems: "center",
-            marginBottom: 18,
-
-            borderWidth: 1,
-            borderColor: colors.border,
-          }}
-        >
-          <Text
-            style={{
-              color: colors.primary,
-              fontWeight: "600",
-            }}
-          >
-            Atualizar localização
-          </Text>
-        </TouchableOpacity>
-
-        {/* SALVAR */}
-        <TouchableOpacity
-          onPress={handleCreate}
-          style={{
-            backgroundColor: colors.primary,
-            padding: 16,
-            borderRadius: 14,
-            alignItems: "center",
-          }}
-        >
-          <Text
-            style={{
-              color: "#fff",
-              fontWeight: "bold",
-              fontSize: 15,
-            }}
-          >
-            Salvar árvore
-          </Text>
-        </TouchableOpacity>
-
-        {/* CANCELAR */}
-        <TouchableOpacity
-          onPress={() => router.back()}
-          style={{
-            marginTop: 12,
-            padding: 16,
-            borderRadius: 14,
-            alignItems: "center",
-
-            backgroundColor: colors.surface,
-
-            borderWidth: 1,
-            borderColor: colors.danger,
-          }}
-        >
-          <Text
-            style={{
-              color: colors.danger,
-              fontWeight: "bold",
-              fontSize: 15,
-            }}
-          >
-            Cancelar
-          </Text>
-        </TouchableOpacity>
       </ScrollView>
     </View>
   );
