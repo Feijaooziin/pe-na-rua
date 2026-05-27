@@ -1,6 +1,8 @@
+import { Picker } from "@react-native-picker/picker";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import {
+  Alert,
   Image,
   ScrollView,
   Text,
@@ -10,25 +12,40 @@ import {
 } from "react-native";
 
 import ImagePickerPreview from "@/src/components/ImagePickerPreview";
+
 import { categories } from "@/src/constants/categories";
+import { FINAL } from "@/src/constants/layout";
+
 import { getTreeById, updateTree } from "@/src/database/trees";
+
 import { useSettings } from "@/src/hooks/useSettings";
-import { colors } from "@/src/theme/colors";
+import { useTheme } from "@/src/hooks/useTheme";
+
 import { Tree } from "@/src/types/tree";
+
 import { chooseImage } from "@/src/utils/imagePicker";
-import { Picker } from "@react-native-picker/picker";
 
 export default function Edit() {
   const { id } = useLocalSearchParams();
+
+  const { colors, isDark } = useTheme();
+
   const { settings } = useSettings();
 
   const [tree, setTree] = useState<Tree | null>(null);
+
   const [name, setName] = useState("");
+
   const [description, setDescription] = useState("");
+
   const [images, setImages] = useState<string[]>([]);
+
   const [category, setCategory] = useState("tree");
+
   const maxImages = settings?.maxImages ?? 10;
+
   const isLimitReached = images.length >= maxImages;
+
   const remainingImages = maxImages - images.length;
 
   useEffect(() => {
@@ -37,10 +54,14 @@ export default function Edit() {
 
       if (data) {
         setTree(data);
+
         setName(data.name);
+
         setDescription(data.description);
+
         setImages(data.images ?? []);
-        setCategory(data.category ?? "");
+
+        setCategory(data.category ?? "tree");
       }
     }
   }, [id]);
@@ -52,7 +73,9 @@ export default function Edit() {
   function setAsMain(index: number) {
     setImages((prev) => {
       const selected = prev[index];
+
       const rest = prev.filter((_, i) => i !== index);
+
       return [selected, ...rest];
     });
   }
@@ -68,148 +91,282 @@ export default function Edit() {
       category,
     });
 
-    alert("Atualizado 🌳");
+    Alert.alert("Sucesso 🌳", "Árvore atualizada com sucesso!");
+
     router.back();
   }
 
   if (!tree) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text>Carregando...</Text>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: colors.background,
+        }}
+      >
+        <Text
+          style={{
+            color: colors.text,
+          }}
+        >
+          Carregando...
+        </Text>
       </View>
     );
   }
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: colors.background }}>
+    <ScrollView
+      style={{
+        flex: 1,
+        backgroundColor: colors.background,
+      }}
+      contentContainerStyle={{
+        paddingBottom: FINAL,
+      }}
+      showsVerticalScrollIndicator={false}
+    >
       {/* IMAGEM PRINCIPAL */}
       {images.length > 0 ? (
         <Image
           source={{ uri: images[0] }}
           style={{
             width: "100%",
-            height: 220,
-            borderRadius: 32,
+            height: 240,
+
+            borderBottomLeftRadius: 24,
+            borderBottomRightRadius: 24,
+
             marginBottom: 12,
-            marginTop: 6,
           }}
         />
       ) : (
         <View
           style={{
             height: 220,
-            backgroundColor: "#ccc",
+
+            backgroundColor: colors.surface,
+
             justifyContent: "center",
             alignItems: "center",
-            borderRadius: 12,
-            marginBottom: 10,
+
+            borderBottomLeftRadius: 24,
+            borderBottomRightRadius: 24,
+
+            marginBottom: 12,
           }}
         >
-          <Text>Sem imagem</Text>
+          <Text
+            style={{
+              color: colors.textMuted,
+            }}
+          >
+            Sem imagem
+          </Text>
         </View>
       )}
 
-      {/* LISTA DE IMAGENS */}
+      {/* PREVIEW */}
       <ImagePickerPreview
         images={images}
         onRemove={removeImage}
         onSetMain={setAsMain}
       />
 
-      <TouchableOpacity
-        onPress={() =>
-          chooseImage({
-            currentImages: images,
-            maxImages,
-            allowCamera: false,
-            onImagesSelected: (newImages) =>
-              setImages((prev) => [...prev, ...newImages]),
-          })
-        }
+      {/* ADICIONAR IMAGEM */}
+      <View
         style={{
-          backgroundColor: "#fff",
-          borderRadius: 10,
-          padding: 15,
-          alignItems: "center",
-          marginTop: 15,
+          paddingHorizontal: 20,
         }}
       >
-        <Text style={{ color: colors.primary }}>Adicionar imagens 📸</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() =>
+            chooseImage({
+              currentImages: images,
 
-      <Text
-        style={{
-          marginTop: 6,
-          marginBottom: 6,
-          fontSize: 16,
-          textAlign: "center",
-          color: isLimitReached ? colors.danger : "#666",
-          fontWeight: isLimitReached ? "bold" : "normal",
-        }}
-      >
-        {images.length} / {maxImages} imagens usadas
-      </Text>
+              maxImages,
 
-      <View style={{ paddingHorizontal: 20 }}>
+              allowCamera: false,
+
+              onImagesSelected: (newImages) =>
+                setImages((prev) => [...prev, ...newImages]),
+            })
+          }
+          style={{
+            backgroundColor: colors.surface,
+
+            borderRadius: 14,
+
+            padding: 16,
+
+            alignItems: "center",
+
+            marginTop: 18,
+
+            borderWidth: 1,
+            borderColor: colors.border,
+          }}
+        >
+          <Text
+            style={{
+              color: colors.primary,
+              fontWeight: "600",
+            }}
+          >
+            Adicionar imagens 📸
+          </Text>
+        </TouchableOpacity>
+
+        {/* CONTADOR */}
         <Text
           style={{
-            fontSize: 24,
+            marginTop: 10,
+            marginBottom: 4,
+
+            fontSize: 14,
+
+            textAlign: "center",
+
+            color: isLimitReached ? colors.danger : colors.textSecondary,
+
+            fontWeight: isLimitReached ? "bold" : "normal",
+          }}
+        >
+          {images.length} / {maxImages} imagens usadas
+        </Text>
+
+        {!isLimitReached && (
+          <Text
+            style={{
+              textAlign: "center",
+
+              fontSize: 12,
+
+              color: colors.textMuted,
+            }}
+          >
+            Você ainda pode adicionar {remainingImages} imagem(ns)
+          </Text>
+        )}
+
+        {/* TÍTULO */}
+        <Text
+          style={{
+            fontSize: 28,
             fontWeight: "bold",
+
             color: colors.text,
+
+            marginTop: 28,
+            marginBottom: 10,
           }}
         >
           Editar árvore 🌳
         </Text>
 
         {/* INPUT NOME */}
-        <Text style={{ marginTop: 15, fontWeight: "bold" }}>Nome</Text>
+        <Text
+          style={{
+            marginTop: 10,
+            marginBottom: 6,
+
+            fontWeight: "bold",
+
+            color: colors.text,
+          }}
+        >
+          Nome
+        </Text>
+
         <TextInput
           value={name}
           onChangeText={setName}
           placeholder="Ex: Mangueira"
-          placeholderTextColor={"#000"}
+          placeholderTextColor={colors.textMuted}
           style={{
-            marginTop: 5,
             borderWidth: 1,
-            borderColor: "#ddd",
-            borderRadius: 10,
-            padding: 12,
-            backgroundColor: "#fff",
+            borderColor: colors.border,
+
+            borderRadius: 14,
+
+            padding: 14,
+
+            backgroundColor: colors.input,
+
+            color: colors.text,
           }}
         />
 
         {/* INPUT DESCRIÇÃO */}
-        <Text style={{ marginTop: 15, fontWeight: "bold" }}>Descrição</Text>
+        <Text
+          style={{
+            marginTop: 18,
+            marginBottom: 6,
+
+            fontWeight: "bold",
+
+            color: colors.text,
+          }}
+        >
+          Descrição
+        </Text>
+
         <TextInput
           value={description}
           onChangeText={setDescription}
           placeholder="Detalhes sobre a árvore..."
-          placeholderTextColor={"#000"}
+          placeholderTextColor={colors.textMuted}
           multiline
           style={{
-            marginTop: 5,
             borderWidth: 1,
-            borderColor: "#ddd",
-            borderRadius: 10,
-            padding: 12,
-            backgroundColor: "#fff",
-            minHeight: 100,
+            borderColor: colors.border,
+
+            borderRadius: 14,
+
+            padding: 14,
+
+            backgroundColor: colors.input,
+
+            color: colors.text,
+
+            minHeight: 120,
+
             textAlignVertical: "top",
           }}
         />
 
-        <Text style={{ marginTop: 15, fontWeight: "bold" }}>Categoria</Text>
+        {/* CATEGORIA */}
+        <Text
+          style={{
+            marginTop: 18,
+            marginBottom: 6,
+
+            fontWeight: "bold",
+
+            color: colors.text,
+          }}
+        >
+          Categoria
+        </Text>
 
         <View
           style={{
-            backgroundColor: "#fff",
-            borderRadius: 10,
-            marginTop: 5,
+            backgroundColor: colors.input,
+
+            borderRadius: 14,
+
             overflow: "hidden",
+
+            borderWidth: 1,
+            borderColor: colors.border,
           }}
         >
           <Picker
-            style={{ color: colors.text }}
+            style={{
+              color: colors.text,
+            }}
             dropdownIconColor={colors.text}
             selectedValue={category}
             onValueChange={(value) => setCategory(value)}
@@ -219,6 +376,7 @@ export default function Edit() {
                 key={item.value}
                 label={item.label}
                 value={item.value}
+                color={isDark ? "#fff" : "#000"}
               />
             ))}
           </Picker>
@@ -228,32 +386,55 @@ export default function Edit() {
         <TouchableOpacity
           onPress={handleUpdate}
           style={{
-            marginTop: 20,
+            marginTop: 28,
+
             backgroundColor: colors.primary,
-            padding: 15,
-            borderRadius: 12,
+
+            padding: 16,
+
+            borderRadius: 14,
+
             alignItems: "center",
           }}
         >
-          <Text style={{ color: "#fff", fontWeight: "bold" }}>
+          <Text
+            style={{
+              color: "#fff",
+              fontWeight: "bold",
+              fontSize: 15,
+            }}
+          >
             Salvar alterações
           </Text>
         </TouchableOpacity>
 
-        {/* BOTÃO VOLTAR */}
+        {/* BOTÃO CANCELAR */}
         <TouchableOpacity
           onPress={() => router.back()}
           style={{
-            marginTop: 10,
-            padding: 15,
-            borderRadius: 12,
+            marginTop: 12,
+
+            padding: 16,
+
+            borderRadius: 14,
+
             alignItems: "center",
+
             borderWidth: 1,
-            borderColor: "#ccc",
-            backgroundColor: colors.danger,
+            borderColor: colors.danger,
+
+            backgroundColor: colors.surface,
           }}
         >
-          <Text style={{ color: "#fff", fontWeight: "bold" }}>Cancelar</Text>
+          <Text
+            style={{
+              color: colors.danger,
+              fontWeight: "bold",
+              fontSize: 15,
+            }}
+          >
+            Cancelar
+          </Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
