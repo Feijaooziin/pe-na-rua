@@ -329,30 +329,6 @@ export default function Settings() {
             onPress={handleResetApp}
           />
         </DangerSection>
-
-        {/* ℹ️ SOBRE*/}
-        <Section title="ℹ️ Sobre">
-          <Item
-            label="Sobre o app"
-            onPress={() =>
-              Alert.alert(
-                "Pé na Rua 🌳",
-                "App para registrar árvores e locais.\nVersão 1.0",
-              )
-            }
-          />
-        </Section>
-
-        {/* VERSÃO*/}
-        <Text
-          style={{
-            textAlign: "center",
-            color: colors.textMuted,
-            fontSize: 12,
-          }}
-        >
-          Pé na Rua 🌳 • v1.0.0
-        </Text>
       </ScrollView>
     </View>
   );

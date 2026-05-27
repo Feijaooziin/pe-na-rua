@@ -1,5 +1,11 @@
 import { Ionicons } from "@expo/vector-icons";
+import {
+  DrawerContentScrollView,
+  DrawerItemList,
+} from "@react-navigation/drawer";
 import { Drawer } from "expo-router/drawer";
+
+import { Text, View } from "react-native";
 
 import { useTheme } from "@/src/hooks/useTheme";
 
@@ -8,6 +14,31 @@ export default function DrawerLayout() {
 
   return (
     <Drawer
+      drawerContent={(props) => (
+        <View style={{ flex: 1 }}>
+          <DrawerContentScrollView {...props}>
+            <DrawerItemList {...props} />
+          </DrawerContentScrollView>
+
+          <View
+            style={{
+              padding: 20,
+              borderTopWidth: 1,
+              borderTopColor: colors.border,
+            }}
+          >
+            <Text
+              style={{
+                color: colors.textSecondary,
+                fontSize: 14,
+                textAlign: "center",
+              }}
+            >
+              Pé na Rua 🌳 • v1.0.0
+            </Text>
+          </View>
+        </View>
+      )}
       screenOptions={{
         headerShown: false,
 
@@ -31,8 +62,12 @@ export default function DrawerLayout() {
         name="home"
         options={{
           title: "Início",
-          drawerIcon: ({ color, size }) => (
-            <Ionicons name="home-outline" size={size} color={color} />
+          drawerIcon: ({ color, size, focused }) => (
+            <Ionicons
+              name={focused ? "home" : "home-outline"}
+              size={size}
+              color={color}
+            />
           ),
         }}
       />
@@ -41,8 +76,28 @@ export default function DrawerLayout() {
         name="settings"
         options={{
           title: "Configurações",
-          drawerIcon: ({ color, size }) => (
-            <Ionicons name="settings-outline" size={size} color={color} />
+          drawerIcon: ({ color, size, focused }) => (
+            <Ionicons
+              name={focused ? "settings" : "settings-outline"}
+              size={size}
+              color={color}
+            />
+          ),
+        }}
+      />
+
+      <Drawer.Screen
+        name="about"
+        options={{
+          title: "Sobre",
+          drawerIcon: ({ color, size, focused }) => (
+            <Ionicons
+              name={
+                focused ? "information-circle" : "information-circle-outline"
+              }
+              size={size}
+              color={color}
+            />
           ),
         }}
       />
