@@ -25,6 +25,7 @@ export default function DrawerLayout() {
               padding: 20,
               borderTopWidth: 1,
               borderTopColor: colors.border,
+              marginBottom: 4,
             }}
           >
             <Text
