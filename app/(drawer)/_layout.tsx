@@ -44,6 +44,7 @@ export default function DrawerLayout() {
 
         drawerStyle: {
           backgroundColor: colors.surface,
+          width: 280,
         },
 
         sceneStyle: {
@@ -53,8 +54,17 @@ export default function DrawerLayout() {
         drawerActiveTintColor: colors.primary,
         drawerInactiveTintColor: colors.textSecondary,
 
+        drawerActiveBackgroundColor: `${colors.primary}15`,
+
+        drawerItemStyle: {
+          borderRadius: 12,
+          marginHorizontal: 6,
+        },
+
         drawerLabelStyle: {
           color: colors.text,
+          fontSize: 15,
+          fontWeight: "600",
         },
       }}
     >

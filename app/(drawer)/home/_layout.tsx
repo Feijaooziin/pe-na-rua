@@ -1,15 +1,37 @@
 import { Stack } from "expo-router";
 
+import { useTheme } from "@/src/hooks/useTheme";
+
 export default function HomeLayout() {
+  const { colors, isDark } = useTheme();
+
   return (
     <Stack
       screenOptions={{
         headerShown: false,
+
+        contentStyle: {
+          backgroundColor: colors.background,
+        },
+
+        headerStyle: {
+          backgroundColor: colors.surface,
+        },
+
+        headerTintColor: colors.text,
+
+        headerTitleStyle: {
+          color: colors.text,
+          fontWeight: "bold",
+        },
+
+        headerShadowVisible: false,
+
+        statusBarStyle: isDark ? "light" : "dark",
       }}
     >
       <Stack.Screen name="(tabs)" />
 
-      {/* SOMENTE DETAILS COM HEADER */}
       <Stack.Screen
         name="details/[id]"
         options={{
@@ -25,6 +47,7 @@ export default function HomeLayout() {
           title: "Editar",
         }}
       />
+
       <Stack.Screen name="create" />
     </Stack>
   );

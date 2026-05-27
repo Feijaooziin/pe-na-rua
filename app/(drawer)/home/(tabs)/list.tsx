@@ -2,6 +2,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { router } from "expo-router";
 import { useCallback, useState } from "react";
 import { FlatList, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import FloatingButton from "@/src/components/buttons/FloatingButton";
 import TreeCard from "@/src/components/cards/TreeCard";

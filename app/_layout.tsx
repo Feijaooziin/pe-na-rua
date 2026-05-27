@@ -1,3 +1,4 @@
+import * as NavigationBar from "expo-navigation-bar";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
@@ -8,14 +9,31 @@ import { initDB } from "@/src/database/db";
 import { useTheme } from "@/src/hooks/useTheme";
 
 function AppContent() {
-  const { isDark } = useTheme();
+  const { colors, isDark } = useTheme();
+
+  useEffect(() => {
+    NavigationBar.setButtonStyleAsync(isDark ? "light" : "dark");
+  }, [isDark]);
 
   return (
-    <>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: colors.background,
+      }}
+    >
       <StatusBar style={isDark ? "light" : "dark"} />
 
-      <Stack screenOptions={{ headerShown: false }} />
-    </>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+
+          contentStyle: {
+            backgroundColor: colors.background,
+          },
+        }}
+      />
+    </View>
   );
 }
 
