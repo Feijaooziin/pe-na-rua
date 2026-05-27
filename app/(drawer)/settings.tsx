@@ -1,38 +1,43 @@
-import { Picker } from "@react-native-picker/picker";
 import { router } from "expo-router";
-import { ReactNode } from "react";
-import {
-  Alert,
-  ScrollView,
-  Switch,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Alert, ScrollView, Text, View } from "react-native";
 
-import Header from "@/src/components/Header";
 import { db } from "@/src/database/db";
 import { useSettings } from "@/src/hooks/useSettings";
 import { useTheme } from "@/src/hooks/useTheme";
 import { exportTrees, importTrees } from "@/src/services/backup";
 import { resetSettings } from "@/src/storage/settings";
 
+import Header from "@/src/components/Header";
+import { DangerItem, Item } from "@/src/components/itens/Item";
+import PickerItem from "@/src/components/itens/PickerItem";
+import { DangerSection, Section } from "@/src/components/itens/Section";
+import { SwitchItem } from "@/src/components/itens/SwitchItem";
+
 export default function Settings() {
   const { colors } = useTheme();
+
   const { settings, loading, updateSetting, loadSettings } = useSettings();
+
+  async function handleReloadSettings() {
+    await loadSettings();
+  }
 
   function handleResetSettings() {
     Alert.alert(
       "Resetar configurações",
       "Todas as configurações voltarão ao padrão.",
       [
-        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Cancelar",
+          style: "cancel",
+        },
         {
           text: "Resetar",
           onPress: async () => {
             try {
               await resetSettings();
-              await loadSettings();
+
+              await handleReloadSettings();
 
               Alert.alert("Sucesso", "Configurações resetadas com sucesso!");
             } catch (error) {
@@ -49,7 +54,10 @@ export default function Settings() {
       "Limpar árvores",
       "Todas as árvores cadastradas serão apagadas.",
       [
-        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Cancelar",
+          style: "cancel",
+        },
         {
           text: "Limpar",
           style: "destructive",
@@ -74,7 +82,10 @@ export default function Settings() {
       "Resetar aplicativo",
       "Isso apagará TODAS as árvores e restaurará TODAS as configurações.",
       [
-        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Cancelar",
+          style: "cancel",
+        },
         {
           text: "Resetar tudo",
           style: "destructive",
@@ -84,7 +95,7 @@ export default function Settings() {
 
               await resetSettings();
 
-              await loadSettings();
+              await handleReloadSettings();
 
               Alert.alert("Sucesso", "Aplicativo resetado com sucesso!");
 
@@ -98,232 +109,87 @@ export default function Settings() {
     );
   }
 
-  type SectionProps = {
-    title: string;
-    children: ReactNode;
-  };
-
-  function Section({ title, children }: SectionProps) {
-    return (
-      <View style={{ marginBottom: 25 }}>
-        <Text
-          style={{
-            fontSize: 14,
-            fontWeight: "600",
-            marginBottom: 8,
-            color: "#666",
-          }}
-        >
-          {title.toUpperCase()}
-        </Text>
-
-        <View
-          style={{
-            backgroundColor: "#fff",
-            borderRadius: 12,
-            overflow: "hidden",
-          }}
-        >
-          {children}
-        </View>
-      </View>
-    );
-  }
-
-  function DangerSection({ title, children }: SectionProps) {
-    return (
-      <View style={{ marginBottom: 25 }}>
-        <Text
-          style={{
-            fontSize: 14,
-            fontWeight: "600",
-            marginBottom: 8,
-            color: colors.danger,
-          }}
-        >
-          {title.toUpperCase()}
-        </Text>
-
-        <View
-          style={{
-            backgroundColor: "#fff",
-            borderRadius: 12,
-            overflow: "hidden",
-            borderWidth: 1,
-            borderColor: colors.danger,
-          }}
-        >
-          {children}
-        </View>
-      </View>
-    );
-  }
-
-  type ItemProps = {
-    label: string;
-    desc?: string;
-    onPress: () => void;
-  };
-
-  function Item({ label, desc, onPress }: ItemProps) {
-    return (
-      <TouchableOpacity
-        onPress={onPress}
-        style={{
-          padding: 15,
-          borderBottomWidth: 1,
-          borderColor: colors.border,
-        }}
-      >
-        <Text style={{ color: colors.text }}>{label}</Text>
-
-        {desc && (
-          <Text
-            style={{
-              fontSize: 12,
-              color: "#888",
-              marginTop: 4,
-            }}
-          >
-            {desc}
-          </Text>
-        )}
-      </TouchableOpacity>
-    );
-  }
-
-  function DangerItem({ label, desc, onPress }: ItemProps) {
-    return (
-      <TouchableOpacity
-        onPress={onPress}
-        style={{
-          padding: 15,
-          borderBottomWidth: 1,
-          borderColor: colors.borderDanger,
-        }}
-      >
-        <Text style={{ color: colors.danger }}>{label}</Text>
-
-        {desc && (
-          <Text
-            style={{
-              fontSize: 12,
-              color: "#888",
-              marginTop: 4,
-            }}
-          >
-            {desc}
-          </Text>
-        )}
-      </TouchableOpacity>
-    );
-  }
-
-  type SwitchItemProps = {
-    label: string;
-    value: boolean;
-    onValueChange: (value: boolean) => void;
-  };
-
-  function SwitchItem({ label, value, onValueChange }: SwitchItemProps) {
+  if (loading || !settings) {
     return (
       <View
         style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: 15,
-          borderBottomWidth: 1,
-          borderColor: colors.border,
+          flex: 1,
+          backgroundColor: colors.background,
         }}
       >
-        <Text style={{ color: colors.text }}>{label}</Text>
-        <Switch
-          value={value}
-          onValueChange={onValueChange}
-          thumbColor={colors.primary}
-          trackColor={{
-            false: "#ccc",
-            true: "#4CAF5077",
-          }}
-        />
-      </View>
-    );
-  }
-
-  if (loading || !settings) {
-    return (
-      <View style={{ flex: 1, backgroundColor: colors.background }}>
         <Header title="Configurações ⚙️" />
+
         <View
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
         >
-          <Text>Carregando...</Text>
+          <Text
+            style={{
+              color: colors.text,
+            }}
+          >
+            Carregando...
+          </Text>
         </View>
       </View>
     );
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.background }}>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: colors.background,
+      }}
+    >
       <Header title="Configurações ⚙️" />
 
-      <ScrollView contentContainerStyle={{ padding: 20 }}>
-        <Section title="Teste">
+      <ScrollView
+        contentContainerStyle={{
+          padding: 20,
+          paddingBottom: 40,
+        }}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* 🎨 TEMA */}
+        <Section title="Tema">
           <Item
-            label={settings.theme === "light" ? "Tema Claro" : "Tema Escuro"}
-            onPress={() => Alert.alert("Tema atual: ", settings.theme)}
+            label={
+              settings.theme === "system"
+                ? "Tema do sistema"
+                : settings.theme === "light"
+                  ? "Tema claro"
+                  : "Tema escuro"
+            }
+            onPress={() => Alert.alert("Tema atual", settings.theme)}
           />
 
-          <View
-            style={{
-              padding: 15,
-              borderBottomWidth: 1,
-              borderColor: "#eee",
-            }}
-          >
-            <Text
-              style={{
-                marginBottom: 8,
-                color: colors.text,
-              }}
-            >
-              Tema
-            </Text>
-            <Text
-              style={{
-                marginBottom: 8,
-                color: colors.text,
-                fontSize: 11,
-              }}
-            >
-              Em desenvolvimento!
-            </Text>
-
-            <View
-              style={{
-                borderWidth: 1,
-                borderColor: "#ddd",
-                borderRadius: 10,
-                overflow: "hidden",
-              }}
-            >
-              <Picker
-                style={{ color: colors.text }}
-                selectedValue={settings.theme}
-                dropdownIconColor={colors.text}
-                onValueChange={(value) =>
-                  updateSetting({
-                    theme: value,
-                  })
-                }
-              >
-                <Picker.Item label="📱 Sistema" value="system" />
-                <Picker.Item label="🌞 Claro" value="light" />
-                <Picker.Item label="🌙 Escuro" value="dark" />
-              </Picker>
-            </View>
-          </View>
+          <PickerItem
+            label="Selecionar tema"
+            value={settings.theme}
+            onChange={(value) =>
+              updateSetting({
+                theme: value,
+              })
+            }
+            items={[
+              {
+                label: "📱 Sistema",
+                value: "system",
+              },
+              {
+                label: "🌞 Claro",
+                value: "light",
+              },
+              {
+                label: "🌙 Escuro",
+                value: "dark",
+              },
+            ]}
+          />
         </Section>
 
         {/* 📍 MAPA */}
@@ -331,116 +197,90 @@ export default function Settings() {
           <SwitchItem
             label="Centralizar ao abrir"
             value={settings.autoCenter}
-            onValueChange={(value) => updateSetting({ autoCenter: value })}
+            onValueChange={(value) =>
+              updateSetting({
+                autoCenter: value,
+              })
+            }
           />
 
           <SwitchItem
             label="Mostrar árvores no mapa"
             value={settings.showTrees}
-            onValueChange={(value) => updateSetting({ showTrees: value })}
+            onValueChange={(value) =>
+              updateSetting({
+                showTrees: value,
+              })
+            }
           />
 
-          <View
-            style={{
-              padding: 15,
-              borderBottomWidth: 1,
-              borderColor: "#eee",
-            }}
-          >
-            <Text
-              style={{
-                marginBottom: 8,
-                color: colors.text,
-              }}
-            >
-              Tipo de mapa
-            </Text>
-
-            <View
-              style={{
-                borderWidth: 1,
-                borderColor: "#ddd",
-                borderRadius: 10,
-                overflow: "hidden",
-              }}
-            >
-              <Picker
-                style={{ color: colors.text }}
-                dropdownIconColor={colors.text}
-                selectedValue={settings.mapType}
-                onValueChange={(value) =>
-                  updateSetting({
-                    mapType: value,
-                  })
-                }
-              >
-                <Picker.Item label="Padrão" value="standard" />
-                <Picker.Item label="Satélite" value="satellite" />
-                <Picker.Item label="Híbrido" value="hybrid" />
-                <Picker.Item label="Terreno" value="terrain" />
-              </Picker>
-            </View>
-          </View>
+          <PickerItem
+            label="Tipo de mapa"
+            value={settings.mapType}
+            onChange={(value) =>
+              updateSetting({
+                mapType: value,
+              })
+            }
+            items={[
+              {
+                label: "Padrão",
+                value: "standard",
+              },
+              {
+                label: "Satélite",
+                value: "satellite",
+              },
+              {
+                label: "Híbrido",
+                value: "hybrid",
+              },
+              {
+                label: "Terreno",
+                value: "terrain",
+              },
+            ]}
+          />
         </Section>
 
         {/* 🌳 ÁRVORES */}
         <Section title="Árvores">
-          <View
-            style={{
-              padding: 15,
-              borderBottomWidth: 1,
-              borderColor: "#eee",
-            }}
-          >
-            <Text
-              style={{
-                marginBottom: 8,
-                color: colors.text,
-              }}
-            >
-              Limite de imagens
-            </Text>
-            <Text
-              style={{
-                marginBottom: 8,
-                color: colors.text,
-                fontSize: 11,
-              }}
-            >
-              Árvores salvas não mudarão a quantidade de imagens, somente após
-              editá-las.
-            </Text>
-
-            <View
-              style={{
-                borderWidth: 1,
-                borderColor: "#ddd",
-                borderRadius: 10,
-                overflow: "hidden",
-              }}
-            >
-              <Picker
-                style={{ color: colors.text }}
-                selectedValue={settings.maxImages}
-                dropdownIconColor={colors.text}
-                onValueChange={(value) =>
-                  updateSetting({
-                    maxImages: value,
-                  })
-                }
-              >
-                <Picker.Item label="1 imagem" value={1} />
-                <Picker.Item label="3 imagens" value={3} />
-                <Picker.Item label="5 imagens" value={5} />
-                <Picker.Item label="10 imagens" value={10} />
-              </Picker>
-            </View>
-          </View>
+          <PickerItem
+            label="Limite de imagens"
+            value={settings.maxImages}
+            onChange={(value) =>
+              updateSetting({
+                maxImages: value,
+              })
+            }
+            items={[
+              {
+                label: "1 imagem",
+                value: 1,
+              },
+              {
+                label: "3 imagens",
+                value: 3,
+              },
+              {
+                label: "5 imagens",
+                value: 5,
+              },
+              {
+                label: "10 imagens",
+                value: 10,
+              },
+            ]}
+          />
 
           <SwitchItem
             label="Atualizar localização automática"
             value={settings.autoLocation}
-            onValueChange={(value) => updateSetting({ autoLocation: value })}
+            onValueChange={(value) =>
+              updateSetting({
+                autoLocation: value,
+              })
+            }
           />
         </Section>
 
@@ -454,11 +294,15 @@ export default function Settings() {
           <SwitchItem
             label="Incluir Google Maps"
             value={settings.includeMaps}
-            onValueChange={(value) => updateSetting({ includeMaps: value })}
+            onValueChange={(value) =>
+              updateSetting({
+                includeMaps: value,
+              })
+            }
           />
         </Section>
 
-        {/* 🎨 SISTEMA */}
+        {/* ⚙️ SISTEMA */}
         <Section title="Sistema">
           <Item label="Exportar árvores" onPress={exportTrees} />
 
@@ -475,22 +319,23 @@ export default function Settings() {
           />
         </Section>
 
+        {/* 🚨 ZONA DE PERIGO */}
         <DangerSection title="Zona de perigo">
           <DangerItem
             label="Resetar configurações"
-            desc="Restaura todas as configurações para os valores padrão do aplicativo."
+            desc="Restaura todas as configurações do aplicativo."
             onPress={handleResetSettings}
           />
 
           <DangerItem
             label="Limpar árvores"
-            desc="Remove permanentemente todas as árvores cadastradas no aplicativo."
+            desc="Remove permanentemente todas as árvores cadastradas."
             onPress={handleClearTrees}
           />
 
           <DangerItem
             label="Resetar aplicativo"
-            desc="Apaga todas as árvores e redefine todas as configurações do aplicativo."
+            desc="Apaga árvores e redefine todas as configurações."
             onPress={handleResetApp}
           />
         </DangerSection>

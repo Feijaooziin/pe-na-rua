@@ -1,4 +1,6 @@
-import { Picker } from "@react-native-picker/picker";
+import RNPickerSelect from "react-native-picker-select";
+
+import { Ionicons } from "@expo/vector-icons";
 import { Text, View } from "react-native";
 
 import { useTheme } from "@/src/hooks/useTheme";
@@ -10,42 +12,41 @@ type Option = {
 
 type Props = {
   label: string;
-  desc?: string;
   value?: string | number;
   onChange: (value: any) => void;
   items: Option[];
+  description?: string;
 };
 
 export default function PickerItem({
   label,
-  desc,
   value,
   onChange,
   items,
+  description,
 }: Props) {
-  const { colors } = useTheme();
+  const { colors, isDark } = useTheme();
 
   return (
     <View
       style={{
-        padding: 16,
+        padding: 15,
         borderBottomWidth: 1,
         borderColor: colors.border,
-        backgroundColor: colors.surface,
       }}
     >
       <Text
         style={{
-          marginBottom: 6,
+          marginBottom: 8,
           color: colors.text,
           fontSize: 15,
-          fontWeight: "500",
+          fontWeight: "600",
         }}
       >
         {label}
       </Text>
 
-      {desc && (
+      {description && (
         <Text
           style={{
             marginBottom: 10,
@@ -54,7 +55,7 @@ export default function PickerItem({
             lineHeight: 18,
           }}
         >
-          {desc}
+          {description}
         </Text>
       )}
 
@@ -67,24 +68,67 @@ export default function PickerItem({
           backgroundColor: colors.input,
         }}
       >
-        <Picker
-          style={{
-            color: colors.text,
-            backgroundColor: colors.input,
-          }}
-          dropdownIconColor={colors.icon}
-          selectedValue={value}
+        <RNPickerSelect
+          value={value}
           onValueChange={onChange}
-        >
-          {items.map((item) => (
-            <Picker.Item
-              key={String(item.value)}
-              label={item.label}
-              value={item.value}
-              color={colors.text}
+          items={items}
+          useNativeAndroidPickerStyle={false}
+          // darkTheme={isDark}
+          placeholder={{}}
+          Icon={() => (
+            <Ionicons
+              name="chevron-down"
+              size={20}
+              color={colors.iconSecondary}
             />
-          ))}
-        </Picker>
+          )}
+          style={{
+            inputIOS: {
+              color: colors.text,
+              backgroundColor: colors.input,
+              paddingVertical: 14,
+              paddingHorizontal: 14,
+              fontSize: 15,
+            },
+
+            inputAndroid: {
+              color: colors.text,
+              backgroundColor: colors.input,
+              paddingVertical: 12,
+              paddingHorizontal: 14,
+              fontSize: 15,
+            },
+
+            viewContainer: {
+              borderWidth: 1,
+              borderColor: colors.inputBorder,
+              borderRadius: 10,
+              backgroundColor: colors.input,
+            },
+
+            placeholder: {
+              color: colors.placeholder,
+            },
+
+            iconContainer: {
+              top: 10,
+              right: 16,
+            },
+
+            modalViewMiddle: {
+              backgroundColor: colors.modal,
+            },
+
+            modalViewBottom: {
+              backgroundColor: colors.modal,
+            },
+
+            done: {
+              color: colors.primary,
+              fontWeight: "bold",
+            },
+          }}
+        />
       </View>
     </View>
   );
