@@ -155,20 +155,10 @@ export default function Settings() {
         showsVerticalScrollIndicator={false}
       >
         {/* 🎨 TEMA */}
-        <Section title="Tema">
-          <Item
-            label={
-              settings.theme === "system"
-                ? "Tema do sistema"
-                : settings.theme === "light"
-                  ? "Tema claro"
-                  : "Tema escuro"
-            }
-            onPress={() => Alert.alert("Tema atual", settings.theme)}
-          />
-
+        <Section title="🎨 Tema">
           <PickerItem
-            label="Selecionar tema"
+            label="Tema do aplicativo"
+            description="Escolha entre claro, escuro ou automático."
             value={settings.theme}
             onChange={(value) =>
               updateSetting({
@@ -193,9 +183,9 @@ export default function Settings() {
         </Section>
 
         {/* 📍 MAPA */}
-        <Section title="Mapa">
+        <Section title="📍 Mapa">
           <SwitchItem
-            label="Centralizar ao abrir"
+            label="Centralizar mapa automaticamente"
             value={settings.autoCenter}
             onValueChange={(value) =>
               updateSetting({
@@ -205,7 +195,7 @@ export default function Settings() {
           />
 
           <SwitchItem
-            label="Mostrar árvores no mapa"
+            label="Exibir árvores no mapa"
             value={settings.showTrees}
             onValueChange={(value) =>
               updateSetting({
@@ -215,7 +205,8 @@ export default function Settings() {
           />
 
           <PickerItem
-            label="Tipo de mapa"
+            label="Estilo do mapa"
+            description="Defina como o mapa será exibido."
             value={settings.mapType}
             onChange={(value) =>
               updateSetting({
@@ -244,9 +235,10 @@ export default function Settings() {
         </Section>
 
         {/* 🌳 ÁRVORES */}
-        <Section title="Árvores">
+        <Section title="🌳 Árvores">
           <PickerItem
-            label="Limite de imagens"
+            label="Quantidade máxima de imagens"
+            description="Define o limite de fotos por árvore cadastrada."
             value={settings.maxImages}
             onChange={(value) =>
               updateSetting({
@@ -274,7 +266,7 @@ export default function Settings() {
           />
 
           <SwitchItem
-            label="Atualizar localização automática"
+            label="Atualizar localização automaticamente"
             value={settings.autoLocation}
             onValueChange={(value) =>
               updateSetting({
@@ -285,14 +277,14 @@ export default function Settings() {
         </Section>
 
         {/* 📤 COMPARTILHAMENTO */}
-        <Section title="Compartilhamento">
+        <Section title="📤 Compartilhamento">
           <Item
-            label="Editar texto do compartilhamento"
+            label="Editar texto padrão de compartilhamento "
             onPress={() => router.push("/(stack)/settings/share-text")}
           />
 
           <SwitchItem
-            label="Incluir Google Maps"
+            label="Incluir link do Google Maps"
             value={settings.includeMaps}
             onValueChange={(value) =>
               updateSetting({
@@ -302,25 +294,23 @@ export default function Settings() {
           />
         </Section>
 
-        {/* ⚙️ SISTEMA */}
-        <Section title="Sistema">
-          <Item label="Exportar árvores" onPress={exportTrees} />
-
-          <Item label="Importar árvores" onPress={importTrees} />
+        {/* 📦 DADOS */}
+        <Section title="📦 Dados">
+          <Item
+            label="Exportar árvores"
+            desc="Salva um backup das árvores cadastradas."
+            onPress={exportTrees}
+          />
 
           <Item
-            label="Sobre o app"
-            onPress={() =>
-              Alert.alert(
-                "Pé na Rua 🌳",
-                "App para registrar árvores e locais.\nVersão 1.0",
-              )
-            }
+            label="Importar árvores"
+            desc="Restaura árvores a partir de um backup."
+            onPress={importTrees}
           />
         </Section>
 
         {/* 🚨 ZONA DE PERIGO */}
-        <DangerSection title="Zona de perigo">
+        <DangerSection title="🚨 Zona de perigo">
           <DangerItem
             label="Resetar configurações"
             desc="Restaura todas as configurações do aplicativo."
@@ -339,6 +329,30 @@ export default function Settings() {
             onPress={handleResetApp}
           />
         </DangerSection>
+
+        {/* ℹ️ SOBRE*/}
+        <Section title="ℹ️ Sobre">
+          <Item
+            label="Sobre o app"
+            onPress={() =>
+              Alert.alert(
+                "Pé na Rua 🌳",
+                "App para registrar árvores e locais.\nVersão 1.0",
+              )
+            }
+          />
+        </Section>
+
+        {/* VERSÃO*/}
+        <Text
+          style={{
+            textAlign: "center",
+            color: colors.textMuted,
+            fontSize: 12,
+          }}
+        >
+          Pé na Rua 🌳 • v1.0.0
+        </Text>
       </ScrollView>
     </View>
   );

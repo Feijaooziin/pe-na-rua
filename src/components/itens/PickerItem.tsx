@@ -12,18 +12,18 @@ type Option = {
 
 type Props = {
   label: string;
+  description?: string;
   value?: string | number;
   onChange: (value: any) => void;
   items: Option[];
-  description?: string;
 };
 
 export default function PickerItem({
   label,
+  description,
   value,
   onChange,
   items,
-  description,
 }: Props) {
   const { colors, isDark } = useTheme();
 
