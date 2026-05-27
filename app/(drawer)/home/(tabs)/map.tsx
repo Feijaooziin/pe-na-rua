@@ -3,36 +3,53 @@ import * as Location from "expo-location";
 import { router } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
+
 import MapView, { Marker } from "react-native-maps";
 
 import Header from "@/src/components/Header";
+
 import { getTrees } from "@/src/database/trees";
+
 import { useSettings } from "@/src/hooks/useSettings";
+import { useTheme } from "@/src/hooks/useTheme";
+
 import { shareTree } from "@/src/services/shareTree";
-import { colors } from "@/src/theme/colors";
+
 import { Tree } from "@/src/types/tree";
+
 import { getCategoryColor, getCategoryLabel } from "@/src/utils/category";
 
 export default function Map() {
+  const { colors, isDark } = useTheme();
+
   const { settings, loading, loadSettings } = useSettings();
+
   const mapRef = useRef<MapView>(null);
+
   const [location, setLocation] = useState<Location.LocationObject | null>(
     null,
   );
+
   const [trees, setTrees] = useState<Tree[]>([]);
+
   const [selectedTree, setSelectedTree] = useState<Tree | null>(null);
+
   const images = (() => {
     if (!selectedTree?.images) return [];
 
-    if (Array.isArray(selectedTree.images)) return selectedTree.images;
+    if (Array.isArray(selectedTree.images)) {
+      return selectedTree.images;
+    }
 
     try {
       const parsed = JSON.parse(selectedTree.images as any);
+
       return Array.isArray(parsed) ? parsed : [];
     } catch {
       return [];
     }
   })();
+
   const firstImage = images.length > 0 ? images[0] : null;
 
   useFocusEffect(
@@ -41,6 +58,7 @@ export default function Map() {
     }, []),
   );
 
+  // 📍 AUTO CENTRALIZAR
   useEffect(() => {
     if (settings?.autoCenter && location && mapRef.current) {
       mapRef.current.animateToRegion({
@@ -52,31 +70,35 @@ export default function Map() {
     }
   }, [settings?.autoCenter, location]);
 
-  // 📍 localização atual
+  // 📍 LOCALIZAÇÃO
   useEffect(() => {
     (async () => {
       const { granted } = await Location.requestForegroundPermissionsAsync();
 
       if (!granted) {
         alert("Permissão negada");
+
         return;
       }
 
       const loc = await Location.getCurrentPositionAsync({
         accuracy: Location.Accuracy.High,
       });
+
       setLocation(loc);
     })();
   }, []);
 
-  // 🌳 carregar árvores
+  // 🌳 CARREGAR ÁRVORES
   useFocusEffect(
     useCallback(() => {
       const data = getTrees();
+
       setTrees(data);
     }, []),
   );
 
+  // 🔄 ATUALIZA CARD
   useEffect(() => {
     if (!selectedTree) return;
 
@@ -89,12 +111,21 @@ export default function Map() {
     }
   }, [trees]);
 
+  // ⏳ LOADING LOCALIZAÇÃO
   if (!location) {
     return (
-      <View style={{ flex: 1 }}>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: colors.background,
+        }}
+      >
         <Header />
+
         <MapView
-          style={{ flex: 1 }}
+          style={{
+            flex: 1,
+          }}
           initialRegion={{
             latitude: -25.429,
             longitude: -49.271,
@@ -102,31 +133,86 @@ export default function Map() {
             longitudeDelta: 0.05,
           }}
         />
+
+        <View
+          style={{
+            position: "absolute",
+
+            top: 120,
+
+            alignSelf: "center",
+
+            backgroundColor: colors.surface,
+
+            paddingHorizontal: 16,
+            paddingVertical: 10,
+
+            borderRadius: 14,
+
+            borderWidth: 1,
+            borderColor: colors.border,
+          }}
+        >
+          <Text
+            style={{
+              color: colors.text,
+              fontWeight: "600",
+            }}
+          >
+            Obtendo localização...
+          </Text>
+        </View>
       </View>
     );
   }
 
-  if (loading || !settings)
+  // ⏳ LOADING SETTINGS
+  if (loading || !settings) {
     return (
-      <View style={{ flex: 1, backgroundColor: colors.background }}>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: colors.background,
+        }}
+      >
         <Header />
+
         <View
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          style={{
+            flex: 1,
+
+            justifyContent: "center",
+            alignItems: "center",
+          }}
         >
-          <Text>Carregando...</Text>
+          <Text
+            style={{
+              color: colors.text,
+            }}
+          >
+            Carregando...
+          </Text>
         </View>
       </View>
     );
+  }
 
   return (
-    <View style={{ flex: 1 }}>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: colors.background,
+      }}
+    >
       <Header />
 
       <MapView
-        key={settings.mapType}
+        key={`${settings.mapType}-${isDark}`}
         ref={mapRef}
         mapType={settings.mapType}
-        style={{ flex: 1 }}
+        style={{
+          flex: 1,
+        }}
         initialRegion={
           settings.autoCenter && location
             ? {
@@ -142,8 +228,9 @@ export default function Map() {
                 longitudeDelta: 0.5,
               }
         }
+        userInterfaceStyle={isDark ? "dark" : "light"}
       >
-        {/* 📍 Você */}
+        {/* 📍 VOCÊ */}
         <Marker
           coordinate={{
             latitude: location.coords.latitude,
@@ -152,10 +239,12 @@ export default function Map() {
           title="Você está aqui"
         />
 
-        {/* 🌳 Árvores */}
+        {/* 🌳 ÁRVORES */}
         {settings.showTrees &&
           trees.map((tree) => {
-            if (!tree.latitude || !tree.longitude) return null;
+            if (!tree.latitude || !tree.longitude) {
+              return null;
+            }
 
             return (
               <Marker
@@ -180,33 +269,77 @@ export default function Map() {
           })}
       </MapView>
 
+      {/* 🌳 ÁRVORES OCULTAS */}
       {!settings.showTrees && (
         <View
           style={{
             position: "absolute",
-            top: 20,
+
+            top: 120,
+
             alignSelf: "center",
-            backgroundColor: "#000",
-            padding: 8,
-            borderRadius: 8,
+
+            backgroundColor: colors.surface,
+
+            paddingHorizontal: 14,
+            paddingVertical: 10,
+
+            borderRadius: 14,
+
+            borderWidth: 1,
+            borderColor: colors.border,
+
+            shadowColor: "#000",
+            shadowOpacity: 0.08,
+            shadowRadius: 8,
+            shadowOffset: {
+              width: 0,
+              height: 2,
+            },
+
+            elevation: 5,
           }}
         >
-          <Text style={{ color: "#fff" }}>Árvores ocultas 🌳</Text>
+          <Text
+            style={{
+              color: colors.text,
+              fontWeight: "600",
+            }}
+          >
+            Árvores ocultas 🌳
+          </Text>
         </View>
       )}
 
+      {/* 🌳 CARD */}
       {selectedTree && (
         <View
           style={{
             position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            backgroundColor: "#fff",
-            borderTopLeftRadius: 20,
-            borderTopRightRadius: 20,
-            padding: 15,
-            elevation: 10,
+
+            bottom: 96,
+
+            left: 14,
+            right: 14,
+
+            backgroundColor: colors.surface,
+
+            borderRadius: 24,
+
+            padding: 16,
+
+            borderWidth: 1,
+            borderColor: colors.border,
+
+            shadowColor: "#000",
+            shadowOpacity: 0.12,
+            shadowRadius: 12,
+            shadowOffset: {
+              width: 0,
+              height: 4,
+            },
+
+            elevation: 12,
           }}
         >
           {/* 📸 IMAGEM */}
@@ -216,45 +349,65 @@ export default function Map() {
               resizeMode="cover"
               style={{
                 width: "100%",
-                height: 175,
-                borderRadius: 12,
-                marginBottom: 10,
+                height: 180,
+
+                borderRadius: 18,
+
+                marginBottom: 12,
               }}
             />
           ) : (
             <View
               style={{
-                height: 150,
-                backgroundColor: "#ddd",
-                borderRadius: 12,
+                height: 160,
+
+                backgroundColor: colors.background,
+
+                borderRadius: 18,
+
                 justifyContent: "center",
                 alignItems: "center",
-                marginBottom: 10,
+
+                marginBottom: 12,
               }}
             >
-              <Text>Sem imagem</Text>
+              <Text
+                style={{
+                  color: colors.textMuted,
+                }}
+              >
+                Sem imagem
+              </Text>
             </View>
           )}
 
           {/* 🌳 NOME */}
           <Text
             style={{
-              fontSize: 18,
+              fontSize: 20,
               fontWeight: "bold",
-              marginBottom: 5,
+
+              color: colors.text,
+
+              marginBottom: 8,
             }}
           >
             {selectedTree.name}
           </Text>
 
+          {/* 🏷️ CATEGORIA */}
           <View
             style={{
               alignSelf: "flex-start",
+
               backgroundColor: getCategoryColor(selectedTree.category),
-              paddingHorizontal: 10,
-              paddingVertical: 5,
-              borderRadius: 100,
-              marginBottom: 10,
+
+              paddingHorizontal: 12,
+              paddingVertical: 6,
+
+              borderRadius: 999,
+
+              marginBottom: 16,
             }}
           >
             <Text
@@ -269,48 +422,87 @@ export default function Map() {
           </View>
 
           {/* 📍 BOTÕES */}
-          <View style={{ flexDirection: "row", gap: 10 }}>
+          <View
+            style={{
+              flexDirection: "row",
+              gap: 10,
+            }}
+          >
+            {/* DETALHES */}
             <TouchableOpacity
               onPress={() =>
                 router.push(`/home/details/${selectedTree.id}` as any)
               }
               style={{
                 flex: 5,
-                backgroundColor: "#2e7d32",
-                padding: 12,
-                borderRadius: 10,
+
+                backgroundColor: colors.primary,
+
+                paddingVertical: 14,
+
+                borderRadius: 14,
+
                 alignItems: "center",
               }}
             >
-              <Text style={{ color: "#fff", fontWeight: "bold" }}>
+              <Text
+                style={{
+                  color: "#fff",
+                  fontWeight: "bold",
+                }}
+              >
                 Ver detalhes
               </Text>
             </TouchableOpacity>
 
+            {/* SHARE */}
             <TouchableOpacity
               onPress={() => shareTree(selectedTree, settings)}
               style={{
                 flex: 3,
-                backgroundColor: "#1976d2",
-                padding: 12,
-                borderRadius: 10,
+
+                backgroundColor: colors.secondary,
+
+                paddingVertical: 14,
+
+                borderRadius: 14,
+
                 alignItems: "center",
               }}
             >
-              <Text style={{ color: "#fff", fontWeight: "bold" }}>
+              <Text
+                style={{
+                  color: "#fff",
+                  fontWeight: "bold",
+                }}
+              >
                 Compartilhar
               </Text>
             </TouchableOpacity>
 
+            {/* FECHAR */}
             <TouchableOpacity
               onPress={() => setSelectedTree(null)}
               style={{
-                padding: 12,
-                borderRadius: 10,
-                backgroundColor: "#c51515",
+                backgroundColor: colors.danger,
+
+                paddingHorizontal: 14,
+                paddingVertical: 14,
+
+                borderRadius: 14,
+
+                alignItems: "center",
+                justifyContent: "center",
               }}
             >
-              <Text style={{ color: "#fff", fontWeight: "bold" }}>Fechar</Text>
+              <Text
+                style={{
+                  color: "#fff",
+                  fontWeight: "bold",
+                }}
+              >
+                ✕
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
