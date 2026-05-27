@@ -10,7 +10,6 @@ import {
   View,
 } from "react-native";
 
-import Header from "@/src/components/Header";
 import ImagePickerPreview from "@/src/components/ImagePickerPreview";
 import { Item } from "@/src/components/itens/Item";
 import PickerItem from "@/src/components/itens/PickerItem";
@@ -152,8 +151,6 @@ export default function Create() {
         backgroundColor: colors.background,
       }}
     >
-      <Header />
-
       <ScrollView
         contentContainerStyle={{
           padding: 20,
@@ -163,13 +160,15 @@ export default function Create() {
         {/* TÍTULO */}
         <Text
           style={{
-            fontSize: 24,
+            marginBottom: 32,
+            fontSize: 22,
             fontWeight: "bold",
+            textTransform: "uppercase",
             color: colors.text,
-            marginBottom: 20,
+            textAlign: "center",
           }}
         >
-          Nova árvore 🌱
+          Cadastrar nova Árvore / Planta 🌱
         </Text>
 
         {/* NOME */}

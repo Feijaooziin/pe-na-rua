@@ -48,7 +48,13 @@ export default function HomeLayout() {
         }}
       />
 
-      <Stack.Screen name="create" />
+      <Stack.Screen
+        name="create"
+        options={{
+          headerShown: true,
+          title: "Criar",
+        }}
+      />
     </Stack>
   );
 }
