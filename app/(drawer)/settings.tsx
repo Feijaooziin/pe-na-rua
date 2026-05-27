@@ -2,6 +2,7 @@ import { router } from "expo-router";
 import { Alert, ScrollView, Text, View } from "react-native";
 
 import { db } from "@/src/database/db";
+import { getTrees } from "@/src/database/trees";
 import { useSettings } from "@/src/hooks/useSettings";
 import { useTheme } from "@/src/hooks/useTheme";
 import { exportTrees, importTrees } from "@/src/services/backup";
@@ -15,6 +16,15 @@ import { SwitchItem } from "@/src/components/itens/SwitchItem";
 
 export default function Settings() {
   const { colors } = useTheme();
+
+  const trees = getTrees();
+  const totalTrees = trees.length;
+  const totalImages = trees.reduce(
+    (acc, tree) => acc + (tree.images?.length || 0),
+    0,
+  );
+
+  const totalCategories = new Set(trees.map((tree) => tree.category)).size;
 
   const { settings, loading, updateSetting, loadSettings } = useSettings();
 
@@ -306,6 +316,24 @@ export default function Settings() {
             label="Importar árvores"
             desc="Restaura árvores a partir de um backup."
             onPress={importTrees}
+          />
+        </Section>
+
+        {/* 📊 ESTATÍSTICAS */}
+        <Section title="📊 Estatísticas">
+          <Item
+            label="Árvores cadastradas"
+            desc={`${totalTrees} árvores registradas`}
+          />
+
+          <Item
+            label="Fotos salvas"
+            desc={`${totalImages} imagens armazenadas`}
+          />
+
+          <Item
+            label="Categorias utilizadas"
+            desc={`${totalCategories} categorias em uso`}
           />
         </Section>
 
