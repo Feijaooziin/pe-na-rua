@@ -1,11 +1,7 @@
 import { Picker } from "@react-native-picker/picker";
 import { Text, View } from "react-native";
 
-import { useFocusEffect } from "@react-navigation/native";
-import { useCallback } from "react";
-
-import { useSettings } from "@/src/hooks/useSettings";
-import { darkTheme, lightTheme } from "@/src/theme/themes";
+import { useTheme } from "@/src/hooks/useTheme";
 
 type Option = {
   label: string;
@@ -14,44 +10,59 @@ type Option = {
 
 type Props = {
   label: string;
+  desc?: string;
   value?: string | number;
   onChange: (value: any) => void;
   items: Option[];
 };
 
-export default function PickerItem({ label, value, onChange, items }: Props) {
-  const { settings, loadSettings } = useSettings();
-
-  const colors = settings?.theme === "dark" ? darkTheme : lightTheme;
-
-  useFocusEffect(
-    useCallback(() => {
-      loadSettings();
-    }, []),
-  );
+export default function PickerItem({
+  label,
+  desc,
+  value,
+  onChange,
+  items,
+}: Props) {
+  const { colors } = useTheme();
 
   return (
     <View
       style={{
-        padding: 15,
+        padding: 16,
         borderBottomWidth: 1,
         borderColor: colors.border,
+        backgroundColor: colors.surface,
       }}
     >
       <Text
         style={{
-          marginBottom: 8,
+          marginBottom: 6,
           color: colors.text,
+          fontSize: 15,
+          fontWeight: "500",
         }}
       >
         {label}
       </Text>
 
+      {desc && (
+        <Text
+          style={{
+            marginBottom: 10,
+            color: colors.textMuted,
+            fontSize: 12,
+            lineHeight: 18,
+          }}
+        >
+          {desc}
+        </Text>
+      )}
+
       <View
         style={{
           borderWidth: 1,
-          borderColor: colors.border,
-          borderRadius: 10,
+          borderColor: colors.inputBorder,
+          borderRadius: 12,
           overflow: "hidden",
           backgroundColor: colors.input,
         }}
@@ -61,7 +72,7 @@ export default function PickerItem({ label, value, onChange, items }: Props) {
             color: colors.text,
             backgroundColor: colors.input,
           }}
-          dropdownIconColor={colors.text}
+          dropdownIconColor={colors.icon}
           selectedValue={value}
           onValueChange={onChange}
         >
