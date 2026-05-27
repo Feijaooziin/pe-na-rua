@@ -256,20 +256,30 @@ export default function Details() {
 
           {/* COORDENADAS */}
           <Section title="localização">
-            <Item
-              label={`📍 ${tree.latitude}, ${tree.longitude}`}
-              onPress={async () => {
-                const coords = `${tree.latitude}, ${tree.longitude}`;
-
-                await Clipboard.setStringAsync(coords);
-
-                Toast.show({
-                  type: "success",
-                  text1: "Coordenadas copiadas",
-                  text2: coords,
-                });
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                paddingRight: 16,
               }}
-            />
+            >
+              <Item
+                label={`📍 ${tree.latitude}, ${tree.longitude}`}
+                onPress={async () => {
+                  const coords = `${tree.latitude}, ${tree.longitude}`;
+
+                  await Clipboard.setStringAsync(coords);
+
+                  Toast.show({
+                    type: "success",
+                    text1: "Coordenadas copiadas",
+                    text2: coords,
+                  });
+                }}
+              />
+              <Ionicons name="copy-outline" color={colors.text} size={22} />
+            </View>
           </Section>
 
           {/* BOTÃO MAPS */}
