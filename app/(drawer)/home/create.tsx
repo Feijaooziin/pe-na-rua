@@ -18,27 +18,30 @@ import { categories } from "@/src/constants/categories";
 import { FINAL } from "@/src/constants/layout";
 import { insertTree } from "@/src/database/trees";
 import { useSettings } from "@/src/hooks/useSettings";
-import { colors } from "@/src/theme/colors";
+import { useTheme } from "@/src/hooks/useTheme";
 import { chooseImage } from "@/src/utils/imagePicker";
 
 export default function Create() {
   const { settings, loading } = useSettings();
+  const { colors } = useTheme();
+
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
   const [category, setCategory] = useState("tree");
   const [images, setImages] = useState<string[]>([]);
+
   const maxImages = settings?.maxImages ?? 10;
+
   const isLimitReached = images.length >= maxImages;
-  const remainingImages = maxImages - images.length;
 
   useEffect(() => {
     (async () => {
       const { granted } = await Location.requestForegroundPermissionsAsync();
 
       if (!granted) {
-        alert("Permita acesso à localização 📍");
+        Alert.alert("Atenção!", "Permita acesso à localização 📍");
         return;
       }
 
@@ -56,8 +59,11 @@ export default function Create() {
   }, []);
 
   function removeImage(index: number) {
-    Alert.alert("Remover imagem?", "Deseja excluir essa foto?", [
-      { text: "Cancelar", style: "cancel" },
+    Alert.alert("Remover imagem", "Deseja excluir essa foto?", [
+      {
+        text: "Cancelar",
+        style: "cancel",
+      },
       {
         text: "Remover",
         style: "destructive",
@@ -72,6 +78,7 @@ export default function Create() {
     setImages((prev) => {
       const selected = prev[index];
       const rest = prev.filter((_, i) => i !== index);
+
       return [selected, ...rest];
     });
   }
@@ -80,7 +87,7 @@ export default function Create() {
     const { granted } = await Location.requestForegroundPermissionsAsync();
 
     if (!granted) {
-      alert("Permissão negada");
+      Alert.alert("Atenção!", "Permissão negada");
       return;
     }
 
@@ -92,12 +99,12 @@ export default function Create() {
 
   function handleCreate() {
     if (!name.trim()) {
-      alert("Digite um nome");
+      Alert.alert("Atenção!", "Digite um nome");
       return;
     }
 
     if (latitude === null || longitude === null) {
-      alert("Aguarde a localização 📍");
+      Alert.alert("Atenção!", "Aguarde a localização 📍");
       return;
     }
 
@@ -111,24 +118,51 @@ export default function Create() {
       created_at: new Date().toISOString(),
     });
 
-    alert("Árvore cadastrada 🌳");
+    Alert.alert("Sucesso", "Árvore cadastrada 🌳");
+
     router.back();
-    console.log("NOME:", name);
-    console.log("DESC:", description);
-    console.log("LAT:", latitude);
-    console.log("LNG:", longitude);
-    console.log("CAT:", category);
+  }
+
+  if (loading || !settings) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: colors.background,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Text
+          style={{
+            color: colors.text,
+          }}
+        >
+          Carregando...
+        </Text>
+      </View>
+    );
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.background }}>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: colors.background,
+      }}
+    >
       <Header />
 
-      <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: FINAL }}>
-        {/* Título */}
+      <ScrollView
+        contentContainerStyle={{
+          padding: 20,
+          paddingBottom: FINAL,
+        }}
+      >
+        {/* TÍTULO */}
         <Text
           style={{
-            fontSize: 22,
+            fontSize: 24,
             fontWeight: "bold",
             color: colors.text,
             marginBottom: 20,
@@ -137,52 +171,93 @@ export default function Create() {
           Nova árvore 🌱
         </Text>
 
-        {/* Nome */}
-        <Text style={{ marginBottom: 5, color: colors.text }}>Nome</Text>
+        {/* NOME */}
+        <Text
+          style={{
+            marginBottom: 6,
+            color: colors.text,
+            fontWeight: "600",
+          }}
+        >
+          Nome
+        </Text>
+
         <TextInput
           value={name}
           onChangeText={setName}
           placeholder="Ex: Ipê amarelo"
-          placeholderTextColor={"#000"}
+          placeholderTextColor={colors.textMuted}
           style={{
-            backgroundColor: "#fff",
-            borderRadius: 10,
-            padding: 12,
-            marginBottom: 15,
+            backgroundColor: colors.surface,
+            borderRadius: 12,
+            padding: 14,
+            marginBottom: 16,
+
+            borderWidth: 1,
+            borderColor: colors.border,
+
+            color: colors.text,
           }}
         />
 
-        {/* Descrição */}
-        <Text style={{ marginBottom: 5, color: colors.text }}>Descrição</Text>
+        {/* DESCRIÇÃO */}
+        <Text
+          style={{
+            marginBottom: 6,
+            color: colors.text,
+            fontWeight: "600",
+          }}
+        >
+          Descrição
+        </Text>
+
         <TextInput
           value={description}
           onChangeText={setDescription}
           placeholder="Detalhes da árvore..."
-          placeholderTextColor={"#000"}
+          placeholderTextColor={colors.textMuted}
           multiline
           style={{
-            backgroundColor: "#fff",
-            borderRadius: 10,
-            padding: 12,
-            height: 100,
+            backgroundColor: colors.surface,
+            borderRadius: 12,
+            padding: 14,
+            height: 110,
             textAlignVertical: "top",
-            marginBottom: 15,
+            marginBottom: 16,
+
+            borderWidth: 1,
+            borderColor: colors.border,
+
+            color: colors.text,
           }}
         />
 
         {/* CATEGORIA */}
-        <Text style={{ marginBottom: 5, color: colors.text }}>Categoria</Text>
+        <Text
+          style={{
+            marginBottom: 6,
+            color: colors.text,
+            fontWeight: "600",
+          }}
+        >
+          Categoria
+        </Text>
 
         <View
           style={{
-            backgroundColor: "#fff",
-            borderRadius: 10,
-            marginBottom: 15,
+            backgroundColor: colors.surface,
+            borderRadius: 12,
+            marginBottom: 16,
             overflow: "hidden",
+
+            borderWidth: 1,
+            borderColor: colors.border,
           }}
         >
           <Picker
-            style={{ color: colors.text }}
+            style={{
+              color: colors.text,
+            }}
             dropdownIconColor={colors.text}
             selectedValue={category}
             onValueChange={(value) => setCategory(value)}
@@ -197,7 +272,7 @@ export default function Create() {
           </Picker>
         </View>
 
-        {/* Imagem */}
+        {/* IMAGENS */}
         <TouchableOpacity
           onPress={() =>
             chooseImage({
@@ -209,21 +284,33 @@ export default function Create() {
             })
           }
           style={{
-            backgroundColor: "#fff",
-            borderRadius: 10,
+            backgroundColor: colors.surface,
+            borderRadius: 12,
             padding: 15,
             alignItems: "center",
             marginBottom: 8,
+
+            borderWidth: 1,
+            borderColor: colors.border,
           }}
         >
-          <Text style={{ color: colors.primary }}>Adicionar imagens - 📸</Text>
+          <Text
+            style={{
+              color: colors.primary,
+              fontWeight: "600",
+            }}
+          >
+            Adicionar imagens 📸
+          </Text>
         </TouchableOpacity>
+
         <Text
           style={{
-            marginBottom: 15,
-            fontSize: 16,
+            marginBottom: 16,
+            fontSize: 15,
             textAlign: "center",
-            color: isLimitReached ? colors.danger : "#666",
+            color: isLimitReached ? colors.danger : colors.textSecondary,
+
             fontWeight: isLimitReached ? "bold" : "normal",
           }}
         >
@@ -236,45 +323,87 @@ export default function Create() {
           onSetMain={setAsMain}
         />
 
-        <Text style={{ color: "#555", marginBottom: 16, fontSize: 24 }}>
-          {latitude && longitude
-            ? `📍 ${latitude.toFixed(5)}, ${longitude.toFixed(5)}`
-            : "Pegando localização..."}
-        </Text>
+        {/* LOCALIZAÇÃO */}
+        <View
+          style={{
+            backgroundColor: colors.surface,
+            borderRadius: 14,
+            padding: 14,
+            marginTop: 16,
+            marginBottom: 16,
+
+            borderWidth: 1,
+            borderColor: colors.border,
+          }}
+        >
+          <Text
+            style={{
+              color: colors.text,
+              fontSize: 15,
+              fontWeight: "600",
+            }}
+          >
+            {latitude && longitude
+              ? `📍 ${latitude.toFixed(5)}, ${longitude.toFixed(5)}`
+              : "Pegando localização..."}
+          </Text>
+        </View>
 
         <TouchableOpacity
           onPress={getLocation}
           style={{
-            backgroundColor: "#fff",
-            borderRadius: 10,
+            backgroundColor: colors.surface,
+            borderRadius: 12,
             padding: 15,
             alignItems: "center",
-            marginBottom: 15,
+            marginBottom: 18,
+
+            borderWidth: 1,
+            borderColor: colors.border,
           }}
         >
-          <Text style={{ color: colors.primary }}>Atualizar localização</Text>
+          <Text
+            style={{
+              color: colors.primary,
+              fontWeight: "600",
+            }}
+          >
+            Atualizar localização
+          </Text>
         </TouchableOpacity>
 
-        {/* Botão Salvar */}
+        {/* SALVAR */}
         <TouchableOpacity
           onPress={handleCreate}
           style={{
             backgroundColor: colors.primary,
-            padding: 15,
-            borderRadius: 12,
+            padding: 16,
+            borderRadius: 14,
             alignItems: "center",
           }}
         >
-          <Text style={{ color: "#fff", fontWeight: "bold" }}>Salvar</Text>
+          <Text
+            style={{
+              color: "#fff",
+              fontWeight: "bold",
+              fontSize: 15,
+            }}
+          >
+            Salvar árvore
+          </Text>
         </TouchableOpacity>
 
+        {/* CANCELAR */}
         <TouchableOpacity
           onPress={() => router.back()}
           style={{
-            marginTop: 10,
-            padding: 15,
-            borderRadius: 12,
+            marginTop: 12,
+            padding: 16,
+            borderRadius: 14,
             alignItems: "center",
+
+            backgroundColor: colors.surface,
+
             borderWidth: 1,
             borderColor: colors.danger,
           }}
@@ -283,6 +412,7 @@ export default function Create() {
             style={{
               color: colors.danger,
               fontWeight: "bold",
+              fontSize: 15,
             }}
           >
             Cancelar
