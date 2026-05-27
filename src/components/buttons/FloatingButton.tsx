@@ -20,7 +20,7 @@ export default function FloatingButton({
       activeOpacity={0.8}
       style={{
         position: "absolute",
-        bottom: 18,
+        bottom: 96,
         right: 18,
         width: 60,
         height: 60,

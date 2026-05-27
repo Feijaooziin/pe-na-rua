@@ -1,4 +1,5 @@
 import { useTheme } from "@/src//hooks/useTheme";
+import { useSettings } from "@/src/hooks/useSettings";
 import { Ionicons } from "@expo/vector-icons";
 import { DrawerActions } from "@react-navigation/native";
 import { useNavigation } from "expo-router";
@@ -11,7 +12,8 @@ interface HeaderProps {
 
 export default function Header({ title = "Pé na Rua 🌳" }: HeaderProps) {
   const navigation = useNavigation();
-  const { colors } = useTheme();
+  const { colors, isDark } = useTheme();
+  const { updateSetting } = useSettings();
 
   return (
     <SafeAreaView
@@ -52,14 +54,30 @@ export default function Header({ title = "Pé na Rua 🌳" }: HeaderProps) {
         </View>
 
         {/* DIREITA (logo) */}
-        <Image
-          source={require("../../assets/images/logo.jpeg")}
-          style={{
-            width: 45,
-            height: 45,
-            borderRadius: 100,
-          }}
-        />
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 16 }}>
+          <Image
+            source={require("../../assets/images/logo.jpeg")}
+            style={{
+              width: 45,
+              height: 45,
+              borderRadius: 100,
+            }}
+          />
+          <TouchableOpacity
+            onPress={() =>
+              updateSetting({
+                theme: isDark ? "light" : "dark",
+              })
+            }
+            activeOpacity={0.8}
+          >
+            <Ionicons
+              name={isDark ? "sunny" : "moon"}
+              size={22}
+              color={colors.text}
+            />
+          </TouchableOpacity>
+        </View>
       </View>
     </SafeAreaView>
   );
