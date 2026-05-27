@@ -7,11 +7,21 @@ import {
 } from "expo-camera";
 import { router } from "expo-router";
 import { useRef, useState } from "react";
-import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import {
+  Alert,
+  Image,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 import { getCameraData } from "@/src/store/camera";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function CameraScreen() {
+  const insets = useSafeAreaInsets();
+
   const cameraRef = useRef<CameraView>(null);
   const [permission, requestPermission] = useCameraPermissions();
   const [galleryOpen, setGalleryOpen] = useState(false);
@@ -26,16 +36,19 @@ export default function CameraScreen() {
   const MAX_IMAGES = cameraData?.maxImages || 5;
   const [photos, setPhotos] = useState<string[]>([]);
   const totalPhotos = [...existingImages, ...photos];
+  const isLimitReached = totalPhotos.length >= MAX_IMAGES;
   const galleryPhotos = [...existingImages, ...photos];
 
   async function takePicture() {
     try {
-      if (totalPhotos.length >= MAX_IMAGES) {
+      if (isLimitReached) {
+        Alert.alert("Atenção!", "Limite máximo de imagens atingido 📸");
         return;
       }
 
       const photo = await cameraRef.current?.takePictureAsync({
         quality: 0.7,
+        shutterSound: false,
       });
 
       if (!photo) return;
@@ -154,14 +167,14 @@ export default function CameraScreen() {
             top: 0,
             width: "100%",
             height: 120,
-            backgroundColor: "#000",
+            backgroundColor: "rgba(0,0,0,0.45)",
           }}
         />
         {/* TOPO */}
         <View
           style={{
             position: "absolute",
-            top: 60,
+            top: insets.top + 12,
             width: "100%",
             flexDirection: "row",
             justifyContent: "space-between",
@@ -245,7 +258,7 @@ export default function CameraScreen() {
         <View
           style={{
             position: "absolute",
-            bottom: 40,
+            bottom: insets.bottom + 16,
             width: "100%",
             flexDirection: "row",
             alignItems: "center",
@@ -314,11 +327,11 @@ export default function CameraScreen() {
 
           {/* BOTÃO FOTO */}
           <TouchableOpacity
-            disabled={totalPhotos.length >= MAX_IMAGES}
             onPress={takePicture}
             style={{
               width: 86,
               height: 86,
+              opacity: isLimitReached ? 0.5 : 1,
               borderRadius: 999,
               borderWidth: 4,
               borderColor: "#fff",
@@ -327,6 +340,25 @@ export default function CameraScreen() {
               backgroundColor: "rgba(255,255,255,0.08)",
             }}
           >
+            <View
+              style={{
+                position: "absolute",
+                alignSelf: "center",
+                top: -24,
+              }}
+            >
+              <Text
+                style={{
+                  color: "#fff",
+                  fontSize: 13,
+                  fontWeight: "600",
+                  textAlign: "center",
+                }}
+              >
+                {totalPhotos.length} / {MAX_IMAGES}
+              </Text>
+            </View>
+
             <View
               style={{
                 justifyContent: "center",
@@ -340,16 +372,11 @@ export default function CameraScreen() {
                     : "#fff",
               }}
             >
-              <Text
-                style={{
-                  color: totalPhotos.length >= MAX_IMAGES ? "#e5e5e5" : "#111",
-
-                  fontWeight: "800",
-                  fontSize: 15,
-                }}
-              >
-                {totalPhotos.length} / {MAX_IMAGES}
-              </Text>
+              <Ionicons
+                name="camera"
+                size={30}
+                color={isLimitReached ? "#e5e5e5" : "#111"}
+              />
             </View>
           </TouchableOpacity>
 
@@ -435,7 +462,7 @@ export default function CameraScreen() {
             bottom: 0,
             width: "100%",
             height: 150,
-            backgroundColor: "#000",
+            backgroundColor: "rgba(0,0,0,0.45)",
             zIndex: -100,
           }}
         />
@@ -528,7 +555,7 @@ export default function CameraScreen() {
             showsHorizontalScrollIndicator={false}
             style={{
               position: "absolute",
-              bottom: 120,
+              bottom: insets.bottom + 90,
               zIndex: 20,
               elevation: 20,
             }}
