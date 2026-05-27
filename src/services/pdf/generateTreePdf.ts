@@ -205,6 +205,18 @@ export async function generateTreePdf(tree: Tree) {
     html,
   });
 
-  await Sharing.shareAsync(file.uri);
-  Alert.alert("PDF exportado 📄", "O PDF da árvore foi gerado com sucesso.");
+  const fileName = `${tree.name.replace(/\s+/g, "-")} - Pé Na Rua.pdf`;
+
+  const newPath = FileSystem.documentDirectory + fileName;
+
+  await FileSystem.moveAsync({
+    from: file.uri,
+    to: newPath,
+  });
+
+  await Sharing.shareAsync(newPath);
+  Alert.alert(
+    "PDF exportado 📄",
+    `O PDF da árvore ${tree.name} foi gerado com sucesso.`,
+  );
 }
