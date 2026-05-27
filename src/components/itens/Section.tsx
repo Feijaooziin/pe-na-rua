@@ -1,9 +1,7 @@
-import { ReactNode, useCallback } from "react";
+import { ReactNode } from "react";
 import { Text, View } from "react-native";
 
-import { useSettings } from "@/src/hooks/useSettings";
-import { darkTheme, lightTheme } from "@/src/theme/themes";
-import { useFocusEffect } from "@react-navigation/native";
+import { useTheme } from "@/src/hooks/useTheme";
 
 type SectionProps = {
   title: string;
@@ -11,23 +9,17 @@ type SectionProps = {
 };
 
 export function Section({ title, children }: SectionProps) {
-  const { settings, loadSettings } = useSettings();
-  const colors = settings?.theme === "dark" ? darkTheme : lightTheme;
-
-  useFocusEffect(
-    useCallback(() => {
-      loadSettings();
-    }, []),
-  );
+  const { colors } = useTheme();
 
   return (
     <View style={{ marginBottom: 25 }}>
       <Text
         style={{
-          fontSize: 14,
-          fontWeight: "600",
-          marginBottom: 8,
+          fontSize: 13,
+          fontWeight: "700",
+          marginBottom: 10,
           color: colors.textSecondary,
+          letterSpacing: 0.5,
         }}
       >
         {title.toUpperCase()}
@@ -36,8 +28,12 @@ export function Section({ title, children }: SectionProps) {
       <View
         style={{
           backgroundColor: colors.surface,
-          borderRadius: 12,
+          borderRadius: 16,
           overflow: "hidden",
+          shadowColor: colors.shadow,
+          shadowOpacity: colors.shadowOpacity,
+          shadowRadius: 6,
+          elevation: 2,
         }}
       >
         {children}
@@ -47,23 +43,17 @@ export function Section({ title, children }: SectionProps) {
 }
 
 export function DangerSection({ title, children }: SectionProps) {
-  const { settings, loadSettings } = useSettings();
-  const colors = settings?.theme === "dark" ? darkTheme : lightTheme;
-
-  useFocusEffect(
-    useCallback(() => {
-      loadSettings();
-    }, []),
-  );
+  const { colors } = useTheme();
 
   return (
     <View style={{ marginBottom: 25 }}>
       <Text
         style={{
-          fontSize: 14,
-          fontWeight: "600",
-          marginBottom: 8,
+          fontSize: 13,
+          fontWeight: "700",
+          marginBottom: 10,
           color: colors.danger,
+          letterSpacing: 0.5,
         }}
       >
         {title.toUpperCase()}
@@ -72,10 +62,14 @@ export function DangerSection({ title, children }: SectionProps) {
       <View
         style={{
           backgroundColor: colors.surface,
-          borderRadius: 12,
+          borderRadius: 16,
           overflow: "hidden",
           borderWidth: 1,
           borderColor: colors.borderDanger,
+          shadowColor: colors.shadow,
+          shadowOpacity: colors.shadowOpacity,
+          shadowRadius: 6,
+          elevation: 2,
         }}
       >
         {children}
