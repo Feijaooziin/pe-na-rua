@@ -18,6 +18,7 @@ import { FINAL } from "@/src/constants/layout";
 import { deleteTree, getTreeById } from "@/src/database/trees";
 import { useSettings } from "@/src/hooks/useSettings";
 import { useTheme } from "@/src/hooks/useTheme";
+import { generateTreePdf } from "@/src/services/pdf/generateTreePdf";
 import { shareTree } from "@/src/services/shareTree";
 import { Tree } from "@/src/types/tree";
 import { getCategoryColor, getCategoryLabel } from "@/src/utils/category";
@@ -352,6 +353,31 @@ export default function Details() {
               }}
             >
               Compartilhar
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => generateTreePdf(tree)}
+            style={{
+              marginTop: 12,
+              backgroundColor: colors.secondary,
+              padding: 14,
+              borderRadius: 10,
+              alignItems: "center",
+              justifyContent: "center",
+              flexDirection: "row",
+              gap: 10,
+            }}
+          >
+            <Ionicons name="document-text-outline" size={18} color="#fff" />
+
+            <Text
+              style={{
+                color: "#fff",
+                fontWeight: "bold",
+              }}
+            >
+              Exportar PDF
             </Text>
           </TouchableOpacity>
 
