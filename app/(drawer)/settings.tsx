@@ -8,15 +8,20 @@ import { useTheme } from "@/src/hooks/useTheme";
 import { exportTrees, importTrees } from "@/src/services/backup";
 import { resetSettings } from "@/src/storage/settings";
 
+import { CustomAlertDanger } from "@/src/components/CustomAlert";
 import Header from "@/src/components/Header";
 import { DangerItem, Item } from "@/src/components/itens/Item";
 import PickerItem from "@/src/components/itens/PickerItem";
 import { DangerSection, Section } from "@/src/components/itens/Section";
 import { SwitchItem } from "@/src/components/itens/SwitchItem";
 import { FINAL } from "@/src/constants/layout";
+import { useState } from "react";
+import Toast from "react-native-toast-message";
 
 export default function Settings() {
   const { colors } = useTheme();
+
+  const [showReset, setShowReset] = useState(false);
 
   const trees = getTrees();
   const totalTrees = trees.length;
@@ -34,30 +39,7 @@ export default function Settings() {
   }
 
   function handleResetSettings() {
-    Alert.alert(
-      "Resetar configurações",
-      "Todas as configurações voltarão ao padrão.",
-      [
-        {
-          text: "Cancelar",
-          style: "cancel",
-        },
-        {
-          text: "Resetar",
-          onPress: async () => {
-            try {
-              await resetSettings();
-
-              await handleReloadSettings();
-
-              Alert.alert("Sucesso", "Configurações resetadas com sucesso!");
-            } catch (error) {
-              console.log(error);
-            }
-          },
-        },
-      ],
-    );
+    setShowReset(true);
   }
 
   function handleClearTrees() {
@@ -359,6 +341,33 @@ export default function Settings() {
           />
         </DangerSection>
       </ScrollView>
+
+      {/* ------- CUSTOM ALERTS ------- */}
+      {/* RESET CONFIGS */}
+      <CustomAlertDanger
+        visible={showReset}
+        title="Resetar configurações"
+        message="Todas as configurações voltarão ao padrão."
+        cancelText="Cancelar"
+        confirmText="Resetar"
+        onCancel={() => setShowReset(false)}
+        onConfirm={async () => {
+          try {
+            setShowReset(false);
+
+            await resetSettings();
+            await handleReloadSettings();
+
+            Toast.show({
+              type: "info",
+              text1: "Sucesso",
+              text2: "Configurações resetadas com sucesso!",
+            });
+          } catch (error) {
+            console.log(error);
+          }
+        }}
+      />
     </View>
   );
 }
