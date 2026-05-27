@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import ImageViewer from "react-native-image-zoom-viewer";
 
+import CategoryBadge from "@/src/components/badges/CategoryBadge";
 import { FINAL } from "@/src/constants/layout";
 import { deleteTree, getTreeById } from "@/src/database/trees";
 import { useSettings } from "@/src/hooks/useSettings";
@@ -21,7 +22,6 @@ import { useTheme } from "@/src/hooks/useTheme";
 import { generateTreePdf } from "@/src/services/pdf/generateTreePdf";
 import { shareTree } from "@/src/services/shareTree";
 import { Tree } from "@/src/types/tree";
-import { getCategoryColor, getCategoryLabel } from "@/src/utils/category";
 import { formatDate } from "@/src/utils/date";
 import { downloadImage } from "@/src/utils/downloadImage";
 
@@ -135,7 +135,7 @@ export default function Details() {
               horizontal
               showsHorizontalScrollIndicator={false}
               style={{
-                marginTop: 10,
+                marginTop: 12,
               }}
             >
               {images.map((img, index) => (
@@ -187,6 +187,7 @@ export default function Details() {
         )}
 
         {/* CONTEÚDO */}
+
         <View
           style={{
             padding: 20,
@@ -198,37 +199,15 @@ export default function Details() {
               fontSize: 28,
               fontWeight: "bold",
               color: colors.text,
+              marginTop: 8,
+              marginHorizontal: 8,
             }}
           >
             {tree.name}
           </Text>
 
           {/* CATEGORIA */}
-          <View
-            style={{
-              alignSelf: "flex-start",
-
-              backgroundColor: getCategoryColor(tree.category),
-
-              paddingHorizontal: 12,
-              paddingVertical: 6,
-
-              borderRadius: 999,
-
-              marginTop: 12,
-              marginBottom: 4,
-            }}
-          >
-            <Text
-              style={{
-                color: "#fff",
-                fontWeight: "bold",
-                fontSize: 13,
-              }}
-            >
-              {getCategoryLabel(tree.category)}
-            </Text>
-          </View>
+          <CategoryBadge category={tree.category} />
 
           {/* DATA */}
           <Text
