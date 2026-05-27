@@ -15,6 +15,7 @@ import { Picker } from "@react-native-picker/picker";
 import Header from "@/src/components/Header";
 import ImagePickerPreview from "@/src/components/ImagePickerPreview";
 import { categories } from "@/src/constants/categories";
+import { FINAL } from "@/src/constants/layout";
 import { insertTree } from "@/src/database/trees";
 import { useSettings } from "@/src/hooks/useSettings";
 import { colors } from "@/src/theme/colors";
@@ -123,7 +124,7 @@ export default function Create() {
     <View style={{ flex: 1, backgroundColor: colors.background }}>
       <Header />
 
-      <ScrollView contentContainerStyle={{ padding: 20 }}>
+      <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: FINAL }}>
         {/* Título */}
         <Text
           style={{
