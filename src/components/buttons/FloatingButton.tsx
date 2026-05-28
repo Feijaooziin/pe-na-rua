@@ -1,8 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
 
-import { FAB_BOTTOM } from "@/src/constants/layout";
 import { useTheme } from "@/src/hooks/useTheme";
+import { FAB_BOTTOM } from "@/src/theme/layout";
 
 type FloatingButtonProps = {
   icon?: keyof typeof Ionicons.glyphMap;

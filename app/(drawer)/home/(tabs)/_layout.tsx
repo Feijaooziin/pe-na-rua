@@ -1,8 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 
-import { TAB_BAR_HEIGHT } from "@/src/constants/layout";
 import { useTheme } from "@/src/hooks/useTheme";
+import { TAB_BAR_HEIGHT } from "@/src/theme/layout";
 
 export default function TabsLayout() {
   const { colors } = useTheme();

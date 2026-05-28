@@ -3,8 +3,8 @@ import { ScrollView, Text, View } from "react-native";
 import Header from "@/src/components/Header";
 import { Item } from "@/src/components/itens/Item";
 import { Section } from "@/src/components/itens/Section";
-import { FINAL } from "@/src/constants/layout";
 import { useTheme } from "@/src/hooks/useTheme";
+import { FINAL } from "@/src/theme/layout";
 
 export default function About() {
   const { colors } = useTheme();

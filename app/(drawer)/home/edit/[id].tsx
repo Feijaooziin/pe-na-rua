@@ -13,7 +13,7 @@ import {
 import ImagePickerPreview from "@/src/components/ImagePickerPreview";
 
 import { categories } from "@/src/constants/categories";
-import { FINAL } from "@/src/constants/layout";
+import { FINAL } from "@/src/theme/layout";
 
 import { getTreeById, updateTree } from "@/src/database/trees";
 

@@ -14,7 +14,7 @@ import { DangerItem, Item } from "@/src/components/itens/Item";
 import PickerItem from "@/src/components/itens/PickerItem";
 import { DangerSection, Section } from "@/src/components/itens/Section";
 import { SwitchItem } from "@/src/components/itens/SwitchItem";
-import { FINAL } from "@/src/constants/layout";
+import { FINAL } from "@/src/theme/layout";
 import { useState } from "react";
 import Toast from "react-native-toast-message";
 

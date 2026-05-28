@@ -15,10 +15,10 @@ import { Item } from "@/src/components/itens/Item";
 import PickerItem from "@/src/components/itens/PickerItem";
 import { Section } from "@/src/components/itens/Section";
 import { categories } from "@/src/constants/categories";
-import { FINAL } from "@/src/constants/layout";
 import { insertTree } from "@/src/database/trees";
 import { useSettings } from "@/src/hooks/useSettings";
 import { useTheme } from "@/src/hooks/useTheme";
+import { FINAL } from "@/src/theme/layout";
 import { chooseImage } from "@/src/utils/imagePicker";
 
 export default function Create() {
