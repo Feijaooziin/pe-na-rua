@@ -1,5 +1,6 @@
 import { Stack } from "expo-router";
 
+import Header from "@/src/components/Header";
 import { useTheme } from "@/src/hooks/useTheme";
 
 export default function HomeLayout() {
@@ -36,7 +37,7 @@ export default function HomeLayout() {
         name="details/[id]"
         options={{
           headerShown: true,
-          title: "Detalhes",
+          header: () => <Header title="Detalhes" backHeader />,
         }}
       />
 
@@ -44,7 +45,7 @@ export default function HomeLayout() {
         name="edit/[id]"
         options={{
           headerShown: true,
-          title: "Editar",
+          header: () => <Header title="Editar" backHeader />,
         }}
       />
 
@@ -52,7 +53,7 @@ export default function HomeLayout() {
         name="create"
         options={{
           headerShown: true,
-          title: "Criar",
+          header: () => <Header title="Criar" backHeader />,
         }}
       />
     </Stack>

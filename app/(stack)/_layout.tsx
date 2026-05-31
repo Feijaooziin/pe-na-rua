@@ -1,5 +1,6 @@
 import { Stack } from "expo-router";
 
+import Header from "@/src/components/Header";
 import { useTheme } from "@/src/hooks/useTheme";
 
 export default function StackLayout() {
@@ -9,24 +10,18 @@ export default function StackLayout() {
     <Stack
       screenOptions={{
         headerShown: true,
-
         contentStyle: {
           backgroundColor: colors.background,
         },
-
         headerStyle: {
           backgroundColor: colors.surface,
         },
-
         headerTintColor: colors.text,
-
         headerTitleStyle: {
           color: colors.text,
           fontWeight: "bold",
         },
-
         headerShadowVisible: false,
-
         statusBarStyle: isDark ? "light" : "dark",
       }}
     >
@@ -34,6 +29,7 @@ export default function StackLayout() {
         name="settings/share-text"
         options={{
           title: "Editar texto",
+          header: () => <Header title="Editar texto" backHeader />,
         }}
       />
     </Stack>

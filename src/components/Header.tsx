@@ -1,5 +1,4 @@
-import { useTheme } from "@/src//hooks/useTheme";
-import { useSettings } from "@/src/hooks/useSettings";
+import { useTheme } from "@/src/hooks/useTheme";
 import { Ionicons } from "@expo/vector-icons";
 import { DrawerActions } from "@react-navigation/native";
 import { useNavigation } from "expo-router";
@@ -8,12 +7,15 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 interface HeaderProps {
   title?: string;
+  backHeader?: boolean;
 }
 
-export default function Header({ title = "Pé na Rua 🌳" }: HeaderProps) {
+export default function Header({
+  title = "Pé na Rua 🌳",
+  backHeader = false,
+}: HeaderProps) {
   const navigation = useNavigation();
-  const { colors, isDark } = useTheme();
-  const { updateSetting } = useSettings();
+  const { colors } = useTheme();
 
   return (
     <SafeAreaView
@@ -32,12 +34,22 @@ export default function Header({ title = "Pé na Rua 🌳" }: HeaderProps) {
           paddingRight: 24,
         }}
       >
-        {/* ESQUERDA (menu + título) */}
+        {/* ESQUERDA */}
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <TouchableOpacity
-            onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
+            onPress={() => {
+              if (backHeader) {
+                navigation.canGoBack?.() && navigation.goBack();
+              } else {
+                navigation.dispatch(DrawerActions.openDrawer());
+              }
+            }}
           >
-            <Ionicons name="menu" size={32} color={colors.text} />
+            <Ionicons
+              name={backHeader ? "arrow-back" : "menu"}
+              size={32}
+              color={colors.text}
+            />
           </TouchableOpacity>
 
           <Text
@@ -54,7 +66,7 @@ export default function Header({ title = "Pé na Rua 🌳" }: HeaderProps) {
         </View>
 
         {/* DIREITA (logo) */}
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 16 }}>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Image
             source={require("../../assets/images/header-icon.png")}
             style={{
@@ -63,25 +75,6 @@ export default function Header({ title = "Pé na Rua 🌳" }: HeaderProps) {
               borderRadius: 100,
             }}
           />
-          {/* <TouchableOpacity
-            style={{
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-            onPress={() =>
-              updateSetting({
-                theme: isDark ? "light" : "dark",
-              })
-            }
-            activeOpacity={0.8}
-          >
-            <Text style={{ color: colors.textSecondary }}>TEMA:</Text>
-            <Ionicons
-              name={isDark ? "moon" : "sunny"}
-              size={22}
-              color={colors.textSecondary}
-            />
-          </TouchableOpacity> */}
         </View>
       </View>
     </SafeAreaView>
