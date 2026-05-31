@@ -19,7 +19,7 @@ const DEFAULT_SETTINGS: Settings = {
   mapType: "standard",
   maxImages: 10,
   autoLocation: true,
-  shareText: "📱 Registrado no app Pé na Rua",
+  shareText: "📱 Registrado no app Pé na Rua.",
   includeMaps: true,
   theme: "arborDay",
 };
