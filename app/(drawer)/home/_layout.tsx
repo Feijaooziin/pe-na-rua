@@ -37,7 +37,7 @@ export default function HomeLayout() {
         name="details/[id]"
         options={{
           headerShown: true,
-          header: () => <Header title="Detalhes" backHeader />,
+          header: () => <Header title="Detalhes" variant="back" />,
         }}
       />
 
@@ -45,7 +45,7 @@ export default function HomeLayout() {
         name="edit/[id]"
         options={{
           headerShown: true,
-          header: () => <Header title="Editar" backHeader />,
+          header: () => <Header title="Editar" variant="back" />,
         }}
       />
 
@@ -53,7 +53,7 @@ export default function HomeLayout() {
         name="create"
         options={{
           headerShown: true,
-          header: () => <Header title="Criar" backHeader />,
+          header: () => <Header title="Criar" variant="back" />,
         }}
       />
     </Stack>

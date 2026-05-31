@@ -29,7 +29,7 @@ export default function StackLayout() {
         name="settings/share-text"
         options={{
           title: "Editar texto",
-          header: () => <Header title="Editar texto" backHeader />,
+          header: () => <Header title="Editar texto" variant="back" />,
         }}
       />
     </Stack>

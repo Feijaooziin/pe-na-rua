@@ -5,17 +5,59 @@ import { useNavigation } from "expo-router";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+type HeaderVariant = "menu" | "back" | "search" | "close";
+
 interface HeaderProps {
   title?: string;
-  backHeader?: boolean;
+  variant?: HeaderVariant;
+  onSearchPress?: () => void;
+  onClosePress?: () => void;
 }
 
 export default function Header({
   title = "Pé na Rua 🌳",
-  backHeader = false,
+  variant = "menu",
+  onSearchPress,
+  onClosePress,
 }: HeaderProps) {
   const navigation = useNavigation();
   const { colors } = useTheme();
+
+  const renderLeftIcon = () => {
+    switch (variant) {
+      case "back":
+        return <Ionicons name="arrow-back" size={32} color={colors.text} />;
+
+      case "search":
+        return <Ionicons name="search" size={32} color={colors.text} />;
+
+      case "close":
+        return <Ionicons name="close" size={32} color={colors.text} />;
+
+      default:
+        return <Ionicons name="menu" size={32} color={colors.text} />;
+    }
+  };
+
+  const handlePress = () => {
+    switch (variant) {
+      case "back":
+        navigation.canGoBack?.() && navigation.goBack();
+        break;
+
+      case "search":
+        onSearchPress?.();
+        break;
+
+      case "close":
+        onClosePress?.();
+        break;
+
+      default:
+        navigation.dispatch(DrawerActions.openDrawer());
+        break;
+    }
+  };
 
   return (
     <SafeAreaView
@@ -36,20 +78,8 @@ export default function Header({
       >
         {/* ESQUERDA */}
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <TouchableOpacity
-            onPress={() => {
-              if (backHeader) {
-                navigation.canGoBack?.() && navigation.goBack();
-              } else {
-                navigation.dispatch(DrawerActions.openDrawer());
-              }
-            }}
-          >
-            <Ionicons
-              name={backHeader ? "arrow-back" : "menu"}
-              size={32}
-              color={colors.text}
-            />
+          <TouchableOpacity onPress={handlePress}>
+            {renderLeftIcon()}
           </TouchableOpacity>
 
           <Text
@@ -65,7 +95,7 @@ export default function Header({
           </Text>
         </View>
 
-        {/* DIREITA (logo) */}
+        {/* DIREITA */}
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Image
             source={require("../../assets/images/header-icon.png")}
