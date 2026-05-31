@@ -25,6 +25,9 @@ export default function Header({
 
   const renderLeftIcon = () => {
     switch (variant) {
+      case "menu":
+        return <Ionicons name="menu" size={32} color={colors.text} />;
+
       case "back":
         return <Ionicons name="arrow-back" size={32} color={colors.text} />;
 
@@ -33,14 +36,15 @@ export default function Header({
 
       case "close":
         return <Ionicons name="close" size={32} color={colors.text} />;
-
-      default:
-        return <Ionicons name="menu" size={32} color={colors.text} />;
     }
   };
 
   const handlePress = () => {
     switch (variant) {
+      case "menu":
+        navigation.dispatch(DrawerActions.openDrawer());
+        break;
+
       case "back":
         navigation.canGoBack?.() && navigation.goBack();
         break;
@@ -51,10 +55,6 @@ export default function Header({
 
       case "close":
         onClosePress?.();
-        break;
-
-      default:
-        navigation.dispatch(DrawerActions.openDrawer());
         break;
     }
   };
