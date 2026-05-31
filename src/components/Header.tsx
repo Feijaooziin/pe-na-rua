@@ -56,10 +56,10 @@ export default function Header({ title = "Pé na Rua 🌳" }: HeaderProps) {
         {/* DIREITA (logo) */}
         <View style={{ flexDirection: "row", alignItems: "center", gap: 16 }}>
           <Image
-            source={require("../../assets/images/logo.jpeg")}
+            source={require("../../assets/images/header-icon.png")}
             style={{
-              width: 45,
-              height: 45,
+              width: 40,
+              height: 40,
               borderRadius: 100,
             }}
           />
