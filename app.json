@@ -4,7 +4,7 @@
     "slug": "pe-na-rua",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/logo.jpeg",
+    "icon": "./assets/images/adaptive-icon.png",
     "scheme": "penarua",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -23,8 +23,8 @@
       },
       "permissions": ["CAMERA", "ACCESS_FINE_LOCATION"],
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/logo.jpeg"
+        "backgroundColor": "#FFFFFF",
+        "foregroundImage": "./assets/images/adaptive-icon.png"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
@@ -32,7 +32,7 @@
     },
     "web": {
       "output": "static",
-      "favicon": "./assets/images/logo.jpeg"
+      "favicon": "./assets/images/splash-icon-dark.png"
     },
     "plugins": [
       "expo-router",
