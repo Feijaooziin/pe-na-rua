@@ -262,10 +262,17 @@ export default function Map() {
               >
                 <Image
                   source={getCategoryMarker(tree?.category)}
-                  style={{
-                    width: 50,
-                    height: 50,
-                  }}
+                  style={
+                    tree === selectedTree
+                      ? {
+                          width: 65,
+                          height: 65,
+                        }
+                      : {
+                          width: 50,
+                          height: 50,
+                        }
+                  }
                   resizeMode="cover"
                 />
               </Marker>

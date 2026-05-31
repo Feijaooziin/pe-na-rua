@@ -1,5 +1,8 @@
 export function getCategoryLabel(category?: string) {
   switch (category) {
+    case "tree":
+      return "🌳 Árvore";
+
     case "fruit":
       return "🍎 Frutífera";
 
@@ -11,14 +14,14 @@ export function getCategoryLabel(category?: string) {
 
     case "ornamental":
       return "🌸 Ornamental";
-
-    default:
-      return "🌳 Árvore";
   }
 }
 
 export function getCategoryColor(category?: string) {
   switch (category) {
+    case "tree":
+      return "#2e7d32";
+
     case "fruit":
       return "#ff9800";
 
@@ -30,14 +33,14 @@ export function getCategoryColor(category?: string) {
 
     case "ornamental":
       return "#e91e63";
-
-    default:
-      return "#2e7d32";
   }
 }
 
 export function getCategoryMarker(category?: string) {
   switch (category) {
+    case "tree":
+      return require("@/assets/images/marker2.png");
+
     case "fruit":
       return require("@/assets/images/marker2.png");
 
@@ -48,9 +51,6 @@ export function getCategoryMarker(category?: string) {
       return require("@/assets/images/marker2.png");
 
     case "ornamental":
-      return require("@/assets/images/marker2.png");
-
-    default:
       return require("@/assets/images/marker2.png");
   }
 }
