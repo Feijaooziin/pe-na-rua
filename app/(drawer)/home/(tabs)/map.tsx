@@ -17,7 +17,11 @@ import { shareTree } from "@/src/services/shareTree";
 
 import { Tree } from "@/src/types/tree";
 
-import { getCategoryColor, getCategoryLabel } from "@/src/utils/category";
+import {
+  getCategoryColor,
+  getCategoryLabel,
+  getCategoryMarker,
+} from "@/src/utils/category";
 
 export default function Map() {
   const { colors, isDark } = useTheme();
@@ -257,7 +261,7 @@ export default function Map() {
                 tracksViewChanges={false}
               >
                 <Image
-                  source={require("@/assets/images/marker.png")}
+                  source={getCategoryMarker(tree?.category)}
                   style={{
                     width: 50,
                     height: 50,
