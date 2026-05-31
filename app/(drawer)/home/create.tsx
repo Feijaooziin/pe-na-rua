@@ -1,4 +1,5 @@
 import * as Location from "expo-location";
+
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import {
@@ -10,16 +11,18 @@ import {
   View,
 } from "react-native";
 
-import ImagePickerPreview from "@/src/components/ImagePickerPreview";
-import { Item } from "@/src/components/itens/Item";
-import PickerItem from "@/src/components/itens/PickerItem";
-import { Section } from "@/src/components/itens/Section";
 import { categories } from "@/src/constants/categories";
 import { insertTree } from "@/src/database/trees";
 import { useSettings } from "@/src/hooks/useSettings";
 import { useTheme } from "@/src/hooks/useTheme";
 import { FINAL } from "@/src/theme/layout";
 import { chooseImage } from "@/src/utils/imagePicker";
+
+import ImagePickerPreview from "@/src/components/ImagePickerPreview";
+import { Item } from "@/src/components/itens/Item";
+import PickerItem from "@/src/components/itens/PickerItem";
+import { Section } from "@/src/components/itens/Section";
+import Toast from "react-native-toast-message";
 
 export default function Create() {
   const { settings, loading } = useSettings();
@@ -109,7 +112,7 @@ export default function Create() {
     }
 
     insertTree({
-      name,
+      name: name.toUpperCase(),
       description,
       images,
       latitude,
@@ -118,7 +121,11 @@ export default function Create() {
       created_at: new Date().toISOString(),
     });
 
-    Alert.alert("Sucesso", "Árvore cadastrada 🌳");
+    Toast.show({
+      type: "success",
+      text1: "Sucesso!",
+      text2: `${name.toUpperCase()} cadastrado(a) com sucesso.`,
+    });
 
     router.back();
   }
