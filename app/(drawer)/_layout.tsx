@@ -19,6 +19,7 @@ type MenuItem = {
   route: string;
   icon: IconName;
   activeIcon?: IconName;
+  headerTitle?: string;
 };
 
 type MenuGroup = {
@@ -29,6 +30,7 @@ type MenuGroup = {
     label: string;
     route: string;
     icon: IconName;
+    headerTitle?: string;
   }[];
 };
 
@@ -54,11 +56,13 @@ const getMenu = (colors: any): Menu => [
         label: "Teste",
         route: "teste/index",
         icon: "flask",
+        headerTitle: "Sobre o Teste 🧪",
       },
       {
         label: "Léo",
         route: "teste/leo",
         icon: "person",
+        headerTitle: "Sobre o Léo 🧔🏾‍♂️",
       },
     ],
   },
@@ -68,6 +72,7 @@ const getMenu = (colors: any): Menu => [
     route: "settings",
     icon: "settings-outline",
     activeIcon: "settings",
+    headerTitle: "Configurações ⚙️",
   },
   {
     type: "group",
@@ -78,43 +83,17 @@ const getMenu = (colors: any): Menu => [
         label: "App",
         route: "about/index",
         icon: "phone-portrait-outline",
+        headerTitle: "Sobre o App ℹ️",
       },
       {
         label: "Dev",
         route: "about/dev",
         icon: "code-slash-outline",
+        headerTitle: "Sobre o Dev 👨‍💻",
       },
     ],
   },
 ];
-
-/* =========================
-   HEADER CENTRALIZADO (FIX)
-========================= */
-const getHeader = (route: string) => {
-  switch (route) {
-    case "home":
-      return () => <Header />;
-
-    case "settings":
-      return () => <Header title="Configurações ⚙️" />;
-
-    case "about/index":
-      return () => <Header title="Sobre o App ℹ️" />;
-
-    case "about/dev":
-      return () => <Header title="Sobre o Dev 👨‍💻" />;
-
-    case "teste/index":
-      return () => <Header title="Sobre o Teste 🧪" />;
-
-    case "teste/leo":
-      return () => <Header title="Sobre o Dev 🧔🏾‍♂️" />;
-
-    default:
-      return undefined;
-  }
-};
 
 /* =========================
    COMPONENTE
@@ -124,6 +103,32 @@ export default function DrawerLayout() {
   const pathname = usePathname();
   const menu = getMenu(colors);
 
+  const getHeaderTitle = (route: string) => {
+    for (const item of menu) {
+      if (item.type === "item") {
+        if (item.route === route) {
+          return item.headerTitle;
+        }
+      }
+
+      if (item.type === "group") {
+        const child = item.children.find((child) => child.route === route);
+
+        if (child) {
+          return child.headerTitle;
+        }
+      }
+    }
+
+    return undefined;
+  };
+
+  const getHeader = (route: string) => {
+    const title = getHeaderTitle(route);
+
+    return () => <Header title={title} />;
+  };
+
   const isActive = (route: string) => {
     const normalizedRoute = route.endsWith("/index")
       ? route.slice(0, -"/index".length)
@@ -131,17 +136,24 @@ export default function DrawerLayout() {
     return pathname === `/${normalizedRoute}`;
   };
 
-  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
-    Sobre: false,
-    Testes: false,
-  });
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
-    setOpenGroups((prev) => ({
-      ...prev,
-      Sobre: pathname.startsWith("/about"),
-      Testes: pathname.startsWith("/teste"),
-    }));
+    const groupsState: Record<string, boolean> = {};
+
+    menu.forEach((item) => {
+      if (item.type === "group") {
+        const firstRoute = item.children[0]?.route;
+
+        if (firstRoute) {
+          const groupPath = firstRoute.split("/")[0];
+
+          groupsState[item.label] = pathname.startsWith(`/${groupPath}`);
+        }
+      }
+    });
+
+    setOpenGroups(groupsState);
   }, [pathname]);
 
   return (
@@ -318,8 +330,9 @@ export default function DrawerLayout() {
           </View>
         </View>
       )}
-      screenOptions={{
-        headerShown: false,
+      screenOptions={({ route }) => ({
+        headerShown: true,
+        header: getHeader(route.name),
         drawerStyle: {
           backgroundColor: colors.surface,
           width: 280,
@@ -327,29 +340,21 @@ export default function DrawerLayout() {
         sceneStyle: {
           backgroundColor: colors.background,
         },
-      }}
+      })}
     >
       <Drawer.Screen
         name="home"
         options={{
-          header: getHeader("home"),
+          headerShown: false,
         }}
       />
 
-      <Drawer.Screen
-        name="settings"
-        options={{
-          headerShown: true,
-          header: getHeader("settings"),
-        }}
-      />
+      <Drawer.Screen name="settings" />
 
       <Drawer.Screen
         name="about/index"
         options={{
           drawerItemStyle: { display: "none" },
-          headerShown: true,
-          header: getHeader("about/index"),
         }}
       />
 
@@ -357,8 +362,6 @@ export default function DrawerLayout() {
         name="about/dev"
         options={{
           drawerItemStyle: { display: "none" },
-          headerShown: true,
-          header: getHeader("about/dev"),
         }}
       />
 
@@ -366,8 +369,6 @@ export default function DrawerLayout() {
         name="teste/index"
         options={{
           drawerItemStyle: { display: "none" },
-          headerShown: true,
-          header: getHeader("teste/index"),
         }}
       />
 
@@ -375,8 +376,6 @@ export default function DrawerLayout() {
         name="teste/leo"
         options={{
           drawerItemStyle: { display: "none" },
-          headerShown: true,
-          header: getHeader("teste/leo"),
         }}
       />
     </Drawer>
