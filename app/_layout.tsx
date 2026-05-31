@@ -1,15 +1,18 @@
 import * as NavigationBar from "expo-navigation-bar";
 import { Stack } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, View } from "react-native";
+import { View } from "react-native";
 import Toast from "react-native-toast-message";
 
+import { CustomToast } from "@/src/components/CustomToast";
 import { SettingsProvider } from "@/src/context/SettingsContext";
 import { initDB } from "@/src/database/db";
 import { useTheme } from "@/src/hooks/useTheme";
 
-import { CustomToast } from "@/src/components/CustomToast";
+SplashScreen.preventAutoHideAsync();
+
 const toastConfig = {
   success: (props: any) => <CustomToast {...props} type="success" />,
   error: (props: any) => <CustomToast {...props} type="error" />,
@@ -24,18 +27,12 @@ function AppContent() {
   }, [isDark]);
 
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: colors.background,
-      }}
-    >
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
       <StatusBar style={isDark ? "light" : "dark"} />
 
       <Stack
         screenOptions={{
           headerShown: false,
-
           contentStyle: {
             backgroundColor: colors.background,
           },
@@ -51,22 +48,20 @@ export default function Layout() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    initDB();
-    setReady(true);
+    async function prepare() {
+      try {
+        await initDB();
+      } finally {
+        setReady(true);
+        await SplashScreen.hideAsync();
+      }
+    }
+
+    prepare();
   }, []);
 
   if (!ready) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <ActivityIndicator size="large" />
-      </View>
-    );
+    return null;
   }
 
   return (
