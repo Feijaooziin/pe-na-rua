@@ -158,6 +158,24 @@ export default function Settings() {
           />
         </Section>
 
+        {/* 📤 COMPARTILHAMENTO */}
+        <Section title="📤 Compartilhamento">
+          <Item
+            label="Editar texto padrão de compartilhamento "
+            onPress={() => router.push("/(stack)/settings/share-text")}
+          />
+
+          <SwitchItem
+            label="Incluir link do Google Maps"
+            value={settings.includeMaps}
+            onValueChange={(value) =>
+              updateSetting({
+                includeMaps: value,
+              })
+            }
+          />
+        </Section>
+
         {/* 📊 ESTATÍSTICAS */}
         <Section title="📊 Estatísticas">
           <Item
