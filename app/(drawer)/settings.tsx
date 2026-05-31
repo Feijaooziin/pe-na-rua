@@ -1,4 +1,7 @@
-import { router } from "expo-router";
+import Toast from "react-native-toast-message";
+
+import { router, usePathname } from "expo-router";
+import { useEffect, useRef, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 
 import { db } from "@/src/database/db";
@@ -7,6 +10,7 @@ import { useSettings } from "@/src/hooks/useSettings";
 import { useTheme } from "@/src/hooks/useTheme";
 import { exportTrees, importTrees } from "@/src/services/backup";
 import { resetSettings } from "@/src/storage/settings";
+import { FINAL } from "@/src/theme/layout";
 
 import { CustomAlertDanger } from "@/src/components/CustomAlert";
 import Header from "@/src/components/Header";
@@ -14,11 +18,11 @@ import { DangerItem, Item } from "@/src/components/itens/Item";
 import PickerItem from "@/src/components/itens/PickerItem";
 import { DangerSection, Section } from "@/src/components/itens/Section";
 import { SwitchItem } from "@/src/components/itens/SwitchItem";
-import { FINAL } from "@/src/theme/layout";
-import { useState } from "react";
-import Toast from "react-native-toast-message";
 
 export default function Settings() {
+  const scrollRef = useRef<ScrollView>(null);
+  const pathname = usePathname();
+
   const { colors } = useTheme();
   const { settings, loading, updateSetting, loadSettings } = useSettings();
 
@@ -34,6 +38,10 @@ export default function Settings() {
   );
 
   const totalCategories = new Set(trees.map((tree) => tree.category)).size;
+
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ y: 0, animated: true });
+  }, [pathname]);
 
   async function handleReloadSettings() {
     await loadSettings();
@@ -77,6 +85,7 @@ export default function Settings() {
     >
       <Header title="Configurações ⚙️" />
       <ScrollView
+        ref={scrollRef}
         contentContainerStyle={{
           padding: 20,
           paddingBottom: FINAL,
@@ -298,6 +307,10 @@ export default function Settings() {
             await resetSettings();
             await handleReloadSettings();
 
+            requestAnimationFrame(() => {
+              scrollRef.current?.scrollTo({ y: 0, animated: true });
+            });
+
             Toast.show({
               type: "info",
               text1: "Sucesso",
@@ -308,6 +321,7 @@ export default function Settings() {
           }
         }}
       />
+
       {/* CLEAR ÁRVORES */}
       <CustomAlertDanger
         visible={showClearTrees}
@@ -333,6 +347,7 @@ export default function Settings() {
           }
         }}
       />
+
       {/* RESETAR APP */}
       <CustomAlertDanger
         visible={showResetApp}
