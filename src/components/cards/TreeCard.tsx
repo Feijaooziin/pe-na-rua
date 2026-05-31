@@ -5,6 +5,13 @@ import { Image, Text, TouchableOpacity, View } from "react-native";
 import CategoryBadge from "@/src/components/badges/CategoryBadge";
 import FavoriteButton from "@/src/components/buttons/FavoriteButton";
 import { useTheme } from "@/src/hooks/useTheme";
+import {
+  FONT_SIZE,
+  ICON_SIZE,
+  RADIUS,
+  SHADOWS,
+  SPACING,
+} from "@/src/theme/layout";
 import { Tree } from "@/src/types/tree";
 import { formatDate } from "@/src/utils/date";
 
@@ -22,12 +29,14 @@ export default function TreeCard({ tree, onFavorite }: Props) {
       onPress={() => router.push(`/home/details/${tree.id}` as any)}
       style={{
         backgroundColor: colors.surface,
-        borderRadius: 16,
+        borderRadius: RADIUS.lg,
+
+        ...SHADOWS.card,
+
         shadowColor: colors.shadow,
         shadowOpacity: colors.shadowOpacity,
-        shadowRadius: 8,
-        elevation: 3,
-        marginBottom: 16,
+
+        marginBottom: SPACING.lg,
         overflow: "hidden",
       }}
     >
@@ -38,8 +47,8 @@ export default function TreeCard({ tree, onFavorite }: Props) {
           style={{
             width: "100%",
             height: 150,
-            borderTopLeftRadius: 16,
-            borderTopRightRadius: 16,
+            borderTopLeftRadius: RADIUS.lg,
+            borderTopRightRadius: RADIUS.lg,
           }}
         />
       ) : (
@@ -51,12 +60,16 @@ export default function TreeCard({ tree, onFavorite }: Props) {
             alignItems: "center",
           }}
         >
-          <Ionicons name="image-outline" size={32} color={colors.textMuted} />
+          <Ionicons
+            name="image-outline"
+            size={ICON_SIZE.xl}
+            color={colors.textMuted}
+          />
 
           <Text
             style={{
               color: colors.textMuted,
-              marginTop: 8,
+              marginTop: SPACING.sm,
             }}
           >
             Sem imagem
@@ -67,13 +80,13 @@ export default function TreeCard({ tree, onFavorite }: Props) {
       {/* TEXTO */}
       <View
         style={{
-          padding: 15,
+          padding: SPACING.lg,
           position: "relative",
         }}
       >
         <Text
           style={{
-            fontSize: 18,
+            fontSize: FONT_SIZE.lg,
             fontWeight: "bold",
             color: colors.text,
           }}
@@ -86,7 +99,7 @@ export default function TreeCard({ tree, onFavorite }: Props) {
         <Text
           numberOfLines={2}
           style={{
-            marginTop: 5,
+            marginTop: SPACING.xs + 1,
             color: colors.textSecondary,
             paddingRight: 50,
           }}
@@ -96,8 +109,8 @@ export default function TreeCard({ tree, onFavorite }: Props) {
 
         <Text
           style={{
-            marginTop: 8,
-            fontSize: 12,
+            marginTop: SPACING.sm,
+            fontSize: FONT_SIZE.xs,
             color: colors.textMuted,
           }}
         >

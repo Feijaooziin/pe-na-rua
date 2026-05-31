@@ -1,6 +1,7 @@
 import { Text, TouchableOpacity } from "react-native";
 
 import { useTheme } from "@/src/hooks/useTheme";
+import { FONT_SIZE, SPACING } from "@/src/theme/layout";
 
 type ItemProps = {
   label: string;
@@ -16,7 +17,7 @@ export function Item({ label, desc, onPress }: ItemProps) {
       activeOpacity={0.7}
       onPress={onPress}
       style={{
-        padding: 16,
+        padding: SPACING.lg,
         borderBottomWidth: 1,
         borderColor: colors.border,
         backgroundColor: colors.surface,
@@ -25,7 +26,7 @@ export function Item({ label, desc, onPress }: ItemProps) {
       <Text
         style={{
           color: colors.text,
-          fontSize: 15,
+          fontSize: FONT_SIZE.sm,
           fontWeight: "500",
         }}
       >
@@ -35,9 +36,9 @@ export function Item({ label, desc, onPress }: ItemProps) {
       {desc && (
         <Text
           style={{
-            fontSize: 12,
+            fontSize: FONT_SIZE.xs,
             color: colors.textMuted,
-            marginTop: 5,
+            marginTop: SPACING.xs + 1,
             lineHeight: 18,
           }}
         >
@@ -56,7 +57,7 @@ export function DangerItem({ label, desc, onPress }: ItemProps) {
       activeOpacity={0.7}
       onPress={onPress}
       style={{
-        padding: 16,
+        padding: SPACING.lg,
         borderBottomWidth: 1,
         borderColor: colors.borderDanger,
         backgroundColor: colors.surface,
@@ -65,7 +66,7 @@ export function DangerItem({ label, desc, onPress }: ItemProps) {
       <Text
         style={{
           color: colors.danger,
-          fontSize: 15,
+          fontSize: FONT_SIZE.sm,
           fontWeight: "600",
         }}
       >
@@ -75,9 +76,9 @@ export function DangerItem({ label, desc, onPress }: ItemProps) {
       {desc && (
         <Text
           style={{
-            fontSize: 12,
+            fontSize: FONT_SIZE.xs,
             color: colors.textMuted,
-            marginTop: 5,
+            marginTop: SPACING.xs + 1,
             lineHeight: 18,
           }}
         >

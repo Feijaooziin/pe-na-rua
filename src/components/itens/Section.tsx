@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import { Text, View } from "react-native";
 
 import { useTheme } from "@/src/hooks/useTheme";
+import { FONT_SIZE, RADIUS, SHADOWS, SPACING } from "@/src/theme/layout";
 
 type SectionProps = {
   title: string;
@@ -12,12 +13,16 @@ export function Section({ title, children }: SectionProps) {
   const { colors } = useTheme();
 
   return (
-    <View style={{ marginBottom: 25 }}>
+    <View
+      style={{
+        marginBottom: SPACING.xxl,
+      }}
+    >
       <Text
         style={{
-          fontSize: 13,
+          fontSize: FONT_SIZE.xs,
           fontWeight: "700",
-          marginBottom: 10,
+          marginBottom: SPACING.sm,
           color: colors.textSecondary,
           letterSpacing: 0.5,
         }}
@@ -28,12 +33,13 @@ export function Section({ title, children }: SectionProps) {
       <View
         style={{
           backgroundColor: colors.surface,
-          borderRadius: 16,
+          borderRadius: RADIUS.lg,
           overflow: "hidden",
+
+          ...SHADOWS.card,
+
           shadowColor: colors.shadow,
           shadowOpacity: colors.shadowOpacity,
-          shadowRadius: 6,
-          elevation: 2,
         }}
       >
         {children}
@@ -46,12 +52,16 @@ export function DangerSection({ title, children }: SectionProps) {
   const { colors } = useTheme();
 
   return (
-    <View style={{ marginBottom: 25 }}>
+    <View
+      style={{
+        marginBottom: SPACING.xxl,
+      }}
+    >
       <Text
         style={{
-          fontSize: 13,
+          fontSize: FONT_SIZE.xs,
           fontWeight: "700",
-          marginBottom: 10,
+          marginBottom: SPACING.sm,
           color: colors.danger,
           letterSpacing: 0.5,
         }}
@@ -62,14 +72,16 @@ export function DangerSection({ title, children }: SectionProps) {
       <View
         style={{
           backgroundColor: colors.surface,
-          borderRadius: 16,
+          borderRadius: RADIUS.lg,
           overflow: "hidden",
+
           borderWidth: 1,
           borderColor: colors.borderDanger,
+
+          ...SHADOWS.card,
+
           shadowColor: colors.shadow,
           shadowOpacity: colors.shadowOpacity,
-          shadowRadius: 6,
-          elevation: 2,
         }}
       >
         {children}

@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Text, View } from "react-native";
 
 import { useTheme } from "@/src/hooks/useTheme";
+import { FONT_SIZE, ICON_SIZE, SPACING } from "@/src/theme/layout";
 
 type Props = {
   icon?: keyof typeof Ionicons.glyphMap;
@@ -22,16 +23,20 @@ export default function EmptyState({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        marginTop: 40,
+        marginTop: SPACING.xl * 2,
       }}
     >
-      <Ionicons name={icon} size={48} color={colors.textMuted} />
+      <Ionicons
+        name={icon}
+        size={ICON_SIZE.xxl + 14}
+        color={colors.textMuted}
+      />
 
       <Text
         style={{
-          fontSize: 16,
+          fontSize: FONT_SIZE.md,
           color: colors.textSecondary,
-          marginTop: 10,
+          marginTop: SPACING.sm,
           fontWeight: "bold",
         }}
       >
@@ -41,9 +46,9 @@ export default function EmptyState({
       {description && (
         <Text
           style={{
-            fontSize: 13,
+            fontSize: FONT_SIZE.xs + 1,
             color: colors.textMuted,
-            marginTop: 5,
+            marginTop: SPACING.xs + 1,
             textAlign: "center",
           }}
         >

@@ -1,5 +1,7 @@
-import { getCategoryColor, getCategoryLabel } from "@/src/utils/category";
 import { Text, View } from "react-native";
+
+import { FONT_SIZE, RADIUS, SPACING } from "@/src/theme/layout";
+import { getCategoryColor, getCategoryLabel } from "@/src/utils/category";
 
 type Props = {
   category: any;
@@ -12,17 +14,17 @@ export default function CategoryBadge({ category, small = false }: Props) {
       style={{
         alignSelf: "flex-start",
         backgroundColor: getCategoryColor(category),
-        paddingHorizontal: small ? 8 : 12,
-        paddingVertical: small ? 4 : 6,
-        borderRadius: 100,
-        marginTop: small ? 4 : 6,
+        paddingHorizontal: small ? SPACING.sm : SPACING.md,
+        paddingVertical: small ? SPACING.xs : SPACING.sm,
+        borderRadius: RADIUS.full,
+        marginTop: small ? SPACING.xs : SPACING.sm,
       }}
     >
       <Text
         style={{
           color: "#FFFFFF",
           fontWeight: "bold",
-          fontSize: small ? 10 : 13,
+          fontSize: small ? FONT_SIZE.xs - 2 : FONT_SIZE.sm - 1,
         }}
       >
         {getCategoryLabel(category)}

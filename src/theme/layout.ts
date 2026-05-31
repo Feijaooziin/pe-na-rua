@@ -15,7 +15,7 @@ export const ICON_SIZE = {
 
 export const FONT_SIZE = {
   xs: 12,
-  sm: 14,
+  sm: 15,
   md: 16,
   lg: 18,
   xl: 22,

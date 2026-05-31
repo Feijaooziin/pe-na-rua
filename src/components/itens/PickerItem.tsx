@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Text, View } from "react-native";
 
 import { useTheme } from "@/src/hooks/useTheme";
+import { FONT_SIZE, ICON_SIZE, RADIUS, SPACING } from "@/src/theme/layout";
 
 type Option = {
   label: string;
@@ -25,21 +26,21 @@ export default function PickerItem({
   onChange,
   items,
 }: Props) {
-  const { colors, isDark } = useTheme();
+  const { colors } = useTheme();
 
   return (
     <View
       style={{
-        padding: 15,
+        padding: SPACING.lg,
         borderBottomWidth: 1,
         borderColor: colors.border,
       }}
     >
       <Text
         style={{
-          marginBottom: 8,
+          marginBottom: SPACING.sm,
           color: colors.text,
-          fontSize: 15,
+          fontSize: FONT_SIZE.sm,
           fontWeight: "600",
         }}
       >
@@ -49,9 +50,9 @@ export default function PickerItem({
       {description && (
         <Text
           style={{
-            marginBottom: 10,
+            marginBottom: SPACING.md,
             color: colors.textMuted,
-            fontSize: 12,
+            fontSize: FONT_SIZE.xs,
             lineHeight: 18,
           }}
         >
@@ -63,7 +64,7 @@ export default function PickerItem({
         style={{
           borderWidth: 1,
           borderColor: colors.inputBorder,
-          borderRadius: 12,
+          borderRadius: RADIUS.md,
           overflow: "hidden",
           backgroundColor: colors.input,
         }}
@@ -73,12 +74,11 @@ export default function PickerItem({
           onValueChange={onChange}
           items={items}
           useNativeAndroidPickerStyle={false}
-          // darkTheme={isDark}
           placeholder={{}}
           Icon={() => (
             <Ionicons
               name="chevron-down"
-              size={20}
+              size={ICON_SIZE.md}
               color={colors.iconSecondary}
             />
           )}
@@ -86,23 +86,23 @@ export default function PickerItem({
             inputIOS: {
               color: colors.text,
               backgroundColor: colors.input,
-              paddingVertical: 14,
-              paddingHorizontal: 14,
-              fontSize: 15,
+              paddingVertical: SPACING.md,
+              paddingHorizontal: SPACING.md,
+              fontSize: FONT_SIZE.sm,
             },
 
             inputAndroid: {
               color: colors.text,
               backgroundColor: colors.input,
-              paddingVertical: 12,
-              paddingHorizontal: 14,
-              fontSize: 15,
+              paddingVertical: SPACING.md,
+              paddingHorizontal: SPACING.md,
+              fontSize: FONT_SIZE.sm,
             },
 
             viewContainer: {
               borderWidth: 1,
               borderColor: colors.inputBorder,
-              borderRadius: 10,
+              borderRadius: RADIUS.sm,
               backgroundColor: colors.input,
             },
 
@@ -111,8 +111,8 @@ export default function PickerItem({
             },
 
             iconContainer: {
-              top: 10,
-              right: 16,
+              top: SPACING.sm,
+              right: SPACING.lg,
             },
 
             modalViewMiddle: {

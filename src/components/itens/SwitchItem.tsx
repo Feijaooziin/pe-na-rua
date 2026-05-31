@@ -1,6 +1,7 @@
 import { Switch, Text, View } from "react-native";
 
 import { useTheme } from "@/src/hooks/useTheme";
+import { FONT_SIZE, SPACING } from "@/src/theme/layout";
 
 type SwitchItemProps = {
   label: string;
@@ -18,7 +19,7 @@ export function SwitchItem({ label, value, onValueChange }: SwitchItemProps) {
         justifyContent: "space-between",
         alignItems: "center",
 
-        padding: 16,
+        padding: SPACING.lg,
 
         borderBottomWidth: 1,
         borderColor: colors.border,
@@ -29,10 +30,10 @@ export function SwitchItem({ label, value, onValueChange }: SwitchItemProps) {
       <Text
         style={{
           color: colors.text,
-          fontSize: 15,
+          fontSize: FONT_SIZE.sm,
           fontWeight: "500",
           flex: 1,
-          paddingRight: 10,
+          paddingRight: SPACING.sm,
         }}
       >
         {label}
@@ -65,7 +66,7 @@ export function SwitchDangerItem({
         justifyContent: "space-between",
         alignItems: "center",
 
-        padding: 16,
+        padding: SPACING.lg,
 
         borderBottomWidth: 1,
         borderColor: colors.borderDanger,
@@ -76,10 +77,10 @@ export function SwitchDangerItem({
       <Text
         style={{
           color: colors.danger,
-          fontSize: 15,
+          fontSize: FONT_SIZE.sm,
           fontWeight: "600",
           flex: 1,
-          paddingRight: 10,
+          paddingRight: SPACING.sm,
         }}
       >
         {label}
