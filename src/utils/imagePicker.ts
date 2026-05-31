@@ -2,6 +2,7 @@ import { setCameraData } from "@/src/store/camera";
 import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
 import { Alert } from "react-native";
+import Toast from "react-native-toast-message";
 
 type PickImagesParams = {
   currentImages: string[];
@@ -16,7 +17,11 @@ export async function takePhoto({
   onImagesSelected,
 }: PickImagesParams) {
   if (currentImages.length >= maxImages) {
-    alert(`Limite de ${maxImages} imagens atingido`);
+    Toast.show({
+      type: "error",
+      text1: "Atenção!",
+      text2: `Limite de imagens atingido.`,
+    });
     return;
   }
 
@@ -42,7 +47,11 @@ export async function pickImages({
   }
 
   if (currentImages.length >= maxImages) {
-    alert(`Limite de ${maxImages} imagens atingido`);
+    Toast.show({
+      type: "error",
+      text1: "Atenção!",
+      text2: `Limite de imagens atingido.`,
+    });
     return;
   }
 

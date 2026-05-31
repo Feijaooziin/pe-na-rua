@@ -4,7 +4,7 @@ import * as Sharing from "expo-sharing";
 
 import { getTrees, insertTree } from "@/src/database/trees";
 import { router } from "expo-router";
-import { Alert } from "react-native";
+import Toast from "react-native-toast-message";
 
 export async function exportTrees() {
   try {
@@ -56,16 +56,18 @@ export async function exportTrees() {
     // 📤 compartilhar arquivo
     await Sharing.shareAsync(fileUri);
 
-    Alert.alert(
-      "Backup exportado ✅",
-      "Seu backup foi gerado e compartilhado com sucesso.",
-    );
+    Toast.show({
+      type: "success",
+      text1: "Backup exportado!",
+      text2: "Seu backup foi gerado e compartilhado com sucesso.",
+    });
     console.log("Backup exportado:", fileUri);
   } catch (error) {
-    Alert.alert(
-      "Erro ao exportar backup ❌",
-      "Houve algum erro ao exportar os dados.",
-    );
+    Toast.show({
+      type: "error",
+      text1: "Erro ao exportar backup!",
+      text2: "Houve algum erro ao exportar os dados.",
+    });
     console.log("Erro ao exportar backup", error);
   }
 }
@@ -139,14 +141,19 @@ export async function importTrees() {
       });
     }
 
-    Alert.alert(
-      "Backup importado ✅",
-      `${trees.length} árvores foram restauradas com sucesso.`,
-    );
+    Toast.show({
+      type: "success",
+      text1: "Backup importado!",
+      text2: `${trees.length} árvores foram restauradas com sucesso.`,
+    });
 
     router.replace("/(drawer)/home/(tabs)/list");
   } catch (error) {
-    Alert.alert("Erro", "Não foi possível importar o backup.");
+    Toast.show({
+      type: "error",
+      text1: "Erro!",
+      text2: "Não foi possível importar o backup.",
+    });
     console.log("Erro ao importar backup", error);
   }
 }

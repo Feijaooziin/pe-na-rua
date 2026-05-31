@@ -1,5 +1,5 @@
 import { router } from "expo-router";
-import { Alert, ScrollView, Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 
 import { db } from "@/src/database/db";
 import { getTrees } from "@/src/database/trees";
@@ -20,8 +20,11 @@ import Toast from "react-native-toast-message";
 
 export default function Settings() {
   const { colors } = useTheme();
+  const { settings, loading, updateSetting, loadSettings } = useSettings();
 
-  const [showReset, setShowReset] = useState(false);
+  const [showResetConfig, setShowResetConfig] = useState(false);
+  const [showClearTrees, setShowClearTrees] = useState(false);
+  const [showResetApp, setShowResetApp] = useState(false);
 
   const trees = getTrees();
   const totalTrees = trees.length;
@@ -32,74 +35,8 @@ export default function Settings() {
 
   const totalCategories = new Set(trees.map((tree) => tree.category)).size;
 
-  const { settings, loading, updateSetting, loadSettings } = useSettings();
-
   async function handleReloadSettings() {
     await loadSettings();
-  }
-
-  function handleResetSettings() {
-    setShowReset(true);
-  }
-
-  function handleClearTrees() {
-    Alert.alert(
-      "Limpar árvores",
-      "Todas as árvores cadastradas serão apagadas.",
-      [
-        {
-          text: "Cancelar",
-          style: "cancel",
-        },
-        {
-          text: "Limpar",
-          style: "destructive",
-          onPress: async () => {
-            try {
-              db.runSync("DELETE FROM trees");
-
-              Alert.alert("Sucesso", "Árvores apagadas com sucesso!");
-
-              router.replace("/(drawer)/home/(tabs)/list");
-            } catch (error) {
-              console.log(error);
-            }
-          },
-        },
-      ],
-    );
-  }
-
-  function handleResetApp() {
-    Alert.alert(
-      "Resetar aplicativo",
-      "Isso apagará TODAS as árvores e restaurará TODAS as configurações.",
-      [
-        {
-          text: "Cancelar",
-          style: "cancel",
-        },
-        {
-          text: "Resetar tudo",
-          style: "destructive",
-          onPress: async () => {
-            try {
-              db.runSync("DELETE FROM trees");
-
-              await resetSettings();
-
-              await handleReloadSettings();
-
-              Alert.alert("Sucesso", "Aplicativo resetado com sucesso!");
-
-              router.replace("/(drawer)/home/(tabs)/list");
-            } catch (error) {
-              console.log(error);
-            }
-          },
-        },
-      ],
-    );
   }
 
   if (loading || !settings) {
@@ -139,7 +76,6 @@ export default function Settings() {
       }}
     >
       <Header title="Configurações ⚙️" />
-
       <ScrollView
         contentContainerStyle={{
           padding: 20,
@@ -291,21 +227,6 @@ export default function Settings() {
           />
         </Section>
 
-        {/* 📦 DADOS */}
-        <Section title="📦 Dados">
-          <Item
-            label="Exportar árvores"
-            desc="Salva um backup das árvores cadastradas."
-            onPress={exportTrees}
-          />
-
-          <Item
-            label="Importar árvores"
-            desc="Restaura árvores a partir de um backup."
-            onPress={importTrees}
-          />
-        </Section>
-
         {/* 📊 ESTATÍSTICAS */}
         <Section title="📊 Estatísticas">
           <Item
@@ -324,24 +245,39 @@ export default function Settings() {
           />
         </Section>
 
+        {/* 📦 DADOS */}
+        <Section title="📦 Dados">
+          <Item
+            label="Exportar árvores"
+            desc="Salva um backup das árvores cadastradas."
+            onPress={exportTrees}
+          />
+
+          <Item
+            label="Importar árvores"
+            desc="Restaura árvores a partir de um backup."
+            onPress={importTrees}
+          />
+        </Section>
+
         {/* 🚨 ZONA DE PERIGO */}
         <DangerSection title="🚨 Zona de perigo">
           <DangerItem
             label="Resetar configurações"
             desc="Restaura todas as configurações do aplicativo."
-            onPress={handleResetSettings}
+            onPress={() => setShowResetConfig(true)}
           />
 
           <DangerItem
             label="Limpar árvores"
             desc="Remove permanentemente todas as árvores cadastradas."
-            onPress={handleClearTrees}
+            onPress={() => setShowClearTrees(true)}
           />
 
           <DangerItem
             label="Resetar aplicativo"
             desc="Apaga árvores e redefine todas as configurações."
-            onPress={handleResetApp}
+            onPress={() => setShowResetApp(true)}
           />
         </DangerSection>
       </ScrollView>
@@ -349,15 +285,15 @@ export default function Settings() {
       {/* ------- CUSTOM ALERTS ------- */}
       {/* RESET CONFIGS */}
       <CustomAlertDanger
-        visible={showReset}
-        title="Resetar configurações"
+        visible={showResetConfig}
+        title="Resetar configurações?"
         message="Todas as configurações voltarão ao padrão."
         cancelText="Cancelar"
         confirmText="Resetar"
-        onCancel={() => setShowReset(false)}
+        onCancel={() => setShowResetConfig(false)}
         onConfirm={async () => {
           try {
-            setShowReset(false);
+            setShowResetConfig(false);
 
             await resetSettings();
             await handleReloadSettings();
@@ -366,6 +302,58 @@ export default function Settings() {
               type: "info",
               text1: "Sucesso",
               text2: "Configurações resetadas com sucesso!",
+            });
+          } catch (error) {
+            console.log(error);
+          }
+        }}
+      />
+      {/* CLEAR ÁRVORES */}
+      <CustomAlertDanger
+        visible={showClearTrees}
+        title="Limpar árvores?"
+        message="Todas as árvores cadastradas serão apagadas."
+        cancelText="Cancelar"
+        confirmText="Limpar"
+        onCancel={() => setShowClearTrees(false)}
+        onConfirm={async () => {
+          try {
+            setShowClearTrees(false);
+
+            db.runSync("DELETE FROM trees");
+            router.replace("/(drawer)/home/(tabs)/list");
+
+            Toast.show({
+              type: "info",
+              text1: "Sucesso",
+              text2: "Árvores apagadas com sucesso!",
+            });
+          } catch (error) {
+            console.log(error);
+          }
+        }}
+      />
+      {/* RESETAR APP */}
+      <CustomAlertDanger
+        visible={showResetApp}
+        title="Resetar aplicativo?"
+        message="Isso apagará TODAS as árvores e restaurará TODAS as configurações."
+        cancelText="Cancelar"
+        confirmText="Resetar App"
+        onCancel={() => setShowResetApp(false)}
+        onConfirm={async () => {
+          try {
+            setShowResetApp(false);
+
+            db.runSync("DELETE FROM trees");
+            await resetSettings();
+            await handleReloadSettings();
+            router.replace("/(drawer)/home/(tabs)/list");
+
+            Toast.show({
+              type: "info",
+              text1: "Sucesso",
+              text2: "Aplicativo resetado com sucesso!",
             });
           } catch (error) {
             console.log(error);
