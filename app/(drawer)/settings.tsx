@@ -1,8 +1,7 @@
-import Toast from "react-native-toast-message";
-
-import { router, usePathname } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { router, useFocusEffect, usePathname } from "expo-router";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
+import Toast from "react-native-toast-message";
 
 import { db } from "@/src/database/db";
 import { getTrees } from "@/src/database/trees";
@@ -30,7 +29,22 @@ export default function Settings() {
   const [showClearTrees, setShowClearTrees] = useState(false);
   const [showResetApp, setShowResetApp] = useState(false);
 
-  const trees = getTrees();
+  async function loadTrees() {
+    const data = getTrees();
+    setTrees(data);
+  }
+
+  useEffect(() => {
+    loadTrees();
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      loadTrees();
+    }, []),
+  );
+
+  const [trees, setTrees] = useState<any[]>([]);
   const totalTrees = trees.length;
   const totalImages = trees.reduce(
     (acc, tree) => acc + (tree.images?.length || 0),
@@ -49,41 +63,22 @@ export default function Settings() {
 
   if (loading || !settings) {
     return (
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: colors.background,
-        }}
-      >
+      <View style={{ flex: 1, backgroundColor: colors.background }}>
         <Header title="Configurações ⚙️" />
 
         <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
-          <Text
-            style={{
-              color: colors.text,
-            }}
-          >
-            Carregando...
-          </Text>
+          <Text style={{ color: colors.text }}>Carregando...</Text>
         </View>
       </View>
     );
   }
 
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: colors.background,
-      }}
-    >
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
       <Header title="Configurações ⚙️" />
+
       <ScrollView
         ref={scrollRef}
         contentContainerStyle={{
@@ -104,18 +99,9 @@ export default function Settings() {
               })
             }
             items={[
-              {
-                label: "🌞 Day (Claro natural)",
-                value: "arborDay",
-              },
-              {
-                label: "🌙 Night (escuro neutro)",
-                value: "arborNight",
-              },
-              {
-                label: "🌿 Forest (Natureza suave)",
-                value: "arborForest",
-              },
+              { label: "🌞 Day (Claro natural)", value: "arborDay" },
+              { label: "🌙 Night (escuro neutro)", value: "arborNight" },
+              { label: "🌿 Forest (Natureza suave)", value: "arborForest" },
               {
                 label: "🌲 Deep Forest (Imersivo escuro)",
                 value: "arborDeepForest",
@@ -129,49 +115,24 @@ export default function Settings() {
           <SwitchItem
             label="Centralizar mapa automaticamente"
             value={settings.autoCenter}
-            onValueChange={(value) =>
-              updateSetting({
-                autoCenter: value,
-              })
-            }
+            onValueChange={(value) => updateSetting({ autoCenter: value })}
           />
 
           <SwitchItem
             label="Exibir árvores no mapa"
             value={settings.showTrees}
-            onValueChange={(value) =>
-              updateSetting({
-                showTrees: value,
-              })
-            }
+            onValueChange={(value) => updateSetting({ showTrees: value })}
           />
 
           <PickerItem
             label="Estilo do mapa"
-            description="Defina como o mapa será exibido."
             value={settings.mapType}
-            onChange={(value) =>
-              updateSetting({
-                mapType: value,
-              })
-            }
+            onChange={(value) => updateSetting({ mapType: value })}
             items={[
-              {
-                label: "Padrão",
-                value: "standard",
-              },
-              {
-                label: "Satélite",
-                value: "satellite",
-              },
-              {
-                label: "Híbrido",
-                value: "hybrid",
-              },
-              {
-                label: "Terreno",
-                value: "terrain",
-              },
+              { label: "Padrão", value: "standard" },
+              { label: "Satélite", value: "satellite" },
+              { label: "Híbrido", value: "hybrid" },
+              { label: "Terreno", value: "terrain" },
             ]}
           />
         </Section>
@@ -180,59 +141,20 @@ export default function Settings() {
         <Section title="🌳 Árvores">
           <PickerItem
             label="Quantidade máxima de imagens"
-            description="Define o limite de fotos por árvore cadastrada."
             value={settings.maxImages}
-            onChange={(value) =>
-              updateSetting({
-                maxImages: value,
-              })
-            }
+            onChange={(value) => updateSetting({ maxImages: value })}
             items={[
-              {
-                label: "1 imagem",
-                value: 1,
-              },
-              {
-                label: "3 imagens",
-                value: 3,
-              },
-              {
-                label: "5 imagens",
-                value: 5,
-              },
-              {
-                label: "10 imagens",
-                value: 10,
-              },
+              { label: "1 imagem", value: 1 },
+              { label: "3 imagens", value: 3 },
+              { label: "5 imagens", value: 5 },
+              { label: "10 imagens", value: 10 },
             ]}
           />
 
           <SwitchItem
             label="Atualizar localização automaticamente"
             value={settings.autoLocation}
-            onValueChange={(value) =>
-              updateSetting({
-                autoLocation: value,
-              })
-            }
-          />
-        </Section>
-
-        {/* 📤 COMPARTILHAMENTO */}
-        <Section title="📤 Compartilhamento">
-          <Item
-            label="Editar texto padrão de compartilhamento "
-            onPress={() => router.push("/(stack)/settings/share-text")}
-          />
-
-          <SwitchItem
-            label="Incluir link do Google Maps"
-            value={settings.includeMaps}
-            onValueChange={(value) =>
-              updateSetting({
-                includeMaps: value,
-              })
-            }
+            onValueChange={(value) => updateSetting({ autoLocation: value })}
           />
         </Section>
 
@@ -242,12 +164,10 @@ export default function Settings() {
             label="Árvores cadastradas"
             desc={`${totalTrees} árvores registradas`}
           />
-
           <Item
             label="Fotos salvas"
             desc={`${totalImages} imagens armazenadas`}
           />
-
           <Item
             label="Categorias utilizadas"
             desc={`${totalCategories} categorias em uso`}
@@ -257,15 +177,18 @@ export default function Settings() {
         {/* 📦 DADOS */}
         <Section title="📦 Dados">
           <Item
-            label="Exportar árvores"
-            desc="Salva um backup das árvores cadastradas."
-            onPress={exportTrees}
+            label="Importar árvores"
+            desc="Restaurar backup"
+            onPress={async () => {
+              await importTrees();
+              await loadTrees(); // 🔥 ESSENCIAL
+            }}
           />
 
           <Item
-            label="Importar árvores"
-            desc="Restaura árvores a partir de um backup."
-            onPress={importTrees}
+            label="Exportar árvores"
+            desc="Criar um backup das árvores"
+            onPress={exportTrees}
           />
         </Section>
 
@@ -273,26 +196,24 @@ export default function Settings() {
         <DangerSection title="🚨 Zona de perigo">
           <DangerItem
             label="Resetar configurações"
-            desc="Restaura todas as configurações do aplicativo."
             onPress={() => setShowResetConfig(true)}
           />
 
           <DangerItem
             label="Limpar árvores"
-            desc="Remove permanentemente todas as árvores cadastradas."
             onPress={() => setShowClearTrees(true)}
           />
 
           <DangerItem
             label="Resetar aplicativo"
-            desc="Apaga árvores e redefine todas as configurações."
             onPress={() => setShowResetApp(true)}
           />
         </DangerSection>
       </ScrollView>
 
-      {/* ------- CUSTOM ALERTS ------- */}
-      {/* RESET CONFIGS */}
+      {/* ------- ALERTS ------- */}
+
+      {/* RESET CONFIG */}
       <CustomAlertDanger
         visible={showResetConfig}
         title="Resetar configurações?"
@@ -301,78 +222,73 @@ export default function Settings() {
         confirmText="Resetar"
         onCancel={() => setShowResetConfig(false)}
         onConfirm={async () => {
-          try {
-            setShowResetConfig(false);
+          setShowResetConfig(false);
 
-            await resetSettings();
-            await handleReloadSettings();
+          await resetSettings();
+          await handleReloadSettings();
 
-            requestAnimationFrame(() => {
-              scrollRef.current?.scrollTo({ y: 0, animated: true });
-            });
+          await loadTrees(); // 🔥 mantém sync total
 
-            Toast.show({
-              type: "info",
-              text1: "Sucesso",
-              text2: "Configurações resetadas com sucesso!",
-            });
-          } catch (error) {
-            console.log(error);
-          }
+          requestAnimationFrame(() => {
+            scrollRef.current?.scrollTo({ y: 0, animated: true });
+          });
+
+          Toast.show({
+            type: "info",
+            text1: "Sucesso",
+            text2: "Configurações resetadas!",
+          });
         }}
       />
 
-      {/* CLEAR ÁRVORES */}
+      {/* CLEAR TREES */}
       <CustomAlertDanger
         visible={showClearTrees}
         title="Limpar árvores?"
-        message="Todas as árvores cadastradas serão apagadas."
+        message="Todas as árvores serão apagadas."
         cancelText="Cancelar"
         confirmText="Limpar"
         onCancel={() => setShowClearTrees(false)}
         onConfirm={async () => {
-          try {
-            setShowClearTrees(false);
+          setShowClearTrees(false);
 
-            db.runSync("DELETE FROM trees");
-            router.replace("/(drawer)/home/(tabs)/list");
+          db.runSync("DELETE FROM trees");
+          await loadTrees();
 
-            Toast.show({
-              type: "info",
-              text1: "Sucesso",
-              text2: "Árvores apagadas com sucesso!",
-            });
-          } catch (error) {
-            console.log(error);
-          }
+          router.replace("/(drawer)/home/(tabs)/list");
+
+          Toast.show({
+            type: "info",
+            text1: "Sucesso",
+            text2: "Árvores apagadas!",
+          });
         }}
       />
 
-      {/* RESETAR APP */}
+      {/* RESET APP */}
       <CustomAlertDanger
         visible={showResetApp}
         title="Resetar aplicativo?"
-        message="Isso apagará TODAS as árvores e restaurará TODAS as configurações."
+        message="Isso apagará tudo."
         cancelText="Cancelar"
         confirmText="Resetar App"
         onCancel={() => setShowResetApp(false)}
         onConfirm={async () => {
-          try {
-            setShowResetApp(false);
+          setShowResetApp(false);
 
-            db.runSync("DELETE FROM trees");
-            await resetSettings();
-            await handleReloadSettings();
-            router.replace("/(drawer)/home/(tabs)/list");
+          db.runSync("DELETE FROM trees");
+          await resetSettings();
+          await handleReloadSettings();
 
-            Toast.show({
-              type: "info",
-              text1: "Sucesso",
-              text2: "Aplicativo resetado com sucesso!",
-            });
-          } catch (error) {
-            console.log(error);
-          }
+          await loadTrees();
+
+          router.replace("/(drawer)/home/(tabs)/list");
+
+          Toast.show({
+            type: "info",
+            text1: "Sucesso",
+            text2: "App resetado!",
+          });
         }}
       />
     </View>
