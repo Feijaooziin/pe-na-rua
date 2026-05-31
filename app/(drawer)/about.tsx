@@ -1,6 +1,5 @@
 import { ScrollView, Text, View } from "react-native";
 
-import Header from "@/src/components/Header";
 import { Item } from "@/src/components/itens/Item";
 import { Section } from "@/src/components/itens/Section";
 import { useTheme } from "@/src/hooks/useTheme";
@@ -11,8 +10,6 @@ export default function About() {
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.background }}>
-      <Header title="Sobre ℹ️" />
-
       <ScrollView
         contentContainerStyle={{
           padding: 20,

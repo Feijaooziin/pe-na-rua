@@ -7,6 +7,7 @@ import { Drawer } from "expo-router/drawer";
 
 import { Text, View } from "react-native";
 
+import Header from "@/src/components/Header";
 import { useTheme } from "@/src/hooks/useTheme";
 
 export default function DrawerLayout() {
@@ -72,7 +73,6 @@ export default function DrawerLayout() {
       <Drawer.Screen
         name="home"
         options={{
-          title: "Início",
           drawerIcon: ({ color, size, focused }) => (
             <Ionicons
               name={focused ? "home" : "home-outline"}
@@ -86,7 +86,8 @@ export default function DrawerLayout() {
       <Drawer.Screen
         name="settings"
         options={{
-          title: "Configurações",
+          headerShown: true,
+          header: () => <Header title="Configurações ⚙️" />,
           drawerIcon: ({ color, size, focused }) => (
             <Ionicons
               name={focused ? "settings" : "settings-outline"}
@@ -100,7 +101,8 @@ export default function DrawerLayout() {
       <Drawer.Screen
         name="about"
         options={{
-          title: "Sobre",
+          headerShown: true,
+          header: () => <Header title="Sobre ℹ️" />,
           drawerIcon: ({ color, size, focused }) => (
             <Ionicons
               name={

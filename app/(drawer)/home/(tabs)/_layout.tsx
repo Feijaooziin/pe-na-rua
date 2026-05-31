@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 
+import Header from "@/src/components/Header";
 import { useTheme } from "@/src/hooks/useTheme";
 import { TAB_BAR_HEIGHT } from "@/src/theme/layout";
 
@@ -52,8 +53,10 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="list"
         options={{
-          title: "Lista",
+          headerShown: true,
+          header: () => <Header />,
 
+          title: "Lista",
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
               name={focused ? "leaf" : "leaf-outline"}
@@ -67,8 +70,10 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="map"
         options={{
-          title: "Mapa",
+          headerShown: true,
+          header: () => <Header />,
 
+          title: "Mapa",
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
               name={focused ? "map" : "map-outline"}

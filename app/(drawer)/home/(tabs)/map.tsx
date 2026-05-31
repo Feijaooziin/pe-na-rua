@@ -6,8 +6,6 @@ import { Image, Text, TouchableOpacity, View } from "react-native";
 
 import MapView, { Marker } from "react-native-maps";
 
-import Header from "@/src/components/Header";
-
 import { getTrees } from "@/src/database/trees";
 
 import { useSettings } from "@/src/hooks/useSettings";
@@ -124,8 +122,6 @@ export default function Map() {
           backgroundColor: colors.background,
         }}
       >
-        <Header />
-
         <MapView
           style={{
             flex: 1,
@@ -179,8 +175,6 @@ export default function Map() {
           backgroundColor: colors.background,
         }}
       >
-        <Header />
-
         <View
           style={{
             flex: 1,
@@ -208,8 +202,6 @@ export default function Map() {
         backgroundColor: colors.background,
       }}
     >
-      <Header />
-
       <MapView
         key={`${settings.mapType}-${isDark}`}
         ref={mapRef}

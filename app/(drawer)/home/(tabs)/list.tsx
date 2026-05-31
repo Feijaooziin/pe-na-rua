@@ -7,7 +7,6 @@ import FloatingButton from "@/src/components/buttons/FloatingButton";
 import TreeCard from "@/src/components/cards/TreeCard";
 import EmptyState from "@/src/components/feedback/EmptyState";
 import FilterBar from "@/src/components/FilterBar";
-import Header from "@/src/components/Header";
 import { getTrees, toggleFavorite } from "@/src/database/trees";
 import { useTheme } from "@/src/hooks/useTheme";
 import { Tree } from "@/src/types/tree";
@@ -87,9 +86,6 @@ export default function List() {
         backgroundColor: colors.background,
       }}
     >
-      {/* HEADER */}
-      <Header />
-
       {/* FILTRO */}
       <FilterBar
         search={search}
