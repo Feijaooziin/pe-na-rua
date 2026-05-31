@@ -23,17 +23,11 @@ function AppContent() {
   const { colors, isDark } = useTheme();
 
   useEffect(() => {
-    NavigationBar.setBackgroundColorAsync(colors.background);
     NavigationBar.setButtonStyleAsync(isDark ? "light" : "dark");
-  }, [colors.background, isDark]);
+  }, [isDark]);
 
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: "#FFFFFF",
-      }}
-    >
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
       <StatusBar style={isDark ? "light" : "dark"} />
 
       <Stack
@@ -56,8 +50,6 @@ export default function Layout() {
   useEffect(() => {
     async function prepare() {
       try {
-        await NavigationBar.setBackgroundColorAsync("#FFFFFF");
-        await NavigationBar.setButtonStyleAsync("dark");
         await initDB();
       } finally {
         setReady(true);
@@ -69,14 +61,7 @@ export default function Layout() {
   }, []);
 
   if (!ready) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: "#FFFFFF",
-        }}
-      />
-    );
+    return null;
   }
 
   return (
