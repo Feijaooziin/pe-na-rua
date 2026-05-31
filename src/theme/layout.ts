@@ -4,6 +4,24 @@ export const TAB_BAR_HEIGHT = 78;
 
 export const FAB_BOTTOM = 96;
 
+export const ICON_SIZE = {
+  xs: 16,
+  sm: 18,
+  md: 22,
+  lg: 28,
+  xl: 32,
+  xxl: 34,
+};
+
+export const FONT_SIZE = {
+  xs: 12,
+  sm: 14,
+  md: 16,
+  lg: 18,
+  xl: 22,
+  xxl: 28,
+};
+
 export const RADIUS = {
   xs: 8,
   sm: 10,
